@@ -39,11 +39,11 @@ public class FaceDetectionGray extends Configured implements Tool {
 			return -1;
 		}
 
-		Job job = Job.getInstance(super.getConf(), "Face-Detection");
+		Job job = Job.getInstance(super.getConf(), "FaceDetectionGray");
 		job.setJarByClass(getClass());
 		job.setInputFormatClass(GrayImageInputFormat.class);
 		job.setOutputFormatClass(GrayImageOutputFormat.class);
-		job.setMapperClass(FaceDetectionMapper.class);
+		job.setMapperClass(FaceDetectionGrayMapper.class);
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		job.setNumReduceTasks(0);
@@ -58,7 +58,8 @@ public class FaceDetectionGray extends Configured implements Tool {
 		System.exit(exitCode);
 	}
 
-	public static class FaceDetectionMapper extends Mapper<NullWritable, GrayImageWritable, NullWritable, GrayImageWritable> {
+	public static class FaceDetectionGrayMapper extends
+			Mapper<NullWritable, GrayImageWritable, NullWritable, GrayImageWritable> {
 
 		private FImage image;
 

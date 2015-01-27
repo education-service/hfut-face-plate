@@ -20,7 +20,7 @@ import edu.hfut.mapred.images.writable.BufferedImageWritable;
 
 /**
  * 缓冲图像序列化输出作业
- * 
+ *
  * @author wanggang
  *
  */
@@ -35,15 +35,15 @@ public class BufferedImageSequenceOutput extends Configured implements Tool {
 			return -1;
 		}
 
-		Job job = Job.getInstance(super.getConf(), "Hadoop BufferedImageSequenceOutput job");
+		Job job = Job.getInstance(super.getConf(), "BufferedImageSequenceOutput");
 		job.setJarByClass(getClass());
 		job.setInputFormatClass(BufferedImageCombineInputFormat.class);
 		job.setOutputFormatClass(SequenceFileOutputFormat.class);
-		job.setMapperClass(MyMapper.class);
+		job.setMapperClass(BufferedImageSequenceOutputMapper.class);
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		job.setNumReduceTasks(0);
-		job.setOutputKeyClass(NullWritable.class);
+		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(BufferedImageWritable.class);
 		return job.waitForCompletion(true) ? 0 : 1;
 	}
@@ -54,7 +54,8 @@ public class BufferedImageSequenceOutput extends Configured implements Tool {
 		System.exit(exitCode);
 	}
 
-	public static class MyMapper extends Mapper<NullWritable, BufferedImageWritable, Text, BufferedImageWritable> {
+	public static class BufferedImageSequenceOutputMapper extends
+			Mapper<NullWritable, BufferedImageWritable, Text, BufferedImageWritable> {
 
 		@Override
 		public void map(NullWritable key, BufferedImageWritable value, Context context) throws IOException,

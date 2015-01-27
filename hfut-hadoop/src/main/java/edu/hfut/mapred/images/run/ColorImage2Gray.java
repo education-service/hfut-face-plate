@@ -15,14 +15,14 @@ import org.apache.hadoop.util.ToolRunner;
 import org.openimaj.image.FImage;
 import org.openimaj.image.MBFImage;
 
-import edu.hfut.mapred.images.io.GrayImageOutputFormat;
 import edu.hfut.mapred.images.io.ColorImageInputFormat;
-import edu.hfut.mapred.images.writable.GrayImageWritable;
+import edu.hfut.mapred.images.io.GrayImageOutputFormat;
 import edu.hfut.mapred.images.writable.ColorImageWritable;
+import edu.hfut.mapred.images.writable.GrayImageWritable;
 
 /**
  * 彩色图像灰度化作业
- * 
+ *
  * @author wanggang
  *
  */
@@ -37,11 +37,11 @@ public class ColorImage2Gray extends Configured implements Tool {
 			return -1;
 		}
 
-		Job job = Job.getInstance(super.getConf(), "Color-Images-2-Grayscale");
+		Job job = Job.getInstance(super.getConf(), "ColorImage2Gray");
 		job.setJarByClass(getClass());
 		job.setInputFormatClass(ColorImageInputFormat.class);
 		job.setOutputFormatClass(GrayImageOutputFormat.class);
-		job.setMapperClass(Img2GrayOpenIMAJMapper.class);
+		job.setMapperClass(ColorImage2GrayMapper.class);
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		job.setNumReduceTasks(0);
@@ -56,7 +56,7 @@ public class ColorImage2Gray extends Configured implements Tool {
 		System.exit(exitCode);
 	}
 
-	public static class Img2GrayOpenIMAJMapper extends
+	public static class ColorImage2GrayMapper extends
 			Mapper<NullWritable, ColorImageWritable, NullWritable, GrayImageWritable> {
 
 		private FImage gray_image;
@@ -69,14 +69,15 @@ public class ColorImage2Gray extends Configured implements Tool {
 			color_image = value.getImage();
 
 			if (color_image != null) {
-
 				gray_image = color_image.flatten();
 				fiw.setFormat(value.getFormat());
 				fiw.setFileName(value.getFileName());
 				fiw.setImage(gray_image);
 				context.write(NullWritable.get(), fiw);
 			}
+
 		}
+
 	}
 
 }

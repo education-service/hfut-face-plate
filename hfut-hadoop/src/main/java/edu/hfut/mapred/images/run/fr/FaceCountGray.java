@@ -41,7 +41,7 @@ public class FaceCountGray extends Configured implements Tool {
 			return -1;
 		}
 
-		Job job = Job.getInstance(super.getConf(), "Face-Count-Gray");
+		Job job = Job.getInstance(super.getConf(), "FaceCountGray");
 		job.setJarByClass(getClass());
 		job.setInputFormatClass(GrayImageInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);

@@ -29,7 +29,8 @@ import edu.hfut.mapred.images.writable.GrayImageWritable;
 public class FaceCountGrayOther extends HadoopJob {
 
 	public FaceCountGrayOther() {
-		super(FaceCounterGrayMapper.class, new HadoopJobConfiguration("<input> <output>\n", 2, "Face counting job\n"));
+		super(FaceCountGrayOtherMapper.class, new HadoopJobConfiguration("<input> <output>\n", 2,
+				"FaceCountGrayOther\n"));
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -45,7 +46,7 @@ public class FaceCountGrayOther extends HadoopJob {
 		System.exit(exitCode);
 	}
 
-	public static class FaceCounterGrayMapper extends Mapper<NullWritable, GrayImageWritable, Text, IntWritable> {
+	public static class FaceCountGrayOtherMapper extends Mapper<NullWritable, GrayImageWritable, Text, IntWritable> {
 
 		private FImage image;
 		private final Text fileName = new Text();
@@ -65,6 +66,7 @@ public class FaceCountGrayOther extends HadoopJob {
 			}
 
 		}
+
 	}
 
 }

@@ -21,15 +21,15 @@ import edu.hfut.mapred.images.writable.BufferedImageWritable;
 
 /**
  * 缓冲图像边缘检测作业
- * 
+ *
  * @author wanggang
  *
  */
 public class BufferedImageEdgeDetection extends HadoopJob {
 
 	public BufferedImageEdgeDetection() {
-		super(ImgEdgeDetectionMapper.class, new HadoopJobConfiguration("<input> <output>\n", 2,
-				"Hadoop BufferedImageEdgeDetection  job"));
+		super(BufferedImageEdgeDetectionMapper.class, new HadoopJobConfiguration("<input> <output>\n", 2,
+				"BufferedImageEdgeDetection"));
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -38,7 +38,7 @@ public class BufferedImageEdgeDetection extends HadoopJob {
 		System.exit(exitCode);
 	}
 
-	public static class ImgEdgeDetectionMapper extends
+	public static class BufferedImageEdgeDetectionMapper extends
 			Mapper<NullWritable, BufferedImageWritable, NullWritable, BufferedImageWritable> {
 
 		private int dimension;
@@ -59,7 +59,6 @@ public class BufferedImageEdgeDetection extends HadoopJob {
 
 			dimension = (int) json.get("dim");
 			kernel = ker;
-
 		}
 
 		@Override

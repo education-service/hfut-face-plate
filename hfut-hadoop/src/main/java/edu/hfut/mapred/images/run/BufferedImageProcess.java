@@ -30,7 +30,7 @@ import edu.hfut.mapred.images.writable.BufferedImageWritable;
  */
 public class BufferedImageProcess extends Configured implements Tool {
 
-	public static class BufferedImageMapper extends
+	public static class BufferedImageProcessMapper extends
 			Mapper<NullWritable, BufferedImageWritable, NullWritable, BufferedImageWritable> {
 
 		BufferedImage image, processedImage;
@@ -78,7 +78,7 @@ public class BufferedImageProcess extends Configured implements Tool {
 		job.setOutputFormatClass(BufferedImageOutputFormat.class);
 		FileInputFormat.addInputPath(job, new Path(args[1]));
 		FileOutputFormat.setOutputPath(job, new Path(args[2]));
-		job.setMapperClass(BufferedImageMapper.class);
+		job.setMapperClass(BufferedImageProcessMapper.class);
 		job.setNumReduceTasks(0);
 		job.setOutputKeyClass(NullWritable.class);
 		job.setOutputValueClass(BufferedImageWritable.class);
@@ -90,7 +90,7 @@ public class BufferedImageProcess extends Configured implements Tool {
 
 		Job job = basicSetup(args);
 
-		job.setJobName("BufferedImage job");
+		job.setJobName("BufferedImageProcess");
 		job.setInputFormatClass(BufferedImageInputFormat.class);
 
 		return job.waitForCompletion(true) ? 0 : 1;

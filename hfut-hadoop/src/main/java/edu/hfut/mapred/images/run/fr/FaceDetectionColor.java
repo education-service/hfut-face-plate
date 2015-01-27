@@ -40,7 +40,7 @@ public class FaceDetectionColor extends Configured implements Tool {
 			return -1;
 		}
 
-		Job job = Job.getInstance(super.getConf(), "Face-Detection-Color");
+		Job job = Job.getInstance(super.getConf(), "FaceDetectionColor");
 		job.setJarByClass(getClass());
 		job.setInputFormatClass(ColorImageInputFormat.class);
 		job.setOutputFormatClass(ColorImageOutputFormat.class);

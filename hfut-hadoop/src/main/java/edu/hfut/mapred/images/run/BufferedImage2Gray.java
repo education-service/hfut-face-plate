@@ -15,14 +15,14 @@ import edu.hfut.mapred.images.writable.BufferedImageWritable;
 
 /**
  * 缓冲图像灰度化作业
- * 
+ *
  * @author wanggang
  *
  */
 public class BufferedImage2Gray extends HadoopJob {
 
 	public BufferedImage2Gray() {
-		super(Img2GrayMapper.class, new HadoopJobConfiguration("<input> <output>\n", 2, "Hadoop Img2gray job"));
+		super(BufferedImage2GrayMapper.class, new HadoopJobConfiguration("<input> <output>\n", 2, "BufferedImage2Gray"));
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -31,7 +31,7 @@ public class BufferedImage2Gray extends HadoopJob {
 		System.exit(exitCode);
 	}
 
-	public static class Img2GrayMapper extends
+	public static class BufferedImage2GrayMapper extends
 			Mapper<NullWritable, BufferedImageWritable, NullWritable, BufferedImageWritable> {
 
 		private Graphics g;

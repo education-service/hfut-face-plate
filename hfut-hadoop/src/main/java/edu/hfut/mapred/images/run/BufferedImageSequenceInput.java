@@ -34,7 +34,7 @@ public class BufferedImageSequenceInput extends Configured implements Tool {
 			return -1;
 		}
 
-		Job job = Job.getInstance(super.getConf(), "Hadoop BufferedImageSequenceInput job");
+		Job job = Job.getInstance(super.getConf(), "BufferedImageSequenceInput");
 		job.setJarByClass(getClass());
 		//		job.setInputFormatClass(SequenceFileInputFormat.class);
 		job.setOutputFormatClass(BufferedImageOutputFormat.class);
@@ -62,9 +62,11 @@ public class BufferedImageSequenceInput extends Configured implements Tool {
 		@Override
 		public void map(LongWritable key, BufferedImageWritable value, Context context) throws IOException,
 				InterruptedException {
+
 			if (value.getImage() != null) {
 				context.write(new Text(value.getFileName()), value);
 			}
+
 		}
 
 	}

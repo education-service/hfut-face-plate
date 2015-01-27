@@ -14,15 +14,15 @@ import edu.hfut.mapred.images.writable.BufferedImageWritable;
 
 /**
  * 图片格式转换作业
- * 
+ *
  * @author wanggang
  *
  */
 public class BufferedImageFormatChange extends HadoopJob {
 
 	public BufferedImageFormatChange() {
-		super(Img2ChangeFormatMapper.class, new HadoopJobConfiguration("<input> <output> <format>\n", 3,
-				"Hadoop Img2PNG  job"));
+		super(BufferedImageFormatChangeMapper.class, new HadoopJobConfiguration("<input> <output> <format>\n", 3,
+				"BufferedImageFormatChange"));
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -37,7 +37,7 @@ public class BufferedImageFormatChange extends HadoopJob {
 		conf.set("format", args[2]);
 	}
 
-	public static class Img2ChangeFormatMapper extends
+	public static class BufferedImageFormatChangeMapper extends
 			Mapper<NullWritable, BufferedImageWritable, NullWritable, BufferedImageWritable> {
 
 		@Override
