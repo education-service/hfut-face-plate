@@ -46,7 +46,7 @@ public class BufferedImageProcess extends Configured implements Tool {
 				String processorClassName = conf.get("biprocessor.class");
 				try {
 					Class ipClass = Class.forName(processorClassName);
-					ImageProcessor<BufferedImage> ip = (ImageProcessor) ipClass.newInstance();
+					ImageProcessor<BufferedImage> ip = (ImageProcessor<BufferedImage>) ipClass.newInstance();
 					processedImage = ip.processImage(image);
 					outImage = new BufferedImageWritable(processedImage, value.getFileName(), value.getFormat());
 					context.write(NullWritable.get(), outImage);
