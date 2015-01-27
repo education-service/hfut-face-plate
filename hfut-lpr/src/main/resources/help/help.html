@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>
+<style>
+body {
+    font-family: tahoma;
+    font-size: 12;
+    color: #444444
+}
+
+p {
+    margin-left: 20;
+    margin-top: 0;
+    margin-right: 20
+}
+
+p.left {
+    text-align: left
+}
+
+p.justify {
+    text-align: justify
+}
+
+p.right {
+    text-align: right
+}
+
+p.code {
+    text-align: left;
+    font-family: times
+}
+
+a {
+    color: black
+}
+
+a:hover {
+    color: red
+}
+</style>
+</head>
+<body>
+
+<img src='./logo.jpg' alt=''>
+
+<p class='code'>
+
+    <br>LPR是一个分布式车牌识别系统，主要实现技术包括：人工智能、机器视觉和神经网络。<br> <br> 使用方法 : java -jar
+    LPR.jar [-options]<br> <br> options包括:<br> <br> <b>-help</b><br> 提示帮助信息<br>
+    <br> <b>-gui</b><br> 运行可视化界面 (默认)<br> <br> <b>-recognize -i &lt;snapshot&gt;</b><br>
+    识别单个图片<br> <br> <b>-recognize -i &lt;snapshot&gt; -o &lt;dstdir&gt;</b><br> 识别单个图片，并保存报告信息到指定目录<br> 
+    <br> <b>-newconfig -o &lt;file&gt;</b><br> 生成默认的配置文件<br> <br> <b>-newnetwork -o &lt;file&gt;</b><br> 
+    根据指定的特征提取方法和学习参数训练神经网络（配置文为config.xml），并保存到输出文件中<br>
+    <br> <b>-newalphabet -i &lt;srcdir&gt; -o &lt;dstdir&gt;</b><br> 标准化目录&lt;srcdir&gt;中的所有图片，并保存到目录&lt;dstdir&gt;中<br> <br>
+
+</p>
+
+
+</body>
+</html>
