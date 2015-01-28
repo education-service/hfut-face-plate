@@ -5,6 +5,10 @@ import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.util.Vector;
 
+import org.openimaj.image.FImage;
+import org.openimaj.image.ImageUtilities;
+import org.openimaj.image.processing.threshold.OtsuThreshold;
+
 import edu.hfut.lpr.utils.Configurator;
 
 /**
@@ -60,7 +64,7 @@ public class Plate extends Photo {
 		}
 
 		this.graphHandle = this.histogram(this.plateCopy.getBi());
-		//		PlateGraph graph = histogram(imageCopy);
+		//		PlateGraph graph = histogram(this.plateCopy.getBi());
 		this.graphHandle.applyProbabilityDistributor(Plate.distributor);
 		this.graphHandle.findPeaks(Plate.numberOfCandidates);
 
@@ -85,6 +89,30 @@ public class Plate extends Photo {
 					this.plateCopy.image.getSubimage(p.getLeft(), 0, p.getDiff(), this.image.getHeight()),
 					new PositionInPlate(p.getLeft(), p.getRight())));
 		}
+
+		return out;
+	}
+
+	public Vector<Char> getChars(String china, String filepath) {
+
+		Vector<Char> out = new Vector<>();
+		FImage grayImage = ImageUtilities.createFImage(this.getBi());
+		OtsuThreshold threshold = new OtsuThreshold();
+		threshold.processImage(grayImage);
+		//		try {
+		//			ImageIO.write(ImageUtilities.createBufferedImage(grayImage), "JPG", new File("bw/" + filepath));
+		//		} catch (IOException e) {
+		//			e.printStackTrace();
+		//		}
+		//		for (int i = 0; i < peaks.size(); i++) {
+		//			Graph.Peak p = peaks.elementAt(i);
+		//			if (p.getDiff() <= 0) {
+		//				continue;
+		//			}
+		//			out.add(new Char(this.image.getSubimage(p.getLeft(), 0, p.getDiff(), this.image.getHeight()),
+		//					this.plateCopy.image.getSubimage(p.getLeft(), 0, p.getDiff(), this.image.getHeight()),
+		//					new PositionInPlate(p.getLeft(), p.getRight())));
+		//		}
 
 		return out;
 	}

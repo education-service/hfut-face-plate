@@ -23,6 +23,11 @@ public class PlateRecognizer {
 
 	private static Logger logger = LoggerFactory.getLogger(PlateRecognizer.class);
 
+	public static void main(String[] args) {
+		String str = PlateRecognizer.recognizeResult("china-plates/test_007.jpg");
+		System.out.println(str);
+	}
+
 	public static String recognizeResult(String imageFile) {
 		logger.info("Recognizing ImageFile is {}", imageFile);
 		try {

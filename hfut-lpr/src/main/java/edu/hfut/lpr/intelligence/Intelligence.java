@@ -350,27 +350,20 @@ public class Intelligence {
 		int syntaxAnalysisMode = configurator.getIntProperty("intelligence_syntaxanalysis");
 		int skewDetectionMode = configurator.getIntProperty("intelligence_skewdetection");
 
-		// 循环每个带状图
-		//		int bandCount = 0;
+		// 循环每个带状图，这一步基本上没问题，都可以找到车牌所在的带状图
+		int bandCount = 0;
 		for (Band b : carSnapshot.getBands()) {
 
 			// 将带状图保存下来，用于校验
-			//			try {
-			//				b.saveImage("tmp/car/bands/band_" + bandCount++ + ".jpg");
-			//			} catch (IOException e1) {
-			//				e1.printStackTrace();
-			//			}
+			try {
+				b.saveImage("tmp/car/bands/band_" + bandCount++ + ".jpg");
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 
-			// 循环每个候选车牌
-			//			int plateCount = 0;
+			// 循环每个候选车牌，有部分车牌字符被分割掉了(test_004.jpg)
+			int plateCount = 0;
 			for (Plate plate : b.getPlates()) {
-
-				// 将候选车牌图保存下来，用于校验
-				//				try {
-				//					plate.saveImage("tmp/car/bands/plates/plate_" + plateCount++ + ".jpg");
-				//				} catch (IOException e2) {
-				//					e2.printStackTrace();
-				//				}
 
 				Plate notNormalizedCopy = null;
 
@@ -395,25 +388,34 @@ public class Intelligence {
 
 				plate.normalize();
 
+				// 通过车牌的宽长比例来过滤候选车牌
 				float plateWHratio = (float) plate.getWidth() / (float) plate.getHeight();
 				if ((plateWHratio < configurator.getDoubleProperty("intelligence_minPlateWidthHeightRatio"))
 						|| (plateWHratio > configurator.getDoubleProperty("intelligence_maxPlateWidthHeightRatio"))) {
 					continue;
 				}
 
-				Vector<Char> chars = plate.getChars();
+				Vector<Char> chars = plate.getChars("china", (bandCount - 1) + "_" + plateCount++ + ".jpg");
+
+				// 将候选车牌图保存下来，用于校验
+				try {
+					plate.saveImage("tmp/car/bands/plates/plate_" + (bandCount - 1) + "_" + plateCount + ".jpg");
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
 
 				// 将字符图保存下来，用于校验
 				//				int charCount = 0;
 				//				for (Char chr : chars) {
 				//					try {
-				//						chr.saveImage("tmp/car/bands/plates/chars/char_" + charCount++ + ".jpg");
+				//						chr.saveImage("tmp/car/bands/plates/chars/char_" + (bandCount - 1) + "_" + (plateCount - 1)
+				//								+ "_" + charCount++ + ".jpg");
 				//					} catch (IOException e3) {
 				//						e3.printStackTrace();
 				//					}
 				//				}
 
-				//				 Recognizer.configurator.getIntProperty("intelligence_minimumChars")
+				// 根据字符数来过滤候选车牌
 				if ((chars.size() < configurator.getIntProperty("intelligence_minimumChars"))
 						|| (chars.size() > configurator.getIntProperty("intelligence_maximumChars"))) {
 					continue;
@@ -530,5 +532,4 @@ public class Intelligence {
 
 		return null;
 	}
-
 }

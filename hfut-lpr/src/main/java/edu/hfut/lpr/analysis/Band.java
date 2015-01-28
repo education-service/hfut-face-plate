@@ -57,6 +57,7 @@ public class Band extends Photo {
 		this.graphHandle.applyProbabilityDistributor(Band.distributor);
 		// 找出候选车牌波峰
 		this.graphHandle.findPeaks(Band.numberOfCandidates);
+		//		DisplayUtilities.display(imageCopy);
 		return this.graphHandle.peaks;
 	}
 
