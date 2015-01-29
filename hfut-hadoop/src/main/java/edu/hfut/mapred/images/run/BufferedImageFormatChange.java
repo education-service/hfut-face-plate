@@ -15,6 +15,9 @@ import edu.hfut.mapred.images.writable.BufferedImageWritable;
 /**
  * 图片格式转换作业
  *
+ * 运行命令：
+ * bin/hadoop jar hfut-hadoop-jar-with-dependencies.jar bufferedImageFormatChange hdfs_image_folder hdfs_output_folder image_format
+ *
  * @author wanggang
  *
  */

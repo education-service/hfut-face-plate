@@ -6,7 +6,6 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -20,6 +19,9 @@ import edu.hfut.mapred.images.writable.BufferedImageWritable;
 
 /**
  * 缓冲图像序列化输出作业
+ *
+ * 运行命令：
+ * bin/hadoop jar hfut-hadoop-jar-with-dependencies.jar bufferedImageSequenceOutput hdfs_image_folder hdfs_output_folder
  *
  * @author wanggang
  *
@@ -43,7 +45,7 @@ public class BufferedImageSequenceOutput extends Configured implements Tool {
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		job.setNumReduceTasks(0);
-		job.setOutputKeyClass(Text.class);
+		job.setOutputKeyClass(NullWritable.class);
 		job.setOutputValueClass(BufferedImageWritable.class);
 		return job.waitForCompletion(true) ? 0 : 1;
 	}
@@ -55,14 +57,14 @@ public class BufferedImageSequenceOutput extends Configured implements Tool {
 	}
 
 	public static class BufferedImageSequenceOutputMapper extends
-			Mapper<NullWritable, BufferedImageWritable, Text, BufferedImageWritable> {
+			Mapper<NullWritable, BufferedImageWritable, NullWritable, BufferedImageWritable> {
 
 		@Override
 		public void map(NullWritable key, BufferedImageWritable value, Context context) throws IOException,
 				InterruptedException {
 
 			if (value.getImage() != null) {
-				context.write(new Text(value.getFileName()), value);
+				context.write(NullWritable.get(), value);
 			}
 
 		}

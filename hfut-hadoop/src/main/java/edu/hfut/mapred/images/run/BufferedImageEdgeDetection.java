@@ -4,16 +4,12 @@ import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImageOp;
 import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
-import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.util.ToolRunner;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import edu.hfut.mapred.images.job.HadoopJob;
 import edu.hfut.mapred.images.job.HadoopJobConfiguration;
@@ -21,6 +17,9 @@ import edu.hfut.mapred.images.writable.BufferedImageWritable;
 
 /**
  * 缓冲图像边缘检测作业
+ *
+ * 运行命令：
+ * bin/hadoop jar hfut-hadoop-jar-with-dependencies.jar bufferedImageEdgeDetection hdfs_image_folder hdfs_output_folder
  *
  * @author wanggang
  *
@@ -41,13 +40,13 @@ public class BufferedImageEdgeDetection extends HadoopJob {
 	public static class BufferedImageEdgeDetectionMapper extends
 			Mapper<NullWritable, BufferedImageWritable, NullWritable, BufferedImageWritable> {
 
-		private int dimension;
-		private float[] kernel;
+		private static final int DIMENSION = 3;
+		private static final float[] KERNEL = { 0.0f, -1.0f, 0.0f, -1.0f, 4.0f, -1.0f, 0.0f, -1.0f, 0.0f };
 
 		@Override
 		protected void setup(Context context) throws IOException, InterruptedException {
 			super.setup(context);
-			File file = new File("kernel.json");
+			/*File file = new File("kernel.json");
 			String str = FileUtils.readFileToString(file, "utf-8");
 			JSONObject json = new JSONObject(str);
 			JSONArray jsonker = json.getJSONArray("kernel");
@@ -58,7 +57,7 @@ public class BufferedImageEdgeDetection extends HadoopJob {
 			}
 
 			dimension = (int) json.get("dim");
-			kernel = ker;
+			kernel = ker;*/
 		}
 
 		@Override
@@ -67,13 +66,7 @@ public class BufferedImageEdgeDetection extends HadoopJob {
 			BufferedImage sourceImg = value.getImage();
 
 			if (sourceImg != null) {
-
-				/*                float[] kernel = {
-				                        0.0f, -1.0f, 0.0f,
-				                        -1.0f, 4.0f, -1.0f,
-				                        0.0f, -1.0f, 0.0f
-				                };*/
-				BufferedImageOp kernelFilter = new ConvolveOp(new Kernel(dimension, dimension, kernel));
+				BufferedImageOp kernelFilter = new ConvolveOp(new Kernel(DIMENSION, DIMENSION, KERNEL));
 				BufferedImage destinationImg = kernelFilter.filter(sourceImg, null);
 				BufferedImageWritable biw = new BufferedImageWritable(destinationImg, value.getFileName(),
 						value.getFormat());

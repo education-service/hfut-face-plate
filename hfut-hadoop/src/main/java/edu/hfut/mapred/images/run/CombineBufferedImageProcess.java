@@ -13,6 +13,9 @@ import edu.hfut.mapred.images.io.BufferedImageCombineInputFormat;
  * 每个Map接受一个图像，并基于ImageProcessor（通过命令行指定实现类）来处理，
  * 该作业使用BufferedImageCombineInputFormat输入格式，适合小文件处理。
  *
+ * 运行命令：
+ * bin/hadoop jar hfut-hadoop-jar-with-dependencies.jar combineBufferedImageProcess edu.hfut.mapred.images.process.BI2Gray hdfs_image_folder hdfs_output_folder
+ *
  * @author wanggang
  *
  */
@@ -23,7 +26,7 @@ public class CombineBufferedImageProcess extends BufferedImageProcess implements
 
 		Job job = basicSetup(args);
 
-		job.setJobName("CombineBufferedImageProcess job");
+		job.setJobName("CombineBufferedImageProcess");
 		job.setInputFormatClass(BufferedImageCombineInputFormat.class);
 
 		return job.waitForCompletion(true) ? 0 : 1;

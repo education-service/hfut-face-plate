@@ -1,4 +1,4 @@
-package edu.hfut.mapred.iamges.process;
+package edu.hfut.mapred.images.process;
 
 /**
  * 图像处理接口

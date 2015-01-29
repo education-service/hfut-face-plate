@@ -36,7 +36,7 @@
 
 2. 运行测试作业，将彩色图片灰度化
 
-    $ hadoop jar mapred-images-1.0.0-jar-with-dependencies.jar bufferedImage2Gray hdfs_image_folder hdfs_output_folder
+    $ hadoop jar hfut-hadoop-jar-with-dependencies.jar bufferedImage2Gray hdfs_image_folder hdfs_output_folder
 
 3. 将处理后的图片从HDFS中拷贝到本地
 

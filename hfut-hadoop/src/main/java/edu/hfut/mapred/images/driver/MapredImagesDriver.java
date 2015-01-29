@@ -40,8 +40,8 @@ public class MapredImagesDriver {
 					"BufferedImage图像处理(大图像)，通过ImageProcessor实现类指定处理算法");
 			pgd.addClass("bufferedImageFormatChange", BufferedImageFormatChange.class, "图片格式转换");
 			pgd.addClass("bufferedImageEdgeDetection", BufferedImageEdgeDetection.class, "缓冲图像边缘检测");
-			pgd.addClass("bufferedImageSequenceInput", BufferedImageSequenceInput.class, "缓冲图像序列化输入");
 			pgd.addClass("bufferedImageSequenceOutput", BufferedImageSequenceOutput.class, "缓冲图像序列化输出");
+			pgd.addClass("bufferedImageSequenceInput", BufferedImageSequenceInput.class, "缓冲图像序列化输入");
 			pgd.addClass("bufferedImage2Gray", BufferedImage2Gray.class, "缓冲图像灰度化");
 			pgd.addClass("colorImage2Gray", ColorImage2Gray.class, "彩色图像灰度化");
 			// 人脸识别相关分布式处理

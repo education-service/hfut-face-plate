@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>Global configuration file for the Automatic Number Plate
+        Recognition System</comment>
+
+	<!-- 照片图像 -->
+
+    <entry key="photo_adaptivethresholdingradius">7</entry> <!-- 阈值模式： 0 - 简单阈值模式， N - 半径为N的自适应阈值模式 (N值必须大于1) -->
+
+	<!-- 倾斜检测 -->
+	
+    <entry key="intelligence_skewdetection">0</entry><!-- 倾斜矫正： 0 - 关闭， 1 - 开启 -->
+
+	<!-- 候选车牌搜索 -->
+
+    <entry key="intelligence_numberOfBands">3</entry> <!-- 从垂直分析图中提取的带状图数量 -->
+    <entry key="intelligence_numberOfPlates">3</entry> <!-- 从带状图的水平分析图中提取的车牌数量 -->
+    <entry key="intelligence_numberOfChars">20</entry> <!-- 从车牌的水平分析图中提取的字符数量 -->
+
+	<!-- 车牌启发式处理参数 (确定车牌的限制条件) -->
+
+    <entry key="intelligence_minimumChars">5</entry> <!-- 检测字符的最小数量 -->
+    <entry key="intelligence_maximumChars">15</entry> <!-- 检测字符的最大数量 -->
+    <entry key="intelligence_maxCharWidthDispersion">0.5</entry> <!-- 最大字符宽度分散系或离差 -->
+    <entry key="intelligence_minPlateWidthHeightRatio">0.5</entry> <!-- 最小车牌宽长比例width/height --> 
+    <entry key="intelligence_maxPlateWidthHeightRatio">15.0</entry> <!-- 最大车牌宽长比例 --> 
+
+	<!-- 字符启发式处理参数 (确定字符的限制条件) -->
+
+    <entry key="intelligence_minCharWidthHeightRatio">0.1</entry> <!-- 最小字符宽长比例 -->
+    <entry key="intelligence_maxCharWidthHeightRatio">0.92</entry> <!-- 最大字符宽长比例 -->
+    <entry key="intelligence_maxBrightnessCostDispersion">0.161</entry> <!-- 字符最大亮度差 (相对于其他字符) -->
+    <entry key="intelligence_maxContrastCostDispersion">0.1</entry> <!-- 字符最大对比度差 (相对于其他字符) -->
+    <entry key="intelligence_maxHueCostDispersion">0.145</entry> <!-- 字符最大色度差 (相对于其他字符) -->
+    <entry key="intelligence_maxSaturationCostDispersion">0.24</entry> <!-- 字符最大饱和度差 (相对于其他字符) -->
+    <entry key="intelligence_maxHeightCostDispersion">0.2</entry> <!-- 字符最大长度差 (相对于其他字符) -->
+    <entry key="intelligence_maxSimilarityCostDispersion">100.0</entry> <!-- 字符最大代价值 (识别处理) -->
+
+	<!-- 字符标准化，特征提取和识别模式 -->
+
+    <entry key="char_normalizeddimensions_x">8</entry> <!-- 标准化字符宽度 (向下采样) -->
+    <entry key="char_normalizeddimensions_y">13</entry> <!-- 标准化字符长度 (向下采样) -->
+
+    <entry key="char_learnAlphabetPath">/alphabets/alphabet_8x13</entry> <!-- 已经标准化的字符图片目录，这些字符的维度必须与上面设置的宽度和长度保持一致 -->
+	
+    <entry key="char_resizeMethod">1</entry> <!-- 字符向下采样的方法： 0 - 线性重采样 (可以保留边缘信息 (边缘检测))， 1 - 按权重平均采样 (直接像素映射) -->
+
+    <entry key="char_featuresExtractionMethod">0</entry> <!-- 特征提取方法： 0 - 直接像素映射 (适用于模糊的字符图片)， 1 - 边缘检测 (适用于倾斜的或者变形的字符) -->
+
+    <entry key="intelligence_classification_method">0</entry> <!-- 分类方法： 0 - 欧几里得距离模式匹配, 1 - 神经网络 -->
+
+	<!-- 神经网络学习参数 -->
+
+    <entry key="char_neuralNetworkPath">neuralnetworks/network_avgres_813_map.xml</entry> <!-- 神经网络拓扑配置文件 (注意 : 维度必须和所选择的特征提取方法一致) -->
+    <entry key="neural_maxk">8000</entry> <!-- 学习过程中的最大迭代次数 -->
+    <entry key="neural_eps">0.07</entry> <!-- 理想错误率，也就是终止条件 -->
+    <entry key="neural_lambda">0.05</entry> <!-- 学习率 : 加速训练收敛 -->
+    <entry key="neural_micro">0.5</entry> <!-- 微调因子 : 持久化比例 -->
+    <entry key="neural_topology">20</entry> <!-- 隐含层的神经元数量 -->
+
+	<!-- 已识别车牌的有序评分分析 -->
+
+    <entry key="intelligence_syntaxanalysis">2</entry> <!-- 评分分析模式 : 0 - 不进行纠错， 1 - 仅当字符数匹配时进行纠错， 2 - 总是进行纠错 (消除冗余字符) -->
+    <entry key="intelligence_syntaxDescriptionFile">syntax/syntax.xml</entry> <!-- 评分描述文件 -->
+
+	<!-- 车辆快照图，带状图，车牌分析图分析 -->
+
+    <entry key="carsnapshot_graphrankfilter">9</entry> <!-- 车辆快照分析图排名过滤器 -->
+    <entry key="carsnapshot_distributormargins">25</entry> <!-- 车辆拍照快照图分布器边际分布因数 -->
+    <entry key="carsnapshotgraph_peakDiffMultiplicationConstant">0.1</entry> <!-- 车牌快照分析图峰差乘积常量 -->
+    <entry key="carsnapshotgraph_peakfootconstant">0.55</entry> <!-- 车辆快照分析图峰脚常量 -->
+
+    <entry key="bandgraph_peakDiffMultiplicationConstant">0.2</entry> <!-- 带状图峰差乘积常量 -->
+    <entry key="bandgraph_peakfootconstant">0.55</entry> <!-- 带状图峰脚常量 -->
+
+    <entry key="platehorizontalgraph_detectionType">1</entry> <!-- 车牌水平分析图检测类型：0 - 幅度值倒数, 1 - 边缘检测 -->
+    <entry key="platehorizontalgraph_peakfootconstant">0.05</entry> <!-- 车牌水平分析图峰脚常量 -->
+    <entry key="plateverticalgraph_peakfootconstant">0.42</entry> <!-- 车牌垂直分析图峰脚常量 -->
+    <entry key="plategraph_rel_minpeaksize">0.86</entry> <!-- 车牌分析图实际最小峰大小 -->
+    <entry key="plategraph_peakfootconstant">0.7</entry> <!-- 车牌分析图峰脚常量 -->
+
+</properties>

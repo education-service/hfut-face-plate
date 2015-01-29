@@ -14,9 +14,9 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import edu.hfut.mapred.iamges.process.ImageProcessor;
 import edu.hfut.mapred.images.io.BufferedImageInputFormat;
 import edu.hfut.mapred.images.io.BufferedImageOutputFormat;
+import edu.hfut.mapred.images.process.ImageProcessor;
 import edu.hfut.mapred.images.writable.BufferedImageWritable;
 
 /**
@@ -24,6 +24,9 @@ import edu.hfut.mapred.images.writable.BufferedImageWritable;
  *
  * 每个Map接受一个图像，并基于ImageProcessor（通过命令行指定实现类）来处理，
  * 该作业使用BufferedImageInputFormat输入格式，不适合小文件处理。
+ *
+ * 运行命令：
+ * bin/hadoop jar hfut-hadoop-jar-with-dependencies.jar bufferedImageProcess edu.hfut.mapred.images.process.BI2Gray hdfs_image_folder hdfs_output_folder
  *
  * @author wanggang
  *
@@ -51,16 +54,15 @@ public class BufferedImageProcess extends Configured implements Tool {
 					outImage = new BufferedImageWritable(processedImage, value.getFileName(), value.getFormat());
 					context.write(NullWritable.get(), outImage);
 				} catch (ClassNotFoundException e) {
-					System.err.println("Class not found " + processorClassName);
+					throw new RuntimeException("Class not found " + processorClassName);
 				} catch (InstantiationException e) {
-					System.err.println("Cannot create object of class " + processorClassName);
+					throw new RuntimeException("Cannot create object of class " + processorClassName);
 				} catch (IllegalAccessException e) {
-					System.err.println("Illegal access for class " + processorClassName);
+					throw new RuntimeException("Illegal access for class " + processorClassName);
 				}
 
 			}
 		}
-
 	}
 
 	protected Job basicSetup(String args[]) throws IOException {

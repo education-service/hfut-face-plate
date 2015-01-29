@@ -260,7 +260,7 @@
 			</testResource>
 		</testResources>
 
-		<finalName>LPR</finalName>
+		<finalName>hfut-lpr</finalName>
 
 	</build>
 

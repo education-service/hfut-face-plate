@@ -1,4 +1,4 @@
-package edu.hfut.mapred.iamges.process;
+package edu.hfut.mapred.images.process;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
  * @author wanggang
  *
  */
-public class BufferedImage2Gray implements ImageProcessor<BufferedImage> {
+public class BI2Gray implements ImageProcessor<BufferedImage> {
 
 	/**
 	 * 缓冲图灰度化处理
