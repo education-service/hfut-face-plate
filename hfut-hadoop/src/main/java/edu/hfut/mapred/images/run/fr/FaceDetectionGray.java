@@ -25,6 +25,9 @@ import edu.hfut.mapred.images.writable.GrayImageWritable;
 /**
  * 灰度图人脸检测作业
  *
+ * 运行命令：
+ * bin/hadoop jar hfut-hadoop-jar-with-dependencies.jar faceDetectionGray hdfs_image_folder hdfs_output_folder
+ *
  * @author wanggang
  *
  */

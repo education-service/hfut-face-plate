@@ -139,6 +139,36 @@ public class FeatureExractor {
 		return maxIndex + "," + minIndex;
 	}
 
+	public static String compareImageAndFolderName(String faceDb, FImage faceImage) throws IOException {
+
+		DoubleFV feature1 = FImage2DoubleFV.INSTANCE.extractFeature(faceImage);
+
+		double[] distances = new double[40];
+		for (int s = 1; s < 41; s++) {
+			for (int ii = 1; ii < 11; ii++) {
+				FImage faceImage2 = ImageUtilities.readF(new File(faceDb + "/s" + s + "/" + ii + ".pgm"));
+				DoubleFV feature2 = FImage2DoubleFV.INSTANCE.extractFeature(faceImage2);
+				distances[s - 1] += distance(feature1.getVector(), feature2.getVector(), feature2.getVector().length);
+			}
+		}
+
+		double maxDistance = -1.0, minDistance = 10000.0;
+		int cursor = 0, maxIndex = 0, minIndex = 0;
+		for (double distance : distances) {
+			cursor++;
+			if (distance > maxDistance) {
+				maxDistance = distance;
+				maxIndex = cursor;
+			}
+			if (distance < minDistance) {
+				minDistance = distance;
+				minIndex = cursor;
+			}
+		}
+
+		return maxIndex + "," + minIndex;
+	}
+
 	/*
 	public static void main(String[] args) throws IOException {
 

@@ -198,8 +198,10 @@ public class Configurator {
 		String corrected = filename;
 
 		URL f = this.getClass().getResource(corrected);
+		//		URL f = this.getClass().getClassLoader().getResource(corrected);
 		if (f != null) {
 			return this.getClass().getResourceAsStream(corrected);
+			//			return this.getClass().getResourceAsStream(corrected);
 		}
 
 		if (filename.startsWith("/")) {
@@ -211,9 +213,11 @@ public class Configurator {
 		}
 
 		f = this.getClass().getResource(corrected);
+		//		f = this.getClass().getClassLoader().getResource(corrected);
 
 		if (f != null) {
 			return this.getClass().getResourceAsStream(corrected);
+			//			return this.getClass().getClassLoader().getResourceAsStream(corrected);
 		}
 
 		File file = new File(filename);

@@ -26,6 +26,9 @@ import edu.hfut.mapred.images.writable.ColorImageWritable;
 /**
  * 彩色图人脸检测作业
  *
+ * 运行命令：
+ * bin/hadoop jar hfut-hadoop-jar-with-dependencies.jar faceDetectionColor hdfs_image_folder hdfs_output_folder
+ *
  * @author wanggang
  *
  */

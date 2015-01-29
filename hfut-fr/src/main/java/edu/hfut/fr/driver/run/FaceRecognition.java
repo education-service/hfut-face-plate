@@ -54,15 +54,16 @@ public class FaceRecognition {
 		//		benchmark.setup();
 		//		benchmark.perform();
 		FImage faceImage1 = ImageUtilities.readF(new File("faces_db/s1/2.pgm"));
-		FImage faceImage2 = ImageUtilities.readF(new File("faces_db/s1/3.pgm"));
+		//		FImage faceImage2 = ImageUtilities.readF(new File("faces_db/s1/3.pgm"));
 		///**
 		//  另两种方法
 		//		System.out.println(recognize(faceImage1, faceImage2));
 		//		String filepath = "faces_db/s1/";
 		//		String name = recognize(faceImage1, filepath);
 		//		System.out.println(name);
-		String result = recognizeDataset(faceImage1, faceImage2);
-		System.out.println("the maxIndex and minIndex result is --->" + result);
+		//		String result = recognizeDataset(faceImage1, faceImage2);
+		//		System.out.println("the maxIndex and minIndex result is --->" + result);
+		System.out.println(FaceRecognition.recognizeDataset("faces_db", faceImage1));
 	}
 
 	/**
@@ -90,6 +91,10 @@ public class FaceRecognition {
 	 * 通过给定的图像和多个库,人脸识别和人脸分类,分类到具体的类库
 	 * @param return 返回对应的类别
 	 */
+	public static String recognizeDataset(String faceDb, FImage faceImage) throws IOException {
+		return FeatureExractor.compareImageAndFolderName(faceDb, faceImage);
+	}
+
 	public static String recognizeDataset(FImage image1, FImage image2) throws IOException {
 		FeatureExractor faceExractor = new FeatureExractor(image1, image2);
 		String result = faceExractor.compareImageAndFileList();

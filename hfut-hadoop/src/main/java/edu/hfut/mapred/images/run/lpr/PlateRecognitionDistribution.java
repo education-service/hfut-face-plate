@@ -22,6 +22,9 @@ import edu.hfut.mapred.images.writable.BufferedImageWritable;
 /**
  * 车牌识别分布式处理
  *
+ * 运行命令：
+ * bin/hadoop jar hfut-hadoop-jar-with-dependencies.jar plateRecognitionDistribution hdfs_image_folder hdfs_output_folder
+ *
  * @author wanggang
  *
  */
