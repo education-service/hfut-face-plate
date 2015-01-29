@@ -10,7 +10,7 @@
 
 	<!-- 倾斜检测 -->
 	
-    <entry key="intelligence_skewdetection">0</entry><!-- 倾斜矫正： 0 - 关闭， 1 - 开启 -->
+    <entry key="intelligence_skewdetection">1</entry><!-- 倾斜矫正： 0 - 关闭， 1 - 开启 -->
 
 	<!-- 候选车牌搜索 -->
 
@@ -23,8 +23,8 @@
     <entry key="intelligence_minimumChars">5</entry> <!-- 检测字符的最小数量 -->
     <entry key="intelligence_maximumChars">15</entry> <!-- 检测字符的最大数量 -->
     <entry key="intelligence_maxCharWidthDispersion">0.5</entry> <!-- 最大字符宽度分散系或离差 -->
-    <entry key="intelligence_minPlateWidthHeightRatio">0.5</entry> <!-- 最小车牌宽长比例width/height --> 
-    <entry key="intelligence_maxPlateWidthHeightRatio">15.0</entry> <!-- 最大车牌宽长比例 --> 
+    <entry key="intelligence_minPlateWidthHeightRatio">1.5</entry> <!-- 最小车牌宽长比例width/height --> 
+    <entry key="intelligence_maxPlateWidthHeightRatio">5.0</entry> <!-- 最大车牌宽长比例 --> 
 
 	<!-- 字符启发式处理参数 (确定字符的限制条件) -->
 

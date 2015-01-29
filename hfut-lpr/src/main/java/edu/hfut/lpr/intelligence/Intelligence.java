@@ -361,7 +361,7 @@ public class Intelligence {
 				e1.printStackTrace();
 			}
 
-			// 循环每个候选车牌，有部分车牌字符被分割掉了(test_004.jpg)
+			// 循环每个候选车牌
 			int plateCount = 0;
 			for (Plate plate : b.getPlates()) {
 
@@ -397,24 +397,6 @@ public class Intelligence {
 
 				Vector<Char> chars = plate.getChars();
 
-				// 将候选车牌图保存下来，用于校验
-				try {
-					plate.saveImage("tmp/car/bands/plates/plate_" + (bandCount - 1) + "_" + plateCount + ".jpg");
-				} catch (IOException e2) {
-					e2.printStackTrace();
-				}
-
-				// 将字符图保存下来，用于校验
-				int charCount = 0;
-				//				for (Char chr : chars) {
-				//					try {
-				//						chr.saveImage("tmp/car/bands/plates/chars/char_" + (bandCount - 1) + "_" + (plateCount - 1)
-				//								+ "_" + charCount++ + ".jpg");
-				//					} catch (IOException e3) {
-				//						e3.printStackTrace();
-				//					}
-				//				}
-
 				// 根据字符数来过滤候选车牌
 				if ((chars.size() < configurator.getIntProperty("intelligence_minimumChars"))
 						|| (chars.size() > configurator.getIntProperty("intelligence_maximumChars"))) {
@@ -424,6 +406,24 @@ public class Intelligence {
 				if (plate.getCharsWidthDispersion(chars) > configurator
 						.getDoubleProperty("intelligence_maxCharWidthDispersion")) {
 					continue;
+				}
+
+				// 将候选车牌图保存下来，用于校验
+				try {
+					plate.saveImage("tmp/car/bands/plates/plate_" + (bandCount - 1) + "_" + plateCount++ + ".jpg");
+				} catch (IOException e2) {
+					e2.printStackTrace();
+				}
+
+				// 将字符图保存下来，用于校验
+				int charCount = 0;
+				for (Char chr : chars) {
+					try {
+						chr.saveImage("tmp/car/bands/plates/chars/char_" + (bandCount - 1) + "_" + (plateCount - 1)
+								+ "_" + charCount++ + ".jpg");
+					} catch (IOException e3) {
+						e3.printStackTrace();
+					}
 				}
 
 				RecognizedPlate recognizedPlate = new RecognizedPlate();

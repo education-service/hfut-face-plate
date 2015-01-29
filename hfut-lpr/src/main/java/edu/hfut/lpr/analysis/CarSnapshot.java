@@ -27,7 +27,7 @@ public class CarSnapshot extends Photo {
 	// Main.configurator.getIntProperty("carsnapshot_projectionresize_y");
 
 	// 车辆快照图的统计图排名过滤值
-	private static int carsnapshot_graphrankfilter = Configurator.getConfigurator().getIntProperty(
+	public static int carsnapshot_graphrankfilter = Configurator.getConfigurator().getIntProperty(
 			"carsnapshot_graphrankfilter");
 
 	// 候选车牌区域数
@@ -73,14 +73,14 @@ public class CarSnapshot extends Photo {
 		/****** 垂直边缘检测，并二值化 ******/
 
 		// 拷贝图像
-		BufferedImage imageCopy = duplicateBufferedImage(this.image, "china");
+		BufferedImage imageCopy = duplicateBufferedImage(this.image);
 		// 垂直边缘检测和二值化
 		this.verticalEdgeBi(imageCopy);
 		Photo.thresholding(imageCopy);
 
 		// 统计计算
 		this.graphHandle = this.histogram(imageCopy);
-		this.graphHandle.rankFilter(CarSnapshot.carsnapshot_graphrankfilter); // 对于中文车牌暂时不需要
+		this.graphHandle.rankFilter(CarSnapshot.carsnapshot_graphrankfilter); // 对于蓝底车牌可能不需要
 		this.graphHandle.applyProbabilityDistributor(CarSnapshot.distributor);
 
 		this.graphHandle.findPeaks(CarSnapshot.numberOfCandidates); // 设置为3,基本上就可以找到车牌对应的带状图，也可以适当的调大写

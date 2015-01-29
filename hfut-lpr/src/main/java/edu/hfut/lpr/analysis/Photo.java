@@ -336,16 +336,6 @@ public class Photo implements AutoCloseable, Cloneable {
 		return imageCopy;
 	}
 
-	static public BufferedImage duplicateBufferedImage(BufferedImage image, String china) {
-		BufferedImage imageCopy = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-		imageCopy.setData(image.getData());
-		//		BufferedImage imageCopy = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
-		//		Graphics2D g = imageCopy.createGraphics();
-		//		g.drawImage(image, 0, 0, null);
-		//		g.dispose();
-		return imageCopy;
-	}
-
 	/**
 	 * 图像二值化
 	 */

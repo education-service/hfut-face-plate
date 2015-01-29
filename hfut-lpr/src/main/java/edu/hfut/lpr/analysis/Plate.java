@@ -5,6 +5,10 @@ import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.util.Vector;
 
+import org.openimaj.image.FImage;
+import org.openimaj.image.ImageUtilities;
+
+import edu.hfut.fr.image.processing.threshold.OtsuThreshold;
 import edu.hfut.lpr.utils.Configurator;
 
 /**
@@ -157,12 +161,21 @@ public class Plate extends Photo {
 
 	// 直方图
 	public PlateGraph histogram(BufferedImage bi) {
+
+		// 针对蓝底车牌
+		FImage grayImage = ImageUtilities.createFImage(this.getBi());
+		OtsuThreshold threshold = new OtsuThreshold();
+		threshold.processImage(grayImage);
+		// 默认是针对白底车牌
 		PlateGraph graph = new PlateGraph(this);
 		for (int x = 0; x < bi.getWidth(); x++) {
 			float counter = 0;
 			for (int y = 0; y < bi.getHeight(); y++) {
-				counter += Photo.getBrightness(bi, x, y);
+				//				counter += Photo.getBrightness(bi, x, y);
+				// 蓝底
+				counter += grayImage.getPixelNative(x, y);
 			}
+			counter = bi.getHeight() - counter;
 			graph.addPeak(counter);
 		}
 		return graph;
