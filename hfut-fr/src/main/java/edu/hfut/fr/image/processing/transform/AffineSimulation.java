@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.transform;
 
 import java.util.ArrayList;
@@ -44,18 +15,13 @@ import edu.hfut.fr.image.processing.convolution.FGaussianConvolve;
 import edu.hfut.fr.image.processing.convolution.FImageConvolveSeparable;
 
 /**
- * Utility methods to simulate affine transformations defined by a rotation and
- * tilt, or series of rotations and tilts.
+ * affine仿真参数转换工具方法
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
- * @param <I>
- *            Concrete subclass of {@link Image}
- * @param <P>
- *            Pixel type
+ * @author Jimbo
  */
 @Reference(type = ReferenceType.Article, author = { "Morel, Jean-Michel", "Yu, Guoshen" }, title = "{ASIFT: A New Framework for Fully Affine Invariant Image Comparison}", year = "2009", journal = "SIAM J. Img. Sci.", publisher = "Society for Industrial and Applied Mathematics")
 public abstract class AffineSimulation<I extends Image<P, I> & SinglebandImageProcessor.Processable<Float, FImage, I>, P> {
+
 	protected static final float PI = 3.141592654f;
 	protected static final float InitialAntiAliasingSigma = 1.6f;
 
@@ -63,20 +29,8 @@ public abstract class AffineSimulation<I extends Image<P, I> & SinglebandImagePr
 	}
 
 	/**
-	 * Compute the position of a point in an image given the position in the
-	 * transformed image and the transform parameters.
 	 *
-	 * @param pt
-	 *            the point in the transformed image
-	 * @param width
-	 *            the width of the untransformed image
-	 * @param height
-	 *            the height of the untransformed image
-	 * @param theta
-	 *            the rotation
-	 * @param t
-	 *            the tilt
-	 * @return the point mapped to the untransformed image
+	 * 计算在给定图像特定位置的点的转换参数
 	 */
 	public static Point2d transformToOriginal(Point2d pt, int width, int height, float theta, float t) {
 		if (t == 1)
@@ -86,18 +40,7 @@ public abstract class AffineSimulation<I extends Image<P, I> & SinglebandImagePr
 	}
 
 	/**
-	 * Compute the position of a point in an image given the position in the
-	 * transformed image and the transform parameters.
-	 *
-	 * @param pt
-	 *            the point in the transformed image
-	 * @param original
-	 *            the original untransformed image
-	 * @param theta
-	 *            the rotation
-	 * @param t
-	 *            the tilt
-	 * @return the point mapped to the untransformed image
+	 * 计算在给定图像特定位置的点的转换参数
 	 */
 	public static Point2d transformToOriginal(Point2d pt, Image<?, ?> original, float theta, float t) {
 		if (t == 1)
@@ -107,34 +50,14 @@ public abstract class AffineSimulation<I extends Image<P, I> & SinglebandImagePr
 	}
 
 	/**
-	 * Compute the position of a point in an image given the position in the
-	 * transformed image and the transform parameters.
-	 *
-	 * @param pt
-	 *            the point in the transformed image
-	 * @param width
-	 *            the width of the untransformed image
-	 * @param height
-	 *            the height of the untransformed image
-	 * @param params
-	 *            the simulation parameters
-	 * @return the point mapped to the untransformed image
+	 * 计算在给定图像特定位置的点的转换参数
 	 */
 	public static Point2d transformToOriginal(Point2d pt, int width, int height, AffineParams params) {
 		return transformToOriginal(pt, width, height, params.theta, params.tilt);
 	}
 
 	/**
-	 * Compute the position of a point in an image given the position in the
-	 * transformed image and the transform parameters.
-	 *
-	 * @param pt
-	 *            the point in the transformed image
-	 * @param original
-	 *            the original untransformed image
-	 * @param params
-	 *            the simulation parameters
-	 * @return the point mapped to the untransformed image
+	 * 计算在给定图像特定位置的点的转换参数
 	 */
 	public static Point2d transformToOriginal(Point2d pt, Image<?, ?> original, AffineParams params) {
 		return transformToOriginal(pt, original.getWidth(), original.getHeight(), params.theta, params.tilt);
@@ -157,23 +80,12 @@ public abstract class AffineSimulation<I extends Image<P, I> & SinglebandImagePr
 
 		final Point2d ptout = pt.copy();
 
-		/*
-		 * project the coordinates of im1 to original image before tilt-rotation
-		 * transform; get the coordinates with respect to the 'origin' of the
-		 * original image before transform
-		 */
 		ptout.setX(pt.getX() - x_ori);
 		ptout.setY(pt.getY() - y_ori);
 
-		/* Invert tilt */
 		ptout.setX(ptout.getX() * 1);
 		ptout.setY(ptout.getY() * t1);
 
-		/*
-		 * Invert rotation (Note that the y direction (vertical) is inverse to
-		 * the usual concention. Hence Rtheta instead of -Rtheta to inverse the
-		 * rotation.)
-		 */
 		final float tx = cos_Rtheta * ptout.getX() - sin_Rtheta * ptout.getY();
 		final float ty = sin_Rtheta * ptout.getX() + cos_Rtheta * ptout.getY();
 
@@ -184,23 +96,19 @@ public abstract class AffineSimulation<I extends Image<P, I> & SinglebandImagePr
 	}
 
 	/**
-	 * Transform the coordinates of the given points from a transformed image to
-	 * the original space.
+	 * 转换坐标
 	 *
 	 * @param <Q>
-	 *            Type of interest point list
 	 * @param <T>
-	 *            Type of interest point
 	 * @param <I>
-	 *            Type of {@link Image}
 	 * @param points
-	 *            the points
+	 *            点
 	 * @param original
-	 *            the original untransformed image
+	 *            源坐标
 	 * @param theta
-	 *            the rotation
+	 *            旋转角度
 	 * @param tilt
-	 *            the tilt
+	 *            tilt
 	 */
 	public static <Q extends List<T>, T extends Point2d, I extends Image<?, I>> void transformToOriginal(Q points,
 			I original, float theta, float tilt) {
@@ -220,24 +128,10 @@ public abstract class AffineSimulation<I extends Image<P, I> & SinglebandImagePr
 		final float cos_Rtheta = (float) Math.cos(theta);
 
 		for (final T k : points) {
-			/*
-			 * project the coordinates of im1 to original image before
-			 * tilt-rotation transform
-			 */
-			/*
-			 * Get the coordinates with respect to the 'origin' of the original
-			 * image before transform
-			 */
 			k.setX(k.getX() - x_ori);
 			k.setY(k.getY() - y_ori);
-			/* Invert tilt */
 			k.setX(k.getX() * 1);
 			k.setY(k.getY() * tilt);
-			/*
-			 * Invert rotation (Note that the y direction (vertical) is inverse
-			 * to the usual concention. Hence Rtheta instead of -Rtheta to
-			 * inverse the rotation.)
-			 */
 			final float tx = cos_Rtheta * k.getX() - sin_Rtheta * k.getY();
 			final float ty = sin_Rtheta * k.getX() + cos_Rtheta * k.getY();
 
@@ -252,15 +146,13 @@ public abstract class AffineSimulation<I extends Image<P, I> & SinglebandImagePr
 	}
 
 	/**
-	 * Compute the transformed images based on the given number of tilts.
+	 * 根据给定数量的tilts来计算转换后的图像
 	 *
 	 * @param image
-	 *            the image to transform.
 	 * @param numTilts
-	 *            the number of tilts to simulate.
-	 * @return the transformed images
+	 * @return 转换后的图像
 	 * @throws IllegalArgumentException
-	 *             if the number of tilts is < 1
+	 *             tilts的数量小于1的情况
 	 */
 	public static <I extends Image<P, I> & SinglebandImageProcessor.Processable<Float, FImage, I>, P> List<I> transformImage(
 			I image, int numTilts) {
@@ -302,41 +194,37 @@ public abstract class AffineSimulation<I extends Image<P, I> & SinglebandImagePr
 	}
 
 	/**
-	 * Compute a single transformed image for a given rotation and tilt.
+	 * 根据给定的旋转角度和tilt计算转化图像
 	 *
 	 * @param image
-	 *            the image
+	 *            图像
 	 * @param theta
-	 *            the rotation angle
+	 *            旋转角度
 	 * @param t
-	 *            the tilt amount
-	 * @return the transformed image
+	 *            tilt的数量
+	 * @return 转换后的图像
 	 */
 	public static <I extends Image<P, I> & SinglebandImageProcessor.Processable<Float, FImage, I>, P> I transformImage(
 			I image, float theta, float t) {
 		final float t1 = 1;
 		final float t2 = 1 / t;
 
-		// Perform rotation
 		final I image_rotated = ProjectionProcessor.project(image, TransformUtilities.rotationMatrix(-theta));
 
-		// Perform anti-aliasing filtering by convolving with a Gaussian in the
-		// vertical direction
 		final float sigma_aa = InitialAntiAliasingSigma * t / 2;
 		image_rotated.processInplace(new FImageConvolveSeparable(null, FGaussianConvolve.makeKernel(sigma_aa)));
 
-		// Squash the image in the x and y direction by t1 and t2 to mimic tilt
 		return ProjectionProcessor.project(image_rotated, TransformUtilities.scaleMatrix(t1, t2));
 	}
 
 	/**
-	 * Compute a single transformed image for a given rotation and tilt.
+	 * 计算单幅转换图像，根据给定的旋转角度和tilt
 	 *
 	 * @param image
-	 *            the image
+	 *            图像
 	 * @param params
-	 *            the simulation parameters
-	 * @return the transformed image
+	 *            仿真参数
+	 * @return 转换后的图像
 	 */
 	public static <I extends Image<P, I> & SinglebandImageProcessor.Processable<Float, FImage, I>, P> I transformImage(
 			I image, AffineParams params) {

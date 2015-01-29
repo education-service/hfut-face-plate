@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.edges;
 
 import java.util.ArrayList;
@@ -47,21 +18,9 @@ import org.openimaj.math.util.FloatArrayStatsUtils;
 import edu.hfut.fr.image.processing.convolution.FSobel;
 
 /**
- * Implementation of the Stroke Width Transform.
- * <p>
- * The Stroke Width Transform detects strokes and their respective widths from
- * an image. This implementation contains a number of enhancements to improve
- * the quality of the detected strokes, based on ideas from <a
- * href="http://libccv.org/lib/ccv-swt/">LibCCV</a> implementation:
- * <ul>
- * <li>We search around the stroke in a small window for endpoints.</li>
- * <li>We search around the endpoint in a small window for matching gradients.</li>
- * <li>In addition to the stroke along the gradient, we also stroke at +/-45
- * degrees from this.</li>
- * </ul>
+ * 宽度变化
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
+ *@author wanghao
  */
 @Reference(type = ReferenceType.Inproceedings, author = { "Epshtein, B.", "Ofek, E.", "Wexler, Y." }, title = "Detecting text in natural scenes with stroke width transform", year = "2010", booktitle = "Computer Vision and Pattern Recognition (CVPR), 2010 IEEE Conference on", pages = {
 		"2963", "2970" }, customData = {
@@ -69,6 +28,7 @@ import edu.hfut.fr.image.processing.convolution.FSobel;
 		"image processing;text analysis;image operator;image pixel;natural images;natural scenes;stroke width transform;text detection;Colored noise;Computer vision;Engines;Filter bank;Geometry;Image segmentation;Layout;Optical character recognition software;Pixel;Robustness",
 		"doi", "10.1109/CVPR.2010.5540041", "ISSN", "1063-6919" })
 public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FImage> {
+
 	private final static int[][] edgeSearchRegion = { { 0, 0 }, { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
 	private final static int[][] gradSearchRegion = { { 0, 0 }, { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 }, { -1, -1 },
 			{ 1, -1 }, { -1, 1 }, { 1, 1 } };
@@ -78,13 +38,7 @@ public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FIm
 	private int maxStrokeWidth = 70;
 
 	/**
-	 * Construct the SWT with the given Canny edge detector.
-	 *
-	 * @param direction
-	 *            direction of the SWT; true for dark on light, false for light
-	 *            on dark.
-	 * @param canny
-	 *            the canny edge detector
+	 * 使用canny边缘检测进行构造
 	 */
 	public StrokeWidthTransform(boolean direction, CannyEdgeDetector canny) {
 		this.direction = direction;
@@ -92,14 +46,8 @@ public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FIm
 	}
 
 	/**
-	 * Construct the SWT with the given sigma for smoothing in the Canny phase
-	 * The Canny thresholds are chosen automatically.
+	 * 使用sigma进行构造
 	 *
-	 * @param direction
-	 *            direction of the SWT; true for dark on light, false for light
-	 *            on dark.
-	 * @param sigma
-	 *            the amount of initial blurring
 	 */
 	public StrokeWidthTransform(boolean direction, float sigma) {
 		this.direction = direction;
@@ -107,18 +55,7 @@ public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FIm
 	}
 
 	/**
-	 * Construct with all Canny parameters set manually.
-	 *
-	 * @param direction
-	 *            direction of the SWT; true for dark on light, false for light
-	 *            on dark.
-	 *
-	 * @param lowThresh
-	 *            lower hysteresis threshold.
-	 * @param highThresh
-	 *            upper hysteresis threshold.
-	 * @param sigma
-	 *            the amount of initial blurring.
+	 * 通过canny变量构造
 	 */
 	public StrokeWidthTransform(boolean direction, float lowThresh, float highThresh, float sigma) {
 		this.direction = direction;
@@ -126,19 +63,15 @@ public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FIm
 	}
 
 	/**
-	 * Get the maximum stroke width
-	 *
-	 * @return the maximum stroke width
+	 * 获得宽度最大值
 	 */
 	public int getMaxStrokeWidth() {
 		return maxStrokeWidth;
 	}
 
 	/**
-	 * Set the maximum stroke width
+	 * 设置最大宽度
 	 *
-	 * @param maxStrokeWidth
-	 *            the maximum stroke width
 	 */
 	public void setMaxStrokeWidth(int maxStrokeWidth) {
 		this.maxStrokeWidth = maxStrokeWidth;
@@ -185,7 +118,6 @@ public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FIm
 		for (int j = 0; j < maxStrokeWidth; j++) {
 			final Pixel current = iterator.next();
 
-			// check bounds
 			if (current.x < 1 || current.x >= output.width - 1 || current.y < 1 || current.y >= output.height - 1) {
 				break;
 			}
@@ -195,7 +127,6 @@ public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FIm
 
 			Pixel end = null;
 
-			// search over the around the current pixel region for an edge
 			for (int i = 0; i < edgeSearchRegion.length; i++) {
 				final int currentX = current.x + edgeSearchRegion[i][0];
 				final int currentY = current.y + edgeSearchRegion[i][1];
@@ -207,8 +138,6 @@ public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FIm
 			}
 
 			if (end != null) {
-				// edge found; now search for matching gradient in surrounding
-				// area
 				boolean found = false;
 
 				final float startGradX = dx.pixels[start.y][start.x];
@@ -221,19 +150,6 @@ public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FIm
 					final float currentGradX = dx.pixels[currentY][currentX];
 					final float currentGradY = dy.pixels[currentY][currentX];
 
-					// final float currentMag = (float) Math.sqrt((currentGradX
-					// * currentGradX)
-					// + (currentGradY * currentGradY))
-					// * gradDirection;
-					//
-					// currentGradX = currentGradX / currentMag;
-					// currentGradY = currentGradY / currentMag;
-					//
-					// if (Math.acos(gradX * -currentGradX + gradY *
-					// -currentGradY) < Math.PI / 6.0) {
-					// found = true;
-					// break;
-					// }
 					final float tn = startGradY * currentGradX - startGradX * currentGradY;
 					final float td = startGradX * currentGradX + startGradY * currentGradY;
 					if (tn * 7 < -td * 4 && tn * 7 > td * 4) {
@@ -242,9 +158,6 @@ public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FIm
 					}
 				}
 
-				// if we found an opposite grad, then we fill in the ray using
-				// the supercover to select all pixels that the ray passes
-				// through
 				if (found) {
 					final float length = (float) Line2d.distance(start, end);
 					final List<Pixel> ray = LineIterators.supercoverAsList(start, end);
@@ -290,14 +203,7 @@ public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FIm
 	}
 
 	/**
-	 * Normalise the output image of the {@link StrokeWidthTransform} for
-	 * display. This replaces all {@link Float#POSITIVE_INFINITY} pixels with a
-	 * value of 1, and min-max normalises all the valid stroke pixels to be
-	 * between 0 and 1.
-	 *
-	 * @param input
-	 *            the image to normalise
-	 * @return the normalised image
+	 * 标准化图像输出
 	 */
 	public static FImage normaliseImage(FImage input) {
 		final FImage output = input.clone();
@@ -329,19 +235,14 @@ public class StrokeWidthTransform implements SinglebandImageProcessor<Float, FIm
 	}
 
 	/**
-	 * Get the direction of the SWT; true for dark on light, false for light
-	 *
-	 * @return the direction
+	 * 获得SWT方向
 	 */
 	public boolean getDirection() {
 		return direction;
 	}
 
 	/**
-	 * Set the direction of the SWT; true for dark on light, false for light
-	 *
-	 * @param direction
-	 *            the direction to set
+	 * 设置ＳＷＴ方向
 	 */
 	public void setDirection(boolean direction) {
 		this.direction = direction;

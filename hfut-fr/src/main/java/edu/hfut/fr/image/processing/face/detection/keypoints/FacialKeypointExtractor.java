@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.face.detection.keypoints;
 
 import java.io.DataInputStream;
@@ -45,48 +16,29 @@ import edu.hfut.fr.image.analysis.algorithm.SummedAreaTable;
 import edu.hfut.fr.image.processing.face.detection.keypoints.FacialKeypoint.FacialKeypointType;
 
 /**
- * A class capable of finding likely facial keypoints using
- * a masked Haar cascade for each keypoint, and then picking
- * the best combination of points based on a model.
- * <p>
- * Implementation and data is based on Mark Everingham's
- * <a href="http://www.robots.ox.ac.uk/~vgg/research/nface/">Oxford VGG
- * Baseline Face Processing Code</a>
+ * 人脸关键点
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanggang
  */
 @Reference(type = ReferenceType.Inproceedings, author = { "Mark Everingham", "Josef Sivic", "Andrew Zisserman" }, title = "Hello! My name is... Buffy - Automatic naming of characters in TV video", year = "2006", booktitle = "In BMVC")
 public class FacialKeypointExtractor {
+
 	protected Model model;
 
-	/**
-	 * Construct a new facial keypoint extractor.
-	 */
 	public FacialKeypointExtractor() {
 		model = Model.DEFAULT_MODEL;
 	}
 
 	/**
-	 * Get the size of the face image that the keypoint extractor
-	 * can work with.
-	 * @return the size (both height and width)
+	 * 获取关键点提取器的工作范围
 	 */
 	public int getCanonicalImageDimension() {
 		return model.imgsize;
 	}
 
-	/**
-	 * Extract the facial keypoints from a canonical image.
-	 * The image must contain a face and have the dimensions
-	 * specified by {@link #getCanonicalImageDimension()}.
-	 *
-	 * @param canonicalImage the canonical image containing a detected face.
-	 * @return A list of facial keypoints for the image.
-	 */
 	public FacialKeypoint[] extractFacialKeypoints(FImage canonicalImage) {
 		SummedAreaTable sat = new SummedAreaTable(canonicalImage);
 
-		//run the haar cascade detector for each facial keypoint type
 		FImage[] AC = new FImage[9];
 		for (int i = 0; i < 9; i++) {
 			FImage map = MaskedHaarCascade.maskedHaarCascade(sat, model.winsize, model.winsize, model.part[i].HCas,
@@ -94,7 +46,6 @@ public class FacialKeypointExtractor {
 			AC[i] = map.multiplyInplace(-(float) model.appwt);
 		}
 
-		//and then fit the model to find the best keypoints
 		return findParts(AC);
 	}
 
@@ -190,9 +141,8 @@ public class FacialKeypointExtractor {
 	}
 
 	/**
-	 * A model of the positions of the parts of a face.
 	 *
-	 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+	 * 人脸布局模型
 	 *
 	 */
 	static class Model implements Serializable {
@@ -224,15 +174,14 @@ public class FacialKeypointExtractor {
 			private static final long serialVersionUID = 1L;
 
 			double[][] talpha;
-			int[][] HCas; //haar cascade
-			int[] bb; //bounding box
-			boolean[][] M; //mask
+			int[][] HCas; // haar cascade
+			int[] bb; // bounding box
+			boolean[][] M; // mask
 			FacialKeypointType type;
 		}
 
 		private static Model loadDefaultModel() {
 			try {
-				//TODO: could build a serialised version instead and load that
 				return buildDefaultModel();
 			} catch (IOException e) {
 				throw new RuntimeException(e);
@@ -257,7 +206,7 @@ public class FacialKeypointExtractor {
 
 			model.tree = new Tree[3];
 
-			//TREE 1
+			// TREE 1
 			model.tree[0] = new Tree();
 			model.tree[0].E = new double[][] { { 1, 2 }, { 2, 3 }, { 3, 4 }, { 2, 5 }, { 5, 6 }, { 6, 7 }, { 5, 8 },
 					{ 7, 9 } };
@@ -267,11 +216,17 @@ public class FacialKeypointExtractor {
 			model.tree[0].mix = 0.33;
 			model.tree[0].scale = new double[] { 0, 0.431203093871548, 0.484492467521240, 0.420546069849079,
 					0.200844044022372, 0.571191103033717, 0.546043956131382, 0.292395762807960, 0.275798316570445 };
-			model.tree[0].parent = new int[] { -1, 0, 1, 2, 1, 4, 5, 4, 6 }; //sub 1 from matlab
-			model.tree[0].children = new int[][] { { 1 }, { 2, 4 }, { 3 }, {}, { 5, 7 }, { 6 }, { 8 }, {}, {} }; //sub 1 from matlab
-			model.tree[0].depthorder = new int[] { 0, 1, 2, 4, 3, 5, 7, 6, 8 }; //sub 1 from matlab
+			model.tree[0].parent = new int[] { -1, 0, 1, 2, 1, 4, 5, 4, 6 }; // sub
+																				// 1
+																				// from
+																				// matlab
+			model.tree[0].children = new int[][] { { 1 }, { 2, 4 }, { 3 }, {}, { 5, 7 }, { 6 }, { 8 }, {}, {} }; // sub 1 from matlab
+			model.tree[0].depthorder = new int[] { 0, 1, 2, 4, 3, 5, 7, 6, 8 }; // sub
+																				// 1
+																				// from
+																				// matlab
 
-			//TREE 2
+			// TREE 2
 			model.tree[1] = new Tree();
 			model.tree[1].E = new double[][] { { 1, 2 }, { 2, 3 }, { 3, 4 }, { 3, 7 }, { 7, 6 }, { 6, 5 }, { 5, 8 },
 					{ 7, 9 } };
@@ -281,11 +236,17 @@ public class FacialKeypointExtractor {
 			model.tree[1].mix = 0.36;
 			model.tree[1].scale = new double[] { 0, 0.254045277312314, 0.270079620048070, 0.264406629463902,
 					0.243204625087956, 0.263998194617104, 0.150044711363897, 0.138952250832562, 0.124994774540550 };
-			model.tree[1].parent = new int[] { -1, 0, 1, 2, 5, 6, 2, 4, 6 }; //sub 1 from matlab
-			model.tree[1].children = new int[][] { { 1 }, { 2 }, { 3, 6 }, {}, { 7 }, { 4 }, { 5, 8 }, {}, {} }; //sub 1 from matlab
-			model.tree[1].depthorder = new int[] { 0, 1, 2, 3, 6, 5, 8, 4, 7 }; //sub 1 from matlab
+			model.tree[1].parent = new int[] { -1, 0, 1, 2, 5, 6, 2, 4, 6 }; // sub
+																				// 1
+																				// from
+																				// matlab
+			model.tree[1].children = new int[][] { { 1 }, { 2 }, { 3, 6 }, {}, { 7 }, { 4 }, { 5, 8 }, {}, {} }; // sub 1 from matlab
+			model.tree[1].depthorder = new int[] { 0, 1, 2, 3, 6, 5, 8, 4, 7 }; // sub
+																				// 1
+																				// from
+																				// matlab
 
-			//TREE 3
+			// TREE 3
 			model.tree[2] = new Tree();
 			model.tree[2].E = new double[][] { { 1, 2 }, { 2, 3 }, { 3, 4 }, { 2, 5 }, { 5, 6 }, { 6, 7 }, { 7, 9 },
 					{ 5, 8 } };
@@ -295,9 +256,15 @@ public class FacialKeypointExtractor {
 			model.tree[2].mix = 0.31;
 			model.tree[2].scale = new double[] { 0, 0.232309551084211, 0.256560908278279, 0.221946733311257,
 					0.132713563105743, 0.251186367002818, 0.200459108303263, 0.118167093811055, 0.128771977977574 };
-			model.tree[2].parent = new int[] { -1, 0, 1, 2, 1, 4, 5, 4, 6 }; //sub 1 from matlab
-			model.tree[2].children = new int[][] { { 1 }, { 2, 4 }, { 3 }, {}, { 5, 7 }, { 6 }, { 8 }, {}, {} }; //sub 1 from matlab
-			model.tree[2].depthorder = new int[] { 0, 1, 2, 4, 3, 5, 7, 6, 8 }; //sub 1 from matlab
+			model.tree[2].parent = new int[] { -1, 0, 1, 2, 1, 4, 5, 4, 6 }; // sub
+																				// 1
+																				// from
+																				// matlab
+			model.tree[2].children = new int[][] { { 1 }, { 2, 4 }, { 3 }, {}, { 5, 7 }, { 6 }, { 8 }, {}, {} }; // sub 1 from matlab
+			model.tree[2].depthorder = new int[] { 0, 1, 2, 4, 3, 5, 7, 6, 8 }; // sub
+																				// 1
+																				// from
+																				// matlab
 
 			return model;
 		}
@@ -363,7 +330,7 @@ public class FacialKeypointExtractor {
 	@Override
 	public int hashCode() {
 		int hashCode = HashCodeUtil.SEED;
-		//HashCodeUtil.hash(hashCode, this.model); //TODO: for now model is constant
 		return hashCode;
 	}
+
 }

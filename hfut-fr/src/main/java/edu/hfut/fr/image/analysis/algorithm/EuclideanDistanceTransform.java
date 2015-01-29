@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.analysis.algorithm;
 
 import java.io.File;
@@ -38,20 +9,15 @@ import org.openimaj.image.ImageUtilities;
 import org.openimaj.image.analyser.ImageAnalyser;
 
 /**
- * See http://people.cs.uchicago.edu/~pff/papers/dt.pdf
+ * 对灰度图像进行欧氏距离的变化
  *
- * An efficient euclidean distance transform applicable to all greyscale images. The distance of each pixel to the closest
- * valid pixel is given. In this case a pixel is considered valid when it is less than Float.MAX_VALUE.
- *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanghao
  */
 public class EuclideanDistanceTransform implements ImageAnalyser<FImage> {
+
 	FImage distances;
 	int[][] indices;
 
-	/* (non-Javadoc)
-	 * @see org.openimaj.image.analyser.ImageAnalyser#analyseImage(org.openimaj.image.Image)
-	 */
 	@Override
 	public void analyseImage(FImage image) {
 		if (distances == null || distances.height != image.height || distances.width != distances.height) {
@@ -63,15 +29,14 @@ public class EuclideanDistanceTransform implements ImageAnalyser<FImage> {
 	}
 
 	/**
-	 * @return the distance transformed image (unnormalised)
+	 *
+	 *  返回转化后的图像距离
+	 *
 	 */
 	public FImage getDistances() {
 		return distances;
 	}
 
-	/**
-	 * @return the indecies of the closest pixel to any given pixel
-	 */
 	public int[][] getIndices() {
 		return indices;
 	}
@@ -107,11 +72,7 @@ public class EuclideanDistanceTransform implements ImageAnalyser<FImage> {
 	}
 
 	/**
-	 * Calculate the squared euclidean distance transform of a binary image with
-	 * foreground pixels set to 1 and background set to 0.
-	 * @param image the image to be transformed.
-	 * @param distances the distance of each pixel to the closest 1-pixel
-	 * @param indices the index of the closes valid pixel
+	 * 计算二进制图像的平方欧氏距离
 	 */
 	public static void squaredEuclideanDistanceBinary(FImage image, FImage distances, int[][] indices) {
 		float[] f = new float[Math.max(image.height, image.width)];
@@ -145,15 +106,6 @@ public class EuclideanDistanceTransform implements ImageAnalyser<FImage> {
 		}
 	}
 
-	/**
-	 * The static function which underlies EuclideanDistanceTransform. Provide an image, fill distances and indices with
-	 * the distance image and the closest pixel indices. Typically, for the binary case, valid pixels are set to 0 and invalid
-	 * pixels are set to Float.MAX_VALUE or Float.POSITIVE_INFINITY.
-	 *
-	 * @param image the image to be transformed. Each pixel is considered valid except those of value Float.MAX_VALUE
-	 * @param distances the distance of each pixel to the closest non-Float.MAX_VALUE pixel
-	 * @param indices the index of the closes valid pixel
-	 */
 	public static void squaredEuclideanDistance(FImage image, FImage distances, int[][] indices) {
 		float[] f = new float[Math.max(image.height, image.width)];
 		float[] d = new float[f.length];
@@ -188,14 +140,11 @@ public class EuclideanDistanceTransform implements ImageAnalyser<FImage> {
 	}
 
 	/**
-	 * Test the distance transform
-	 * @param args
-	 * @throws IOException
+	 * 测试距离的转化
 	 */
 	public static void main(String args[]) throws IOException {
 		FImage i = ImageUtilities.readF(new File("/Users/ss/Desktop/tache.jpg"));
 		EuclideanDistanceTransform etrans = new EuclideanDistanceTransform();
-		//		i.processInplace(new CannyEdgeDetector());
 		i.inverse();
 		for (int x = 0; x < i.width; x++)
 			for (int y = 0; y < i.height; y++)
@@ -207,4 +156,5 @@ public class EuclideanDistanceTransform implements ImageAnalyser<FImage> {
 		i.normalise();
 		DisplayUtilities.display(i);
 	}
+
 }

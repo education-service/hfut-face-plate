@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.analysis.watershed;
 
 import java.util.HashSet;
@@ -39,34 +10,25 @@ import edu.hfut.fr.image.analysis.watershed.feature.ComponentFeature;
 import edu.hfut.fr.image.analysis.watershed.feature.PixelsFeature;
 
 /**
- * Represents a region or set of pixels (the name is based on the Microsoft
- * paper)
+ * 显示区域像素值
  *
- * @author David Dupplaw (dpd@ecs.soton.ac.uk)
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
+ * @author wanghao
  */
 public class Component implements Cloneable {
-	/** Whether this component represents an MSER */
+
+	/** 是否为MSER */
 	public boolean isMSER = false;
 
-	/** List of features representing this component */
+	/** 特征列表 */
 	public ComponentFeature[] features;
 
-	/**
-	 * The pivot pixel
-	 */
 	public IntValuePixel pivot;
 	private int size = 0;
 
 	/**
-	 * Default constructor.
-	 *
-	 * @param p
-	 *            The grey level of the component
-	 * @param featureClasses
-	 *            the list of features to create for the component
+	 * 默认构造函数
 	 */
+	@SuppressWarnings("unchecked")
 	public Component(IntValuePixel p, Class<? extends ComponentFeature>... featureClasses) {
 		this.pivot = p;
 
@@ -80,21 +42,13 @@ public class Component implements Cloneable {
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @see java.util.AbstractCollection#toString()
-	 */
 	@Override
 	public String toString() {
 		return "Comp@" + super.hashCode() + "(px:" + size + ",gl:" + pivot.value + ")";
 	};
 
 	/**
-	 * Add a pixel to the component
-	 *
-	 * @param p
-	 *            the pixel to add
+	 *增加像素值
 	 */
 	public void accumulate(IntValuePixel p) {
 		size++;
@@ -105,10 +59,7 @@ public class Component implements Cloneable {
 	}
 
 	/**
-	 * Merge another component with this one
-	 *
-	 * @param p
-	 *            the component to merge into this
+	 *合并区域
 	 */
 	public void merge(Component p) {
 		size += p.size();
@@ -119,20 +70,14 @@ public class Component implements Cloneable {
 	}
 
 	/**
-	 * The size of the component (i.e. the number of pixels)
-	 *
-	 * @return the size of the component
+	 *区域大小
 	 */
 	public int size() {
 		return size;
 	}
 
 	/**
-	 * Get the pixels in the component. If the component contains a
-	 * {@link PixelsFeature} then the pixels will be returned from that;
-	 * otherwise a set containing just the pivot pixel will be returned.
-	 *
-	 * @return the pixels in the component if possible, or just the pivot pixel
+	 *获得区域像素值
 	 */
 	public Set<Pixel> getPixels() {
 		for (final ComponentFeature f : features) {
@@ -154,8 +99,6 @@ public class Component implements Cloneable {
 			for (int i = 0; i < features.length; i++)
 				result.features[i] = features[i].clone();
 
-			// result.pixels = pixels.clone();
-
 			return result;
 		} catch (final CloneNotSupportedException e) {
 			throw new AssertionError(e);
@@ -163,11 +106,7 @@ public class Component implements Cloneable {
 	}
 
 	/**
-	 * Get the feature at the given index
-	 *
-	 * @param index
-	 *            the index
-	 * @return the feature at the given index or null if it doesn't exist
+	 *获得特征
 	 */
 	public ComponentFeature getFeature(int index) {
 		if (index >= features.length)
@@ -177,14 +116,7 @@ public class Component implements Cloneable {
 	}
 
 	/**
-	 * Get the feature matching the given class if it exists. If more than one
-	 * feature of the given class exists, then the first will be returned.
-	 *
-	 * @param <T>
-	 *            the class of the feature
-	 * @param featureClass
-	 *            the class of the feature
-	 * @return the feature with the given class; or null if no feature is found
+	 *获得特征匹配
 	 */
 	@SuppressWarnings("unchecked")
 	public <T extends ComponentFeature> T getFeature(Class<T> featureClass) {
@@ -194,4 +126,5 @@ public class Component implements Cloneable {
 
 		return null;
 	}
+
 }

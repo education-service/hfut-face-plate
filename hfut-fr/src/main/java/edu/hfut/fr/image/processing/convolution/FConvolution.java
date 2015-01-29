@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.convolution;
 
 import org.openimaj.image.FImage;
@@ -36,14 +7,13 @@ import org.openimaj.math.matrix.MatrixUtils;
 import Jama.SingularValueDecomposition;
 
 /**
- * Base class for implementation of classes that perform convolution operations
- * on @link{FImage}s as a @link{SinglebandImageProcessor}, with the kernel
- * itself formed from and @link{FImage}.
+ * 卷积操作基本类
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanghao
  */
 public class FConvolution implements SinglebandImageProcessor<Float, FImage> {
-	/** The kernel */
+
+	/** 内核 */
 	public FImage kernel;
 
 	private ConvolveMode mode;
@@ -136,22 +106,13 @@ public class FConvolution implements SinglebandImageProcessor<Float, FImage> {
 		}
 	}
 
-	/**
-	 * Construct the convolution operator with the given kernel
-	 *
-	 * @param kernel
-	 *            the kernel
-	 */
 	public FConvolution(FImage kernel) {
 		this.kernel = kernel;
 		setup(false);
 	}
 
 	/**
-	 * Construct the convolution operator with the given kernel
-	 *
-	 * @param kernel
-	 *            the kernel
+	 * 给定内核来构造卷积
 	 */
 	public FConvolution(float[][] kernel) {
 		this.kernel = new FImage(kernel);
@@ -159,10 +120,7 @@ public class FConvolution implements SinglebandImageProcessor<Float, FImage> {
 	}
 
 	/**
-	 * Set brute-force convolution; disables kernel separation and other
-	 * optimisations.
-	 *
-	 * @param brute
+	 * 设置暴力卷积
 	 */
 	public void setBruteForce(boolean brute) {
 		setup(brute);
@@ -186,28 +144,13 @@ public class FConvolution implements SinglebandImageProcessor<Float, FImage> {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.openimaj.image.processor.ImageProcessor#processImage(org.openimaj
-	 * .image.Image)
-	 */
 	@Override
 	public void processImage(FImage image) {
 		mode.convolve(image);
 	}
 
 	/**
-	 * Return the kernel response at the x,y in the given image.
-	 *
-	 * This method will throw an array index out of bounds if x,y requests
-	 * pixels outside the image bounds
-	 *
-	 * @param x
-	 * @param y
-	 * @param image
-	 * @return the kernel response at the given coordinates
+	 * 在给定x,y点返回内核
 	 */
 	public float responseAt(int x, int y, FImage image) {
 		float sum = 0;
@@ -226,4 +169,5 @@ public class FConvolution implements SinglebandImageProcessor<Float, FImage> {
 		}
 		return sum;
 	}
+
 }

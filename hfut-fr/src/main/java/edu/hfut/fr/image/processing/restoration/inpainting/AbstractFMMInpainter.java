@@ -14,40 +14,9 @@ import edu.hfut.fr.image.processing.morphology.Dilate;
 import edu.hfut.fr.image.processing.morphology.StructuringElement;
 
 /**
- * Abstract base class for inpainting algorithms based on the Fast Marching
- * Method (FMM) for selecting the order of pixels to paint.
- * <p>
- * FMM is used for computing the evolution of boundary moving in a direction
- * <i>normal</i> to itself. Formally, FMM approximates the solution to the <a
- * href="http://en.wikipedia.org/wiki/Eikonal_equation">Eikonal function</a>
- * using an <a href="http://en.wikipedia.org/wiki/Upwind_scheme">upwind
- * scheme<a>.
- * <p>
- * The core algorithm implemented by the {@link #performInpainting(Image)}
- * method follows these steps:
- * <ul>
- * <li>Extract the pixel with the smallest distance value (t) in the BAND
- * pixels.</li>
- * <li>Update its flag value as KNOWN.</li>
- * <li>March the boundary inwards by adding new points.</li>
- * <ul>
- * <li>If they are either UNKNOWN or BAND, compute its t value using the Eikonal
- * function for all the 4 quadrants.</li>
- * <li>If flag is UNKNOWN:</li>
- * <ul>
- * <li>Change it to BAND.</li>
- * <li>Inpaint the pixel.</li>
- * </ul>
- * <li>Select the min value and assign it as the t value of the pixel.</li>
- * <li>Insert this new value in the heap.</li> </ul> </ul>
- * <p>
- * The {@link #inpaint(int, int, Image)} method must be implemented by
- * subclasses to actually perform the inpainting operation
+ * 基于FMM算法的图像修复抽象
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
- * @param <IMAGE>
- *            The type of image that this processor can process
+ * @author wanghao
  */
 @SuppressWarnings("javadoc")
 @References(references = {
@@ -59,36 +28,19 @@ import edu.hfut.fr.image.processing.morphology.StructuringElement;
 				"1591", "", "1595" }) })
 public abstract class AbstractFMMInpainter<IMAGE extends Image<?, IMAGE> & SinglebandImageProcessor.Processable<Float, FImage, IMAGE>>
 		extends AbstractImageMaskInpainter<IMAGE> {
+
 	private static final int[][] DELTAS = new int[][] { { 0, -1 }, { -1, 0 }, { 0, 1 }, { 1, 0 } };
 
-	/**
-	 * Flag for pixels with a known value
-	 */
 	protected static byte KNOWN = 0;
 
-	/**
-	 * Flag for pixels on the boundary
-	 */
 	protected static byte BAND = 1;
 
-	/**
-	 * Flag for pixels with an unknown value
-	 */
 	protected static byte UNKNOWN = 2;
 
-	/**
-	 * The working flag image
-	 */
 	protected byte[][] flag;
 
-	/**
-	 * The space-time map (T)
-	 */
 	protected FImage timeMap;
 
-	/**
-	 * The working heap of pixels to process next
-	 */
 	protected PriorityQueue<FValuePixel> heap;
 
 	@Override
@@ -116,17 +68,7 @@ public abstract class AbstractFMMInpainter<IMAGE extends Image<?, IMAGE> & Singl
 	}
 
 	/**
-	 * Solve a step of the Eikonal equation.
-	 *
-	 * @param x1
-	 *            x-position of first pixel (diagonally adjacent to the second)
-	 * @param y1
-	 *            y-position of first pixel (diagonally adjacent to the second)
-	 * @param x2
-	 *            x-position of second pixel (diagonally adjacent to the first)
-	 * @param y2
-	 *            y-position of second pixel (diagonally adjacent to the first)
-	 * @return the time/distance value of the pixel at (x2, y1)
+	 * 解函数步骤
 	 */
 	protected float solveEikonalStep(int x1, int y1, int x2, int y2) {
 		float soln = Float.MAX_VALUE;
@@ -195,14 +137,8 @@ public abstract class AbstractFMMInpainter<IMAGE extends Image<?, IMAGE> & Singl
 	}
 
 	/**
-	 * Inpaint the specified pixel of the given image.
-	 *
-	 * @param x
-	 *            the x-ordinate of the pixel to paint
-	 * @param y
-	 *            the y-ordinate of the pixel to paint
-	 * @param image
-	 *            the image
+	 * 修复图像指定像素点
 	 */
 	protected abstract void inpaint(int x, int y, IMAGE image);
+
 }

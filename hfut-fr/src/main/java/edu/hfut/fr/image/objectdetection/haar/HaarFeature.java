@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.objectdetection.haar;
 
 import java.util.List;
@@ -37,18 +8,9 @@ import org.openimaj.citation.annotation.ReferenceType;
 import edu.hfut.fr.image.analysis.algorithm.SummedSqTiltAreaTable;
 
 /**
- * Class describing a Haar-like feature. The features are typically built from
- * two or three overlapping rectangles, and can represent edges, lines and
- * centre-surround features.
- * <p>
- * The response of applying the feature to a specific point on an image (with a
- * specific scaling) can be efficiently calculated using summed area tables.
- * <p>
- * Internally this implementation caches a scaled version of each rectangle for
- * a given detection scale.
+ * 描述haar特征类
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
+ * @author wanghao
  */
 @Reference(type = ReferenceType.Inproceedings, author = { "Viola, P.", "Jones, M." }, title = "Rapid object detection using a boosted cascade of simple features", year = "2001", booktitle = "Computer Vision and Pattern Recognition, 2001. CVPR 2001. Proceedings of the 2001 IEEE Computer Society Conference on", pages = {
 		" I", "511 ", " I", "518 vol.1" }, number = "", volume = "1", customData = {
@@ -56,8 +18,9 @@ import edu.hfut.fr.image.analysis.algorithm.SummedSqTiltAreaTable;
 		" AdaBoost; background regions; boosted simple feature cascade; classifiers; face detection; image processing; image representation; integral image; machine learning; object specific focus-of-attention mechanism; rapid object detection; real-time applications; statistical guarantees; visual object detection; feature extraction; image classification; image representation; learning (artificial intelligence); object detection;",
 		"doi", "10.1109/CVPR.2001.990517", "ISSN", "1063-6919 " })
 public abstract class HaarFeature {
+
 	/**
-	 * The rectangles that make up this feature.
+	 *特征矩阵范围
 	 */
 	public WeightedRectangle[] rects;
 
@@ -65,10 +28,7 @@ public abstract class HaarFeature {
 	protected WeightedRectangle[] cachedRects;
 
 	/**
-	 * Construct a new feature
-	 *
-	 * @param rects
-	 * @param correctionFactor
+	 * 构造新的特征
 	 */
 	private HaarFeature(WeightedRectangle[] rects, final float correctionFactor) {
 		this.rects = rects;
@@ -85,13 +45,7 @@ public abstract class HaarFeature {
 	}
 
 	/**
-	 * Set the current detection scale, setting up the internal caches
-	 * appropriately.
-	 *
-	 * @param scale
-	 *            the scale
-	 * @param invArea
-	 *            the inverse of the detector area
+	 *设置当前检维度
 	 */
 	public final void setScale(float scale, float invArea) {
 		double sum0 = 0;
@@ -184,18 +138,7 @@ public abstract class HaarFeature {
 	}
 
 	/**
-	 * Compute the response of this feature at the given location. The scale of
-	 * the feature must have previously been set through a call to
-	 * {@link #setScale(float, float)} (this is only required once per scale).
-	 *
-	 * @param sat
-	 *            the summed area table(s). If there are tilted features, then
-	 *            this must include the tilted SAT.
-	 * @param x
-	 *            the x-ordinate for the window being tested
-	 * @param y
-	 *            the y-ordinate for the window being tested
-	 * @return the response to the feature
+	 *检测给定区域的特征
 	 */
 	public abstract float computeResponse(SummedSqTiltAreaTable sat, int x, int y);
 
@@ -259,14 +202,7 @@ public abstract class HaarFeature {
 	}
 
 	/**
-	 * Create a feature from the given data. The specific type of feature
-	 * created depends on whether or not the feature is tilted.
-	 *
-	 * @param rectList
-	 *            the rectangles defining the feature
-	 * @param tilted
-	 *            is the feature tilted?
-	 * @return the new {@link HaarFeature} object.
+	 *通过给定数据创建特征
 	 */
 	public static HaarFeature create(List<WeightedRectangle> rectList, boolean tilted) {
 		final WeightedRectangle[] rects = rectList.toArray(new WeightedRectangle[rectList.size()]);
@@ -278,31 +214,7 @@ public abstract class HaarFeature {
 	}
 
 	/**
-	 * Construct a feature with the given parameters.
-	 *
-	 * @param tilted
-	 *            is the feature tilted?
-	 * @param x0
-	 *            x-ordinate of top-left of first rectangle
-	 * @param y0
-	 *            y-ordinate of top-left of first rectangle
-	 * @param w0
-	 *            width of first rectangle
-	 * @param h0
-	 *            height of first rectangle
-	 * @param wt0
-	 *            weight of first rectangle
-	 * @param x1
-	 *            x-ordinate of top-left of second rectangle
-	 * @param y1
-	 *            y-ordinate of top-left of second rectangle
-	 * @param w1
-	 *            width of second rectangle
-	 * @param h1
-	 *            height of second rectangle
-	 * @param wt1
-	 *            weight of second rectangle
-	 * @return the feature
+	 * 创建haar特征
 	 */
 	public static HaarFeature create(boolean tilted, int x0, int y0, int w0, int h0, float wt0, int x1, int y1, int w1,
 			int h1, float wt1) {
@@ -313,43 +225,6 @@ public abstract class HaarFeature {
 		return tilted ? new TiltedFeature(rects) : new NormalFeature(rects);
 	}
 
-	/**
-	 * Construct a feature with the given parameters.
-	 *
-	 * @param tilted
-	 *            is the feature tilted?
-	 * @param x0
-	 *            x-ordinate of top-left of first rectangle
-	 * @param y0
-	 *            y-ordinate of top-left of first rectangle
-	 * @param w0
-	 *            width of first rectangle
-	 * @param h0
-	 *            height of first rectangle
-	 * @param wt0
-	 *            weight of first rectangle
-	 * @param x1
-	 *            x-ordinate of top-left of second rectangle
-	 * @param y1
-	 *            y-ordinate of top-left of second rectangle
-	 * @param w1
-	 *            width of second rectangle
-	 * @param h1
-	 *            height of second rectangle
-	 * @param wt1
-	 *            weight of second rectangle
-	 * @param x2
-	 *            x-ordinate of top-left of third rectangle
-	 * @param y2
-	 *            y-ordinate of top-left of third rectangle
-	 * @param w2
-	 *            width of third rectangle
-	 * @param h2
-	 *            height of third rectangle
-	 * @param wt2
-	 *            weight of third rectangle
-	 * @return the feature
-	 */
 	public static HaarFeature create(boolean tilted, int x0, int y0, int w0, int h0, float wt0, int x1, int y1, int w1,
 			int h1, float wt1, int x2, int y2, int w2, int h2, float wt2) {
 		final WeightedRectangle[] rects = new WeightedRectangle[3];
@@ -359,4 +234,5 @@ public abstract class HaarFeature {
 
 		return tilted ? new TiltedFeature(rects) : new NormalFeature(rects);
 	}
+
 }

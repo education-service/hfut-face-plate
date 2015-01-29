@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.morphology;
 
 import java.util.Arrays;
@@ -36,30 +7,18 @@ import java.util.Set;
 import org.openimaj.image.pixel.Pixel;
 
 /**
- * Morphological structuring element
+ * 机构化组件
  *
- * The central element is the pixel 0,0. Other s.e. pixels are relative to this.
- *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
+ * @author Jimbo
  */
 public class StructuringElement {
-	/**
-	 * Standard 3x3 box structuring element
-	 */
+
 	public final static StructuringElement BOX;
 
-	/**
-	 * Standard 3x3 cross structuring element
-	 */
 	public final static StructuringElement CROSS;
 
-	/**
-	 * Standard horizontal pit structuring element [x . x]
-	 */
 	public final static StructuringElement HPIT;
 
-	// build the elements
 	static {
 		BOX = new StructuringElement();
 		BOX.positive.add(new Pixel(-1, -1));
@@ -84,31 +43,16 @@ public class StructuringElement {
 		HPIT.positive.add(new Pixel(1, 0));
 	}
 
-	/**
-	 * Set of positive pixels in the structuring element
-	 */
 	public Set<Pixel> positive = new HashSet<Pixel>();
 
-	/**
-	 * Set of negative pixels in the structuring element
-	 */
 	public Set<Pixel> negative = new HashSet<Pixel>();
 
-	/**
-	 * Construct an empty structuring element
-	 */
 	public StructuringElement() {
 
 	}
 
 	/**
-	 * Construct a structuring element with the given positive and negative
-	 * pixels
-	 *
-	 * @param positive
-	 *            the positive pixels
-	 * @param negative
-	 *            the negative pixels
+	 * 结构化组件的构造函数
 	 */
 	public StructuringElement(Set<Pixel> positive, Set<Pixel> negative) {
 		if (positive != null)
@@ -118,13 +62,7 @@ public class StructuringElement {
 	}
 
 	/**
-	 * Construct a structuring element with the given positive and negative
-	 * pixels
-	 *
-	 * @param positive
-	 *            the positive pixels
-	 * @param negative
-	 *            the negative pixels
+	 * 结构化组件的构造函数
 	 */
 	public StructuringElement(Pixel[] positive, Pixel[] negative) {
 		if (positive != null)
@@ -134,9 +72,7 @@ public class StructuringElement {
 	}
 
 	/**
-	 * Get the size of the structuring element in the form [width, height, x, y]
-	 *
-	 * @return the size of the structuring element
+	 * 获取结构话组件的大小
 	 */
 	public int[] size() {
 		int xmin = Integer.MAX_VALUE;
@@ -169,18 +105,7 @@ public class StructuringElement {
 	}
 
 	/**
-	 * Construct a structuring element from a @link{String} of the form produced
-	 * by @link{#toString()}.
-	 *
-	 * @see #toString()
-	 *
-	 * @param ele
-	 *            the string defining the element
-	 * @param cx
-	 *            the top-left x-coordinate
-	 * @param cy
-	 *            the top-left y-coordinate
-	 * @return a new structuring element
+	 * 获取结构化组件
 	 */
 	public static StructuringElement parseElement(String ele, int cx, int cy) {
 		final String[] lines = ele.split("\\n");
@@ -227,24 +152,16 @@ public class StructuringElement {
 	}
 
 	/**
-	 * Determine if this structuring element is completely contained in the
-	 * pixels centered at p.
+	 * 确定测量位置
 	 *
-	 * @param p
-	 *            the centre
-	 * @param pixels
-	 *            the pixels
-	 * @return true if completely contained, false otherwise
 	 */
 	public boolean matches(Pixel p, Set<Pixel> pixels) {
-		// is the s.e completely contained in the pixels centered at p?
 		return (intersect(p, pixels).size() == countActive());
 	}
 
 	Set<Pixel> intersect(Pixel p, Set<Pixel> pixels) {
 		final Set<Pixel> intersect = new HashSet<Pixel>();
 
-		// positive
 		for (final Pixel sep : positive) {
 			final Pixel imp = new Pixel(p.x + sep.x, p.y + sep.y);
 
@@ -252,7 +169,6 @@ public class StructuringElement {
 				intersect.add(imp);
 		}
 
-		// negative
 		for (final Pixel sep : negative) {
 			final Pixel imp = new Pixel(p.x + sep.x, p.y + sep.y);
 
@@ -264,21 +180,17 @@ public class StructuringElement {
 	}
 
 	/**
-	 * Count the total (positive and negative) number of pixels in this
-	 * structuring element
+	 * 计算结构化组件的像素个数
 	 *
-	 * @return the total number of pixels
 	 */
 	public int countActive() {
 		return positive.size() + negative.size();
 	}
 
 	/**
-	 * Build a disk shaped structuring element with the given radius.
+	 * 根据给定的半径建立圆状的结构化组件
 	 *
-	 * @param radius
-	 *            the disk radius
-	 * @return the disk shaped S.E.
+	 *
 	 */
 	public static StructuringElement disk(int radius) {
 		final StructuringElement se = new StructuringElement();
@@ -295,4 +207,5 @@ public class StructuringElement {
 
 		return se;
 	}
+
 }

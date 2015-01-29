@@ -2,8 +2,6 @@ package edu.hfut.fr.image.processing.restoration.inpainting;
 
 import java.util.Set;
 
-import org.openimaj.citation.annotation.Reference;
-import org.openimaj.citation.annotation.ReferenceType;
 import org.openimaj.image.FImage;
 import org.openimaj.image.Image;
 import org.openimaj.image.MBFImage;
@@ -13,31 +11,17 @@ import org.openimaj.image.processor.SinglebandImageProcessor;
 import edu.hfut.fr.image.processing.morphology.StructuringElement;
 
 /**
- * Implementation of Alexandru Telea's FMM-based inpainting algorithm. The
- * {@link AbstractFMMInpainter} is extended with a method to inpaint pixels
- * based on the neighbours and explicitly taking into account the image
- * gradients in the neighbourhood in order to preserve sharp details and smooth
- * zones.
+ * 基于 FMM-based 的图像修复算法
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
- * @param <IMAGE>
- *            The type of image that this processor can process
+ * @author wanghao
  */
-@Reference(type = ReferenceType.Article, author = { "Telea, Alexandru" }, title = "An Image Inpainting Technique Based on the Fast Marching Method.", year = "2004", journal = "J. Graphics, GPU, & Game Tools", pages = {
-		"23", "34" }, url = "http://dblp.uni-trier.de/db/journals/jgtools/jgtools9.html#Telea04", number = "1", volume = "9", customData = {
-		"biburl", "http://www.bibsonomy.org/bibtex/2b0bf54e265d011a8e1fe256e6fcf556b/dblp", "doi",
-		"http://dx.doi.org/10.1080/10867651.2004.10487596", "keywords", "dblp" })
 public class TeleaInpainting<IMAGE extends Image<?, IMAGE> & SinglebandImageProcessor.Processable<Float, FImage, IMAGE>>
 		extends AbstractFMMInpainter<IMAGE> {
+
 	protected Set<Pixel> region;
 
 	/**
-	 * Construct the inpainting operator with the given radius.
-	 *
-	 * @param radius
-	 *            the radius for selecting how many pixels are used to make
-	 *            estimates.
+	 * 构造函数
 	 */
 	public TeleaInpainting(int radius) {
 		region = StructuringElement.disk(radius).positive;
@@ -74,13 +58,10 @@ public class TeleaInpainting<IMAGE extends Image<?, IMAGE> & SinglebandImageProc
 			final int rx = x - xx;
 			final int ry = y - yy;
 
-			// geometric distance.
 			final float geometricDistance = (float) (1. / ((rx * rx + ry * ry) * Math.sqrt((rx * rx + ry * ry))));
 
-			// levelset distance.
 			final float levelsetDistance = (float) (1. / (1 + Math.abs(timeMap.pixels[yy][xx] - timeMap.pixels[y][x])));
 
-			// Dot product of final displacement and gradient vectors.
 			float direction = Math.abs(rx * gradx_u + ry * grady_u);
 			if (direction < 0.000001f)
 				direction = 0.000001f;
@@ -116,13 +97,10 @@ public class TeleaInpainting<IMAGE extends Image<?, IMAGE> & SinglebandImageProc
 			final int rx = x - xx;
 			final int ry = y - yy;
 
-			// geometric distance.
 			final float geometricDistance = (float) (1. / ((rx * rx + ry * ry) * Math.sqrt((rx * rx + ry * ry))));
 
-			// levelset distance.
 			final float levelsetDistance = (float) (1. / (1 + Math.abs(timeMap.pixels[yy][xx] - timeMap.pixels[y][x])));
 
-			// Dot product of final displacement and gradient vectors.
 			float direction = Math.abs(rx * gradx_u + ry * grady_u);
 			if (direction < 0.000001f)
 				direction = 0.000001f;
@@ -173,4 +151,5 @@ public class TeleaInpainting<IMAGE extends Image<?, IMAGE> & SinglebandImageProc
 
 		return grad;
 	}
+
 }

@@ -1,4 +1,4 @@
-package edu.hfut.fr.run;
+package edu.hfut.fr.driver.run;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,13 +13,19 @@ import edu.hfut.fr.image.processing.face.detection.CCDetectedFace;
 import edu.hfut.fr.image.processing.face.detection.FaceDetector;
 import edu.hfut.fr.image.processing.face.detection.SandeepFaceDetector;
 
+/**
+ * Sandeep人脸检测示例
+ *
+ * @author wanggang
+ *
+ */
 public class SandeepFaceDetectorDemo {
 
 	public static void main(String[] args) throws IOException {
 		MBFImage colorImage = ImageUtilities.readMBF(new File("faces_test/mayun.jpg")); // mayun
 		//		DisplayUtilities.display(colorImage);
 
-		FaceDetector<CCDetectedFace, MBFImage> faceDetector = new SandeepFaceDetector(); // 需要传入皮肤模型才行
+		FaceDetector<CCDetectedFace, MBFImage> faceDetector = new SandeepFaceDetector(null); // 需要传入皮肤模型才行
 		List<CCDetectedFace> faces = faceDetector.detectFaces(colorImage);
 		for (CCDetectedFace face : faces) {
 			colorImage.drawShape(face.getBounds(), RGBColour.RED);

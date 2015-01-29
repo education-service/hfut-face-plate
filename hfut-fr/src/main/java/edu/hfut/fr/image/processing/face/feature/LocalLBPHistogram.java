@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.face.feature;
 
 import java.io.DataInput;
@@ -45,22 +16,12 @@ import edu.hfut.fr.image.processing.face.alignment.IdentityAligner;
 import edu.hfut.fr.image.processing.face.detection.DetectedFace;
 
 /**
- * A {@link FacialFeature} built from decomposing the face image into
- * (non-overlapping) blocks and building histograms of the
- * {@link ExtendedLocalBinaryPattern}s for each block and then concatenating to
- * form the final feature.
+ * 局部LBPH特征
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanggang
  */
 public class LocalLBPHistogram implements FacialFeature, FeatureVectorProvider<FloatFV> {
-	/**
-	 * A {@link FacialFeatureExtractor} for building {@link LocalLBPHistogram}s.
-	 *
-	 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
-	 *
-	 * @param <T>
-	 *            Type of {@link DetectedFace}.
-	 */
+
 	public static class Extractor<T extends DetectedFace> implements FacialFeatureExtractor<LocalLBPHistogram, T> {
 		FaceAligner<T> aligner;
 		int blocksX = 25;
@@ -68,41 +29,14 @@ public class LocalLBPHistogram implements FacialFeature, FeatureVectorProvider<F
 		int samples = 8;
 		int radius = 1;
 
-		/**
-		 * Construct with a {@link IdentityAligner}
-		 */
 		public Extractor() {
 			this.aligner = new IdentityAligner<T>();
 		}
 
-		/**
-		 * Construct with the given aligner.
-		 *
-		 * @param aligner
-		 *            the aligner
-		 */
 		public Extractor(FaceAligner<T> aligner) {
 			this.aligner = aligner;
 		}
 
-		/**
-		 * Construct with the given aligner, parameters describing how the image
-		 * is broken into blocks and parameters describing the radius of the LBP
-		 * extraction circle, and how many samples are made.
-		 *
-		 * @param aligner
-		 *            The face aligner
-		 * @param blocksX
-		 *            The number of blocks in the x-direction
-		 * @param blocksY
-		 *            The number of blocks in the y-direction
-		 * @param samples
-		 *            The number of samples around the circle for the
-		 *            {@link ExtendedLocalBinaryPattern}
-		 * @param radius
-		 *            the radius used for the {@link ExtendedLocalBinaryPattern}
-		 *            .
-		 */
 		public Extractor(FaceAligner<T> aligner, int blocksX, int blocksY, int samples, int radius) {
 			this.aligner = aligner;
 			this.blocksX = blocksX;
@@ -169,7 +103,7 @@ public class LocalLBPHistogram implements FacialFeature, FeatureVectorProvider<F
 		final int by = face.height / blocksY;
 		histograms = new float[blocksY][blocksX][maps.length];
 
-		// build histogram
+		// 建立直方图
 		for (int p = 0; p < maps.length; p++) {
 			for (int y = 0; y < blocksY; y++) {
 				for (int x = 0; x < blocksX; x++) {
@@ -184,7 +118,7 @@ public class LocalLBPHistogram implements FacialFeature, FeatureVectorProvider<F
 			}
 		}
 
-		// normalise
+		// 标准化
 		for (int y = 0; y < blocksY; y++) {
 			for (int x = 0; x < blocksX; x++) {
 				float count = 0;
@@ -259,4 +193,5 @@ public class LocalLBPHistogram implements FacialFeature, FeatureVectorProvider<F
 
 		return featureVector;
 	}
+
 }

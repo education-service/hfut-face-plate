@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.analysis.pyramid;
 
 import java.lang.reflect.Array;
@@ -44,49 +15,29 @@ import edu.hfut.fr.image.processing.convolution.FGaussianConvolve;
 import edu.hfut.fr.image.processing.resize.BilinearInterpolation;
 
 /**
- * A simple image pyramid built as a stack of images. For convenience, when
- * applied to an image as an {@link ImageProcessor}, the last level of the
- * pyramid will be assigned to the input image.
+ * 由一系列图片所构成的简单金字塔类实现
  *
- * {@link SimplePyramid}s also allow you to specify a processor that is applied
- * between levels. For example, a Gaussian blur could be applied to make a
- * Gaussian pyramid.
- *
- * SimplePyramids are @link{Iterable}, so you can iterate over the levels.
- *
- * @author Sina Samangooei (ss@ecs.soton.ac.uk)
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
- * @param <IMAGE>
- *            the underlying image type
+ * @author  wanggang
  */
 public class SimplePyramid<IMAGE extends Image<?, IMAGE> & SinglebandImageProcessor.Processable<Float, FImage, IMAGE>>
 		implements ImageAnalyser<IMAGE>, ImageProcessor<IMAGE>, Iterable<IMAGE> {
+
 	/**
-	 * The images forming the pyramid
+	*  构建金字塔类所需要的类
 	 */
 	public IMAGE[] pyramid;
 
 	Processor<IMAGE> processor = null;
 
-	/**
-	 * The factor by which each level changes in size. Numbers >1 imply
-	 * shrinking between levels.
-	 */
 	float power;
 
 	/**
-	 * The number
+	 * 数量
 	 */
 	int nlevels;
 
 	/**
-	 * Construct a pyramid with the given scale factor. The number of levels is
-	 * such that the lowest level of the pyramid is a minimum of 8 pixels on its
-	 * shortest side.
-	 *
-	 * @param power
-	 *            scale factor between levels
+	 *通过给定的标定因子来构建金字塔
 	 */
 	public SimplePyramid(float power) {
 		this.power = power;
@@ -94,33 +45,13 @@ public class SimplePyramid<IMAGE extends Image<?, IMAGE> & SinglebandImageProces
 	}
 
 	/**
-	 * Construct a pyramid with the given scale factor and number of levels. If
-	 * the number of levels is zero or less, then the actual number of levels
-	 * will be calculated dynamically so the shortest side of the bottom level
-	 * has at least 8 pixels.
-	 *
-	 * @param power
-	 *            scale factor between levels
-	 * @param nlevels
-	 *            number of levels
+	 *通过标定因子和级别的数量来构建金字塔类
 	 */
 	public SimplePyramid(float power, int nlevels) {
 		this.power = power;
 		this.nlevels = nlevels;
 	}
 
-	/**
-	 * Construct a pyramid with the given scale factor. The number of levels is
-	 * such that the lowest level of the pyramid is a minimum of 8 pixels on its
-	 * shortest side.
-	 *
-	 * The processor will be applied before subsampling occurs.
-	 *
-	 * @param power
-	 *            scale factor between levels
-	 * @param processor
-	 *            a processor to apply before subsampling
-	 */
 	public SimplePyramid(float power, Processor<IMAGE> processor) {
 		this.power = power;
 		this.nlevels = -1;
@@ -128,19 +59,7 @@ public class SimplePyramid<IMAGE extends Image<?, IMAGE> & SinglebandImageProces
 	}
 
 	/**
-	 * Construct a pyramid with the given scale factor and number of levels. If
-	 * the number of levels is zero or less, then the actual number of levels
-	 * will be calculated dynamically so the shortest side of the bottom level
-	 * has at least 8 pixels.
-	 *
-	 * The processor will be applied before subsampling occurs.
-	 *
-	 * @param power
-	 *            scale factor between levels
-	 * @param nlevels
-	 *            number of levels
-	 * @param processor
-	 *            a processor to apply before subsampling
+	 * 对应不同参数的金字塔类的构造
 	 */
 	public SimplePyramid(float power, int nlevels, Processor<IMAGE> processor) {
 		this.power = power;
@@ -148,13 +67,6 @@ public class SimplePyramid<IMAGE extends Image<?, IMAGE> & SinglebandImageProces
 		this.processor = processor;
 	}
 
-	/**
-	 * compute the number of levels such that the minimum size is at least 8.
-	 *
-	 * @param size
-	 *            size
-	 * @return number of levels
-	 */
 	protected int computeLevels(int size) {
 		int levels = 1;
 		while (true) {
@@ -169,13 +81,6 @@ public class SimplePyramid<IMAGE extends Image<?, IMAGE> & SinglebandImageProces
 		return levels;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.openimaj.image.analyser.ImageAnalyser#analyseImage(org.openimaj.image
-	 * .Image)
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void analyseImage(IMAGE image) {
@@ -193,13 +98,6 @@ public class SimplePyramid<IMAGE extends Image<?, IMAGE> & SinglebandImageProces
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.openimaj.image.processor.ImageProcessor#processImage(org.openimaj
-	 * .image.Image)
-	 */
 	@Override
 	public void processImage(IMAGE image) {
 		analyseImage(image);
@@ -211,27 +109,13 @@ public class SimplePyramid<IMAGE extends Image<?, IMAGE> & SinglebandImageProces
 		return new ArrayIterator<IMAGE>(pyramid);
 	}
 
-	/**
-	 * Convenience method to create a gaussian pyramid from an image. There is a
-	 * fixed number of levels with powers of two between levels.
-	 *
-	 * @param <T>
-	 *            The type of image
-	 * @param image
-	 *            the image
-	 * @param sigma
-	 *            the amount of blurring
-	 * @param nLevels
-	 *            the number of levels
-	 * @return the pyramid
-	 */
 	public static <T extends Image<?, T> & SinglebandImageProcessor.Processable<Float, FImage, T>> SimplePyramid<T> createGaussianPyramid(
 			T image, float sigma, int nLevels) {
 		@SuppressWarnings("unchecked")
-		// work around compiler issue
 		final SimplePyramid<T> pyr = new SimplePyramid<T>(2f, nLevels, (Processor<T>) (new FGaussianConvolve(sigma)));
 
 		image.analyseWith(pyr);
 		return pyr;
 	}
+
 }

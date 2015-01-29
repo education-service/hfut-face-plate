@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.face.feature.comparison;
 
 import java.io.DataInput;
@@ -61,47 +32,30 @@ import gov.sandia.cognition.statistics.distribution.MapBasedDataHistogram;
 import gov.sandia.cognition.statistics.distribution.UnivariateGaussian.PDF;
 
 /**
- * A {@link FacialFeatureComparator} for comparing {@link DoGSIFTFeature}s.
+ * 基于DoGSIFTF特征的比较器
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ *@author jimbo
  */
 @Reference(type = ReferenceType.Inproceedings, author = { "Ozkan, Derya", "Duygulu, Pinar" }, title = "Finding people frequently appearing in news", year = "2006", booktitle = "Proceedings of the 5th international conference on Image and Video Retrieval", pages = {
 		"173", "", "182" }, url = "http://dx.doi.org/10.1007/11788034_18", publisher = "Springer-Verlag", series = "CIVR'06", customData = {
 		"isbn", "3-540-36018-2, 978-3-540-36018-6", "location", "Tempe, AZ", "numpages", "10", "doi",
 		"10.1007/11788034_18", "acmid", "2164555", "address", "Berlin, Heidelberg" })
 public class DoGSIFTFeatureComparator implements FacialFeatureComparator<DoGSIFTFeature> {
+
 	@Override
 	public void readBinary(DataInput in) throws IOException {
-		// Do nothing
 	}
 
 	@Override
 	public byte[] binaryHeader() {
-		// Do nothing
 		return null;
 	}
 
 	@Override
 	public void writeBinary(DataOutput out) throws IOException {
-		// Do nothing
 	}
 
-	/**
-	 * Build a DistanceCheck for the spatial layout of matching normalised
-	 * facial features. The parameters for the default model were learned using
-	 * naive bayes on the spatial distances. The default model was trained on
-	 * 4128 manually annotated match pairs.
-	 *
-	 * @return the default DistanceCheck
-	 */
 	public static ModelDistanceCheck buildDefaultDistanceCheck() {
-		// Class distributions:
-		// {false=Mean: 0.4461058073589149 Variance: 0.04829317710091845,
-		// true=Mean: 0.029852218270328083 Variance: 0.003255709240977441}
-		// Class priors:
-		// Histogram has 2 domain objects and 4128 total count:
-		// true: 3380 (0.8187984496124031)
-		// false: 748 (0.1812015503875969)
 
 		final DataHistogram<Boolean> priors = new MapBasedDataHistogram<Boolean>();
 		priors.add(true, 3380);
@@ -160,4 +114,5 @@ public class DoGSIFTFeatureComparator implements FacialFeatureComparator<DoGSIFT
 	public boolean isDistance() {
 		return true;
 	}
+
 }

@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.analysis.algorithm;
 
 import org.openimaj.image.FImage;
@@ -34,52 +5,29 @@ import org.openimaj.image.analyser.ImageAnalyser;
 import org.openimaj.math.util.Interpolation;
 
 /**
- * An {@link ImageAnalyser} that can provide interpolate pixel values using a
- * variety of interpolation approaches.
+ * 提供预测像素值的差值方法
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
+ * @author  wanggang
  */
 public class ImageInterpolation implements ImageAnalyser<FImage> {
-	/**
-	 * Interface defining an object capable of performing pixel interpolation
-	 *
-	 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
-	 *
-	 */
+
 	public static interface Interpolator {
 		/**
-		 * Interpolate a pixel value
+		 *  插入一个像素值
 		 *
-		 * @param x
-		 *            the x-ordinate
-		 * @param y
-		 *            the y-ordinate
-		 * @param image
-		 *            the image
-		 * @param workingSpace
-		 *            the working space required
-		 * @return the interpolated pixel value
 		 */
 		public float interpolate(float x, float y, FImage image, Object workingSpace);
 
-		/**
-		 * Create the working space required for interpolation
-		 *
-		 * @return the working space (can be <code>null</code>)
-		 */
 		public Object createWorkingSpace();
 	}
 
 	/**
-	 * Standard interpolation types.
-	 *
-	 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+	 * 标准的插入类型
 	 *
 	 */
 	public static enum InterpolationType implements Interpolator {
 		/**
-		 * Nearest neighbour interpolation
+		 * 最邻近插值法
 		 */
 		NEAREST_NEIGHBOUR {
 			@Override
@@ -99,7 +47,7 @@ public class ImageInterpolation implements ImageAnalyser<FImage> {
 			}
 		},
 		/**
-		 * Bilinear interpolation
+		 * 双线性插值法
 		 */
 		BILINEAR {
 			@Override
@@ -113,7 +61,7 @@ public class ImageInterpolation implements ImageAnalyser<FImage> {
 			}
 		},
 		/**
-		 * Bicubic interpolation
+		 * 双三次插值法
 		 */
 		BICUBIC {
 			@Override
@@ -151,10 +99,8 @@ public class ImageInterpolation implements ImageAnalyser<FImage> {
 	protected FImage image;
 
 	/**
-	 * Default constructor.
+	 * 默认构造函数
 	 *
-	 * @param interpolator
-	 *            the interpolator to use
 	 */
 	public ImageInterpolation(Interpolator interpolator) {
 		this.interpolator = interpolator;
@@ -168,14 +114,10 @@ public class ImageInterpolation implements ImageAnalyser<FImage> {
 
 	/**
 	 * Get the interpolated pixel value of the previously analysed image
-	 *
-	 * @param x
-	 *            the x-ordinate
-	 * @param y
-	 *            the y-ordinate
-	 * @return the interpolated pixel value
+	 * 根据先前的图像得到差值数据
 	 */
 	public float getPixelInterpolated(float x, float y) {
 		return interpolator.interpolate(x, y, image, workingSpace);
 	}
+
 }

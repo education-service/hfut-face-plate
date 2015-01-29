@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.analysis.pyramid.gaussian;
 
 import org.openimaj.image.FImage;
@@ -37,58 +8,42 @@ import edu.hfut.fr.image.analysis.pyramid.PyramidOptions;
 import edu.hfut.fr.image.processing.convolution.FGaussianConvolve;
 
 /**
- * Options for constructing a Gaussian pyramid in the style of Lowe's SIFT
- * paper.
+ * 高斯金字塔参数类
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
- * @param <IMAGE>
- *            type of underlying image.
+ * @author wanghao
  */
 public class GaussianPyramidOptions<IMAGE extends Image<?, IMAGE> & SinglebandImageProcessor.Processable<Float, FImage, IMAGE>>
 		extends PyramidOptions<GaussianOctave<IMAGE>, IMAGE> {
+
 	/**
-	 * Number of pixels of border for processors to ignore. Also used in
-	 * calculating the minimum image size for the last octave.
+	 * 宽度像素大小
 	 */
 	protected int borderPixels = 5;
 
-	/**
-	 * Should the starting image of the pyramid be stretched to twice its size?
-	 */
 	protected boolean doubleInitialImage = true;
 
-	/**
-	 * The number of extra scale steps taken beyond scales.
-	 */
-	protected int extraScaleSteps = 2; // number of extra steps to take beyond
-										// doubling sigma
+	protected int extraScaleSteps = 2;
 
 	/**
-	 * Assumed initial scale of the first image in each octave. For SIFT, Lowe
-	 * suggested 1.6 (for optimal repeatability; see Lowe's IJCV paper, P.10).
+	 * 每个octave第一幅图片的初始sigma的值
 	 */
 	protected float initialSigma = 1.6f;
 
 	/**
-	 * The number of scales in this octave minus extraScaleSteps. Levels are
-	 * constructed so that level[scales] has twice the sigma of level[0].
+	 * 尺度数
 	 */
 	protected int scales = 3;
 
 	/**
-	 * Default constructor.
+	 * 默认构造函数
 	 */
 	public GaussianPyramidOptions() {
 
 	}
 
 	/**
-	 * Construct the pyramid options by copying the non-processor options from
-	 * the given options object.
-	 *
+	 *构造高斯金字塔
 	 * @param options
-	 *            options to copy from
 	 */
 	public GaussianPyramidOptions(GaussianPyramidOptions<?> options) {
 		this.borderPixels = options.borderPixels;
@@ -100,29 +55,23 @@ public class GaussianPyramidOptions<IMAGE extends Image<?, IMAGE> & SinglebandIm
 	}
 
 	/**
-	 * Get the number of pixels used for a border that processors shouldn't
-	 * touch.
+	 * 得到宽度像素值
 	 *
-	 * @return number of border pixels.
 	 */
 	public int getBorderPixels() {
 		return borderPixels;
 	}
 
 	/**
-	 * Get the number of extra scale steps taken beyond scales.
+	 *得到扩张尺度
 	 *
-	 * @see #getScales()
-	 *
-	 * @return the extraScaleSteps
 	 */
 	public int getExtraScaleSteps() {
 		return extraScaleSteps;
 	}
 
 	/**
-	 * Get the assumed initial scale of the first image in each octave.
-	 *
+	 *获得初始化sigma值
 	 * @return the initialSigma
 	 */
 	public float getInitialSigma() {
@@ -130,32 +79,20 @@ public class GaussianPyramidOptions<IMAGE extends Image<?, IMAGE> & SinglebandIm
 	}
 
 	/**
-	 * Get the number of scales in this octave minus extraScaleSteps. Levels of
-	 * each octave are constructed so that level[scales] has twice the sigma of
-	 * level[0].
-	 *
+	 *获得尺度
 	 * @return the scales
 	 */
 	public int getScales() {
 		return scales;
 	}
 
-	/**
-	 * Should the starting image of the pyramid be stretched to twice its size?
-	 *
-	 * @return the doubleInitialImage
-	 */
 	public boolean isDoubleInitialImage() {
 		return doubleInitialImage;
 	}
 
 	/**
-	 * Set the number of pixels used for a border that processors shouldn't
-	 * touch. Also affects the minimum image size for the last octave, which
-	 * must be at least 2 + 2*borderPixels.
-	 *
+	 *设置宽度像素值
 	 * @param borderPixels
-	 *            number of pixels to leave as border
 	 */
 	public void setBorderPixels(int borderPixels) {
 		if (borderPixels < 2)
@@ -164,63 +101,45 @@ public class GaussianPyramidOptions<IMAGE extends Image<?, IMAGE> & SinglebandIm
 	}
 
 	/**
-	 * Set whether starting image of the pyramid be stretched to twice its size?
-	 *
+	 *设置两个初始对象
 	 * @param doubleInitialImage
-	 *            the doubleInitialImage to set
 	 */
 	public void setDoubleInitialImage(boolean doubleInitialImage) {
 		this.doubleInitialImage = doubleInitialImage;
 	}
 
 	/**
-	 * Set the number of extra scale steps taken beyond scales.
+	 *设置扩展尺度步数
+	/**
 	 *
-	 * @see #setScales(int)
-	 *
-	 * @param extraScaleSteps
-	 *            the extraScaleSteps to set
 	 */
 	public void setExtraScaleSteps(int extraScaleSteps) {
 		this.extraScaleSteps = extraScaleSteps;
 	}
 
 	/**
-	 * Set the assumed initial scale of the first image in each octave. For
-	 * SIFT, Lowe suggested 1.6 (for optimal repeatability; see Lowe's IJCV
-	 * paper, P.10).
-	 *
+	 *设置初始化sigma值
 	 * @param initialSigma
-	 *            the initialSigma to set
 	 */
 	public void setInitialSigma(float initialSigma) {
 		this.initialSigma = initialSigma;
 	}
 
 	/**
-	 * Set the number of scales in this octave minus extraScaleSteps. Levels of
-	 * each octave are constructed so that level[scales] has twice the sigma of
-	 * level[0].
-	 *
+	 *设置尺度
 	 * @param scales
-	 *            the scales to set
 	 */
 	public void setScales(int scales) {
 		this.scales = scales;
 	}
 
 	/**
-	 * Create a {@link SinglebandImageProcessor} that performs a Gaussian
-	 * blurring with a standard deviation given by sigma. This method is used by
-	 * the {@link GaussianOctave} and {@link GaussianPyramid} to create filters
-	 * for performing the blurring. By overriding in subclasses, you can control
-	 * the exact filter implementation (i.e. for speed).
-	 *
+	 *获得单个带状图处理器
 	 * @param sigma
-	 *            the gaussian standard deviation
 	 * @return the image processor to apply the blur
 	 */
 	public SinglebandImageProcessor<Float, FImage> createGaussianBlur(float sigma) {
 		return new FGaussianConvolve(sigma);
 	}
+
 }

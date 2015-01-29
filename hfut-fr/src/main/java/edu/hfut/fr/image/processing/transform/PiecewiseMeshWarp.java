@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.transform;
 
 import java.util.ArrayList;
@@ -47,29 +18,20 @@ import org.openimaj.util.pair.Pair;
 import Jama.Matrix;
 
 /**
- * Implementation of a piecewise warp. The warp can be piecewise affine,
- * piecewise homographic or a mixture of the two. Basically this means you can
- * warp images represented by triangles, quads or a mixture of the two.
+ * 实现分段的弯曲
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
- * @param <T>
- *            the pixel type
- * @param <I>
- *            the actual image of the concrete subclass
+ * @author Jimbo
  */
 public class PiecewiseMeshWarp<T, I extends Image<T, I>> implements ImageProcessor<I> {
+
 	List<Pair<Shape>> matchingRegions;
 	List<Matrix> transforms = new ArrayList<Matrix>();
 	Rectangle bounds;
 
 	/**
-	 * Construct the warp with a list of matching shapes (which must be either
-	 * quads or triangles). The pairs map from the measured/observed space to
-	 * the canonical space.
-	 *
+	 * 构造函数
 	 * @param matchingRegions
-	 *            the matching shapes
+	 *            匹配的形状
 	 */
 	public PiecewiseMeshWarp(List<Pair<Shape>> matchingRegions) {
 		this.matchingRegions = matchingRegions;
@@ -88,12 +50,8 @@ public class PiecewiseMeshWarp<T, I extends Image<T, I>> implements ImageProcess
 	}
 
 	/**
-	 * Get the shape in the observation space for a point in the canonical
-	 * space.
+	 * 获取匹配的形状
 	 *
-	 * @param p
-	 *            point in the canonical space.
-	 * @return the matching shape in observed space
 	 */
 	public Shape getMatchingShape(Point2d p) {
 		for (int i = 0; i < matchingRegions.size(); i++) {
@@ -106,11 +64,8 @@ public class PiecewiseMeshWarp<T, I extends Image<T, I>> implements ImageProcess
 	}
 
 	/**
-	 * Get the shape pair index for a point in the canonical space.
+	 *	获取正则空间的一个点的形状对指数
 	 *
-	 * @param p
-	 *            the point in canonical space.
-	 * @return the index of the matching point pair
 	 */
 	public int getMatchingShapeIndex(Point2d p) {
 		for (int i = 0; i < matchingRegions.size(); i++) {
@@ -186,16 +141,8 @@ public class PiecewiseMeshWarp<T, I extends Image<T, I>> implements ImageProcess
 	}
 
 	/**
-	 * Transform the content of the input image into an output image of the
-	 * given dimensions.
+	 *	将输入图像的内容按照给定尺寸的输出图像
 	 *
-	 * @param image
-	 *            the input image
-	 * @param width
-	 *            the output width
-	 * @param height
-	 *            the output height
-	 * @return the output image
 	 */
 	public I transform(final I image, int width, int height) {
 		final I ret = image.newInstance(width, height);
@@ -247,4 +194,5 @@ public class PiecewiseMeshWarp<T, I extends Image<T, I>> implements ImageProcess
 			}
 		}
 	}
+
 }

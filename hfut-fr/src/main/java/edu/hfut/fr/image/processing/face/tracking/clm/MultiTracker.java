@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.face.tracking.clm;
 
 import java.io.BufferedReader;
@@ -55,51 +26,27 @@ import edu.hfut.fr.image.processing.face.detection.DetectedFace;
 import edu.hfut.fr.image.processing.resize.ResizeProcessor;
 
 /**
- * A CLM Tracker that is able to deal with multiple tracks within the same
- * video. To instantiate use {@link #load(InputStream)} to get a
- * {@link TrackerVars} object which can be used to construct the Tracker.
- * <p>
- * <code><pre>MultiTracker t = new MultiTracker( MultiTracker.load( new File("face.tracker.file") ) );</pre></code>
+ * 基于CLM的跟踪器，用于处理一段视频中可能出现多个跟踪目标的情况
  *
- * @author David Dupplaw (dpd@ecs.soton.ac.uk)
+ * @author jimbo
  */
 public class MultiTracker {
-	/**
-	 * Encapsulates the variables for a single tracked face. This includes the
-	 * model, the shape parameters, the last-matched template and the bounding
-	 * rectangle.
-	 *
-	 * @author David Dupplaw (dpd@ecs.soton.ac.uk)
-	 * @created 4 Jul 2012
-	 * @version $Author$, $Revision$, $Date$
-	 */
+
 	public static class TrackedFace extends DetectedFace {
-		/** The constrained local model */
 		public CLM clm;
 
-		/** The current shape */
 		public Matrix shape;
 
-		/** The reference shape */
 		public Matrix referenceShape;
 
-		/** The template image */
 		public FImage templateImage;
 
-		/** The last matched bounds: _rect */
 		public Rectangle lastMatchBounds;
 
-		/** The redetected bounds: R */
 		public Rectangle redetectedBounds;
 
 		protected boolean gen = true;
 
-		/**
-		 * @param r
-		 *            The rectangle in which the initial face was found
-		 * @param tv
-		 *            The initial tracker vars to use
-		 */
 		public TrackedFace(final Rectangle r, final TrackerVars tv) {
 			this.redetectedBounds = r;
 			this.clm = tv.clm.copy();
@@ -118,68 +65,32 @@ public class MultiTracker {
 		}
 	}
 
-	/**
-	 * This class is used to store the tracker variables when they are loaded
-	 * from a file. These variables can then be copied to make specific
-	 * trackers.
-	 *
-	 * @author David Dupplaw (dpd@ecs.soton.ac.uk)
-	 * @created 5 Jul 2012
-	 * @version $Author$, $Revision$, $Date$
-	 */
 	public static class TrackerVars {
-		/** The constrained local model */
 		public CLM clm;
 
-		/** The current shape */
 		public Matrix shape;
 
-		/** The reference shape */
 		public Matrix referenceShape;
 
-		/** The Face detector */
 		public FDet faceDetector;
 
-		/** The failure checker */
 		public MFCheck failureCheck;
 
-		/** Initialisation similarity */
 		double[] similarity;
 	}
 
-	/** Scaling of template for template matching */
 	private static final double TSCALE = 0.3;
 
-	/** */
 	public List<TrackedFace> trackedFaces = new ArrayList<TrackedFace>();
 
-	/** The initial tracker */
 	private TrackerVars initialTracker = null;
 
-	/** < Frame number since last detection */
 	private long framesSinceLastDetection;
 
-	/** The frame currently being processed */
 	private FImage currentFrame;
 
 	private FImage small_;
 
-	/**
-	 * Create a tracker using the given model, face detector, failure checker,
-	 * reference shape and similarity measures. These values will be copied into
-	 * all trackers.
-	 *
-	 * @param clm
-	 *            The local model
-	 * @param fdet
-	 *            The face detector
-	 * @param fcheck
-	 *            The failure checker
-	 * @param rshape
-	 *            The reference shape
-	 * @param simil
-	 *            The similarity measures
-	 */
 	public MultiTracker(final CLM clm, final FDet fdet, final MFCheck fcheck, final Matrix rshape, final double[] simil) {
 		this.initialTracker = new TrackerVars();
 		this.initialTracker.clm = clm;
@@ -192,52 +103,19 @@ public class MultiTracker {
 		this.framesSinceLastDetection = -1;
 	}
 
-	/**
-	 * Create a tracker with the given variables.
-	 *
-	 * @param tv
-	 *            The tracker variables to use for all face trackers.
-	 */
 	public MultiTracker(final TrackerVars tv) {
 		this.initialTracker = tv;
 		this.framesSinceLastDetection = -1;
 	}
 
-	/**
-	 * Constructor for making a tracker when loading data.
-	 */
 	protected MultiTracker() {
 	}
 
-	/**
-	 * Reset frame number (will perform detection in next image)
-	 */
 	public void frameReset() {
 		this.framesSinceLastDetection = -1;
 		this.trackedFaces.clear();
 	}
 
-	/**
-	 * Track faces from a previous frame to the given frame.
-	 *
-	 * @param im
-	 *            The video frame
-	 * @param wSize
-	 *            The window size
-	 * @param fpd
-	 *            The number of frames between forced redetecs
-	 * @param nIter
-	 *            The number of iterations for model fitting
-	 * @param clamp
-	 *            The number s.d.'s in which a model must fit
-	 * @param fTol
-	 *            The tolerance for model fitting
-	 * @param fcheck
-	 *            Whether to automatically check for failed tracking
-	 * @param searchAreaSize
-	 *            The size of the template match search area
-	 * @return 0 for success, -1 for failure.
-	 */
 	public int track(final FImage im, final int[] wSize, final int fpd, final int nIter, final double clamp,
 			final double fTol, final boolean fcheck, final float searchAreaSize) {
 		this.currentFrame = im;
@@ -246,10 +124,6 @@ public class MultiTracker {
 			this.framesSinceLastDetection = 0;
 			final List<Rectangle> RL = this.initialTracker.faceDetector.detect(this.currentFrame);
 
-			// Convert the detected rectangles into face trackers
-			// trackedFaces.clear();
-			// for (final Rectangle r : RL)
-			// trackedFaces.add(new TrackedFace(r, initialTracker));
 			if (this.trackedFaces.size() == 0) {
 				for (final Rectangle r : RL)
 					this.trackedFaces.add(new TrackedFace(r, this.initialTracker));
@@ -271,11 +145,9 @@ public class MultiTracker {
 				}
 			}
 		} else {
-			// Updates the tracked faces
 			this.trackRedetect(this.currentFrame, searchAreaSize);
 		}
 
-		// Didn't find any faces in this frame? Try again next frame.
 		if (this.trackedFaces.size() == 0)
 			return -1;
 
@@ -288,7 +160,6 @@ public class MultiTracker {
 				iterator.remove();
 				this.framesSinceLastDetection = -1;
 				continue;
-				// return -1;
 			}
 
 			if (f.gen) {
@@ -311,7 +182,6 @@ public class MultiTracker {
 				if (!this.initialTracker.failureCheck.check(f.clm.getViewIdx(), this.currentFrame, f.shape)) {
 					iterator.remove();
 					continue;
-					// return -1;
 				}
 			}
 
@@ -321,11 +191,9 @@ public class MultiTracker {
 				iterator.remove();
 				this.framesSinceLastDetection = -1;
 				continue;
-				// return -1;
 			}
 		}
 
-		// Didn't find any faces in this frame? Try again next frame.
 		if (this.trackedFaces.size() == 0)
 			return -1;
 
@@ -334,17 +202,6 @@ public class MultiTracker {
 		return 0;
 	}
 
-	/**
-	 * Initialise the shape within the given rectangle based on the given
-	 * reference shape.
-	 *
-	 * @param r
-	 *            The rectangle
-	 * @param shape
-	 *            The shape to initialise
-	 * @param _rshape
-	 *            The reference shape
-	 */
 	public void initShape(final Rectangle r, final Matrix shape, final Matrix _rshape) {
 		assert ((shape.getRowDimension() == _rshape.getRowDimension()) && (shape.getColumnDimension() == _rshape
 				.getColumnDimension()));
@@ -366,48 +223,30 @@ public class MultiTracker {
 		}
 	}
 
-	/**
-	 * Redetect the faces in the new frame.
-	 *
-	 * @param im
-	 *            The new frame.
-	 * @param searchAreaSize
-	 *            The search area size
-	 */
 	private void trackRedetect(final FImage im, final float searchAreaSize) {
 		final int ww = im.width;
 		final int hh = im.height;
 
-		// Resize the frame so processing is quicker.
 		this.small_ = ResizeProcessor.resample(im, (int) (MultiTracker.TSCALE * ww), (int) (MultiTracker.TSCALE * hh));
 
 		for (final TrackedFace f : this.trackedFaces) {
 			f.gen = false;
 
-			// Get the new search area nearby to the last match
 			Rectangle searchAreaBounds = f.lastMatchBounds.clone();
 			searchAreaBounds.scale((float) MultiTracker.TSCALE);
 			searchAreaBounds.scaleCentroid(searchAreaSize);
 			searchAreaBounds = searchAreaBounds.overlapping(this.small_.getBounds());
 
-			// Get the search image
 			final FImage searchArea = this.small_.extractROI(searchAreaBounds);
 
-			// Template match the template over the reduced size image.
 			final FourierTemplateMatcher matcher = new FourierTemplateMatcher(f.templateImage,
 					FourierTemplateMatcher.Mode.NORM_CORRELATION_COEFFICIENT);
 			matcher.analyseImage(searchArea);
 
-			// Get the response map
 			final float[][] ncc_ = matcher.getResponseMap().pixels;
-
-			// DisplayUtilities.displayName( matcher.getResponseMap(),
-			// "responseMap" );
-			// DisplayUtilities.displayName( f.templateImage, "template" );
 
 			f.redetectedBounds = f.templateImage.getBounds();
 
-			// Find the maximum template match in the image
 			final int h = searchArea.height - f.templateImage.height + 1;
 			final int w = searchArea.width - f.templateImage.width + 1;
 			float vb = -2;
@@ -422,7 +261,6 @@ public class MultiTracker {
 				}
 			}
 
-			// Rescale the rectangle to full-size image coordinates.
 			f.redetectedBounds.scale((float) (1d / MultiTracker.TSCALE));
 		}
 	}
@@ -476,12 +314,8 @@ public class MultiTracker {
 	}
 
 	/**
-	 * Load a tracker from a file.
+	 * 加载跟踪器
 	 *
-	 * @param fname
-	 *            File name to read from
-	 * @return A tracker variable class
-	 * @throws FileNotFoundException
 	 */
 	public static TrackerVars load(final String fname) throws FileNotFoundException {
 		BufferedReader br = null;
@@ -498,11 +332,8 @@ public class MultiTracker {
 	}
 
 	/**
-	 * Load a tracker from an input stream.
+	 * 加载跟踪器
 	 *
-	 * @param in
-	 *            The input stream
-	 * @return a tracker
 	 */
 	public static TrackerVars load(final InputStream in) {
 		BufferedReader br = null;
@@ -520,10 +351,8 @@ public class MultiTracker {
 	}
 
 	/**
+	 * 加载跟踪器
 	 *
-	 * @param s
-	 * @param readType
-	 * @return
 	 */
 	private static TrackerVars read(final Scanner s, final boolean readType) {
 		if (readType) {
@@ -543,11 +372,10 @@ public class MultiTracker {
 	}
 
 	/**
-	 * Returns the initial variables used for each face tracker.
-	 *
-	 * @return The initial variables
+	 * 返回初始化以后的人脸跟踪器
 	 */
 	public TrackerVars getInitialVars() {
 		return this.initialTracker;
 	}
+
 }

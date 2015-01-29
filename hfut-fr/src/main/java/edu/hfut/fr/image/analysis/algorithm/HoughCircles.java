@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.analysis.algorithm;
 
 import static java.lang.Math.PI;
@@ -47,18 +18,17 @@ import org.openimaj.math.geometry.shape.Circle;
 import org.openimaj.util.queue.BoundedPriorityQueue;
 
 /**
- * An implementation of the Hough transform for circles.
+ * 圆的霍夫变换拟合的实现
  *
- * @author Sina Samangooei (ss@ecs.soton.ac.uk)
+ * @author wanghao
  */
 public class HoughCircles implements ImageAnalyser<FImage> {
+
 	Logger logger = Logger.getLogger(HoughCircles.class);
 
 	/**
-	 * A circle with an associated weight.
+	 * 带有权重的圆
 	 *
-	 * @author Sina Samangooei (ss@ecs.soton.ac.uk)
-	 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
 	 */
 	public static class WeightedCircle extends Circle implements Comparable<WeightedCircle> {
 		/**
@@ -67,16 +37,7 @@ public class HoughCircles implements ImageAnalyser<FImage> {
 		public float weight;
 
 		/**
-		 * Construct with the given geometry and weight.
-		 *
-		 * @param x
-		 *            the x-ordinate of the center
-		 * @param y
-		 *            the y-ordinate of the center
-		 * @param radius
-		 *            the radius of the circle
-		 * @param weight
-		 *            the associated weight
+		 * 通过给定的几何参数和权重来构建圆
 		 */
 		public WeightedCircle(float x, float y, float radius, float weight) {
 			super(x, y, radius);
@@ -99,16 +60,7 @@ public class HoughCircles implements ImageAnalyser<FImage> {
 	private int radIncr;
 
 	/**
-	 * Construct with the given parameters.
-	 *
-	 * @param minRad
-	 *            minimum search radius
-	 * @param maxRad
-	 *            maximum search radius
-	 * @param radIncrement
-	 *            amount to increment search radius by between min and max.
-	 * @param nDegree
-	 *            number of degree increments
+	 * 通过给定的参数进行构造
 	 */
 	public HoughCircles(int minRad, int maxRad, int radIncrement, int nDegree) {
 		super();
@@ -143,10 +95,6 @@ public class HoughCircles implements ImageAnalyser<FImage> {
 					for (int rad = 0; rad < nRadius; rad++) {
 						final int actualrad = (rad * this.radIncr) + this.minRad;
 						final float radiusWeight = 1f / this.nDegree;
-						// if(actualrad == 0){
-						// throw new
-						// RuntimeException("The weight should never be 0");
-						// }
 						for (int ang = 0; ang < nDegree; ang++) {
 							final int x0 = round(x + this.cosanglemap[rad][ang]);
 							final int y0 = round(y + this.sinanglemap[rad][ang]);
@@ -160,26 +108,6 @@ public class HoughCircles implements ImageAnalyser<FImage> {
 								xMap.put(x0, yMap = new TIntFloatHashMap());
 							}
 							yMap.adjustOrPutValue(y0, radiusWeight, radiusWeight);
-							// if(x0 == 37 && y0 == 22 && actualrad == 1){
-							// logger.debug("This should not be !");
-							// logger.debug(String.format("Pixel = %d,%d",
-							// x,y));
-							// logger.debug(String.format("x=%d,y=%d,r=%d,v=%2.5f",x0
-							// ,y0 ,actualrad , newValue ));
-							// }
-							// if(x0 > 22 && x0 < 27 && y0 > 22 && y0 < 27 &&
-							// actualrad > 10 && actualrad < 14){
-							// logger.debug("This should be correct!");
-							// logger.debug(String.format("x=%d,y=%d,r=%d,v=%2.5f",x0
-							// ,y0 ,actualrad , newValue ));
-							// }
-							// if(Float.isInfinite(newValue)){
-							// throw new
-							// RuntimeException("The value held should never be infinity");
-							// }
-							// logger.debug(String.format("x=%d,y=%d,r=%d,v=%2.5f\n",x0
-							// ,y0 ,actualrad , newValue ));
-							// maxWeight = Math.max(newValue, maxWeight);
 						}
 					}
 				}
@@ -189,14 +117,10 @@ public class HoughCircles implements ImageAnalyser<FImage> {
 	}
 
 	/**
-	 * Get the n-best detected circles.
+	 * 得到N个执行后最好结果的圆
 	 *
-	 * @param n
-	 *            the number of circles to return
-	 * @return the n best detected circles.
 	 */
 	public List<WeightedCircle> getBest(int n) {
-		// final List<WeightedCircle> toSort = new ArrayList<WeightedCircle>();
 		final BoundedPriorityQueue<WeightedCircle> bpq = new BoundedPriorityQueue<WeightedCircle>(n);
 		this.radmap.forEachEntry(new TIntObjectProcedure<TIntObjectHashMap<TIntFloatHashMap>>() {
 
@@ -223,4 +147,5 @@ public class HoughCircles implements ImageAnalyser<FImage> {
 
 		return bpq.toOrderedList();
 	}
+
 }

@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.transform;
 
 import java.util.ArrayList;
@@ -46,19 +17,12 @@ import org.openimaj.math.geometry.shape.Shape;
 import Jama.Matrix;
 
 /**
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- * @author Sina Samangooei (ss@ecs.soton.ac.uk)
+ *计算一组图像的一组矩阵变换和构建包含所有像素的一个图像（或像素的窗口）在投影空间
  *
- *         Perform a set of matrix transforms on a set of images and construct a
- *         single image containing all the pixels (or a window of the pixels) in
- *         the projected space.
- *
- * @param <Q>
- *            The image pixel type
- * @param <T>
- *            the image type
+ * @author Jimbo
  */
 public class ProjectionProcessor<Q, T extends Image<Q, T>> implements AccumulatingImageCombiner<T, T> {
+
 	protected int minc;
 	protected int minr;
 	protected int maxc;
@@ -73,8 +37,7 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 	protected Matrix currentMatrix = new Matrix(new double[][] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } });
 
 	/**
-	 * Construct a projection processor starting with an identity matrix for any
-	 * images processed (i.e., don't do anything)
+	 * 构造函数
 	 */
 	public ProjectionProcessor() {
 		unset = true;
@@ -91,11 +54,8 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 	}
 
 	/**
-	 * Set the matrix, any images processed from this point forward will be
-	 * projected using this matrix
+	 * 设置矩阵
 	 *
-	 * @param matrix
-	 *            a 3x3 matrix representing a 2d transform
 	 */
 	public void setMatrix(Matrix matrix) {
 		if (matrix.getRowDimension() == 2) {
@@ -110,13 +70,7 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 	}
 
 	/**
-	 * Prepare an image to be transformed using the current matrix. The bounds
-	 * of the image post transform are calculated so the default
-	 * {@link ProjectionProcessor#performProjection} knows what range of pixels
-	 * to draw
-	 *
-	 * @param image
-	 *            to be transformed
+	 * 利用给定的矩阵转化图像
 	 */
 	@Override
 	public void accumulate(T image) {
@@ -142,8 +96,6 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 			if (tmaxY > maxr)
 				maxr = (int) Math.floor(tmaxY);
 		}
-		// Expand the borders by 1 pixel so we get a nicer effect around the
-		// edges
 		final float padding = 1f;
 		final Rectangle expandedBounds = new Rectangle(actualBounds.x - padding, actualBounds.y - padding,
 				actualBounds.width + padding * 2, actualBounds.height + padding * 2);
@@ -153,64 +105,32 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 			m = this.currentMatrix.copy();
 			minv = this.currentMatrix.copy().inverse();
 		} catch (final Throwable e) {
-			// the matrix might be singular, return
 			return;
 		}
 
 		this.images.add(image);
 		this.transforms.add(m);
 		this.transformsInverted.add(minv);
-		// this.projectedShapes.add(new
-		// TriangulatedPolygon(transformedExpandedBounds));
 		this.projectedShapes.add(transformedExpandedBounds);
 		this.projectedRectangles.add(transformedExpandedBounds.calculateRegularBoundingBox());
 
-		// System.out.println("added image with transform: ");
-		// this.currentMatrix.print(5,5);
-		// System.out.println("and the inverse:");
-		// this.currentMatrix.inverse().print(5,5);
-		// System.out.println("New min/max become:" + minc + "x" + minr + "/" +
-		// maxc + "x" + maxr);
 	}
 
 	/**
-	 * Using all the images currently processed, perform the projection on each
-	 * image and draw every pixel with valid data. Pixels within the bounding
-	 * box but with no data are set to black (more specifically 0, whatever that
-	 * may mean for this kind of image)
-	 *
-	 * @return the image containing all the pixels drawn
+	 * 返回包含像素点的图像
 	 */
 	public T performProjection() {
-		// The most long winded way to get a black pixel EVER
 		return performProjection(false, this.images.get(0).newInstance(1, 1).getPixel(0, 0));
 	}
 
 	/**
-	 * Perform projection specifying the background colour (i.e. the colour of
-	 * pixels with no data).
-	 *
-	 * @param backgroundColour
-	 *            the background colour
-	 * @return projected images
+	 * 返回图像
 	 */
 	public T performProjection(Q backgroundColour) {
 		final int projectionMinC = minc, projectionMaxC = maxc, projectionMinR = minr, projectionMaxR = maxr;
 		return performProjection(projectionMinC, projectionMaxC, projectionMinR, projectionMaxR, backgroundColour);
 	}
 
-	/**
-	 * Perform projection specifying the background colour (i.e. the colour of
-	 * pixels with no data) and whether the original window size should be kept.
-	 * If set to true the window of pixels drawn post projection are within the
-	 * window of the first image processed.
-	 *
-	 * @param keepOriginalWindow
-	 *            whether to keep the original image's window
-	 * @param backgroundColour
-	 *            the background colour
-	 * @return projected images
-	 */
 	public T performProjection(boolean keepOriginalWindow, Q backgroundColour) {
 		int projectionMinC = minc, projectionMaxC = maxc, projectionMinR = minr, projectionMaxR = maxr;
 		if (keepOriginalWindow) {
@@ -222,43 +142,11 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 		return performProjection(projectionMinC, projectionMaxC, projectionMinR, projectionMaxR, backgroundColour);
 	}
 
-	/**
-	 * Perform projection but only request data for pixels within the windowed
-	 * range provided. Specify the background colour, i.e. the value of pixels
-	 * with no data post projection.
-	 *
-	 * @param windowMinC
-	 *            left X
-	 * @param windowMaxC
-	 *            right X
-	 * @param windowMinR
-	 *            top Y
-	 * @param windowMaxR
-	 *            bottom Y
-	 * @return projected image within the window
-	 */
 	public T performProjection(int windowMinC, int windowMaxC, int windowMinR, int windowMaxR) {
 		return performProjection(windowMinC, windowMaxC, windowMinR, windowMaxR, this.images.get(0).newInstance(1, 1)
 				.getPixel(0, 0));
 	}
 
-	/**
-	 * Perform projection but only request data for pixels within the windowed
-	 * range provided. Specify the background colour, i.e. the value of pixels
-	 * with no data post projection.
-	 *
-	 * @param windowMinC
-	 *            left X
-	 * @param windowMaxC
-	 *            right X
-	 * @param windowMinR
-	 *            top Y
-	 * @param windowMaxR
-	 *            bottom Y
-	 * @param backgroundColour
-	 *            background colour of pixels with no data
-	 * @return projected image within the window
-	 */
 	public T performProjection(int windowMinC, int windowMaxC, int windowMinR, int windowMaxR, Q backgroundColour) {
 		T output = null;
 		output = images.get(0).newInstance(windowMaxC - windowMinC, windowMaxR - windowMinR);
@@ -298,10 +186,8 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 	}
 
 	/**
-	 * Get the current shapes as an array for efficient access, first entry for
-	 * each shape is its rectangle, second entry is the shape
+	 * 获得当前形状
 	 *
-	 * @return
 	 */
 	protected Shape[][] getCurrentShapes() {
 		final Shape[][] currentShapes = new Shape[this.projectedShapes.size()][2];
@@ -317,19 +203,6 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 				&& projectRectangleShapes[shapeIndex][1].isInside(realPoint);
 	}
 
-	/**
-	 * Perform projection but only request data for pixels within the windowed
-	 * range provided. Specify the background colour, i.e. the value of pixels
-	 * with no data post projection.
-	 *
-	 * @param windowMinC
-	 *            left X
-	 * @param windowMinR
-	 *            top Y
-	 * @param output
-	 *            the target image in which to project
-	 * @return projected image within the window
-	 */
 	public T performProjection(int windowMinC, int windowMinR, T output) {
 
 		for (int y = 0; y < output.getHeight(); y++) {
@@ -360,24 +233,6 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 		return output;
 	}
 
-	/**
-	 * Perform blended projection but only request data for pixels within the
-	 * windowed range provided. Specify the background colour, i.e. the value of
-	 * pixels with no data post projection. This blends any existing pixels to
-	 * newly added pixels
-	 *
-	 * @param windowMinC
-	 *            left X
-	 * @param windowMaxC
-	 *            right X
-	 * @param windowMinR
-	 *            top Y
-	 * @param windowMaxR
-	 *            bottom Y
-	 * @param backgroundColour
-	 *            background colour of pixels with no data
-	 * @return projected image within the window
-	 */
 	public T performBlendedProjection(int windowMinC, int windowMaxC, int windowMinR, int windowMaxR, Q backgroundColour) {
 		T output = null;
 		output = images.get(0).newInstance(windowMaxC - windowMinC, windowMaxR - windowMinR);
@@ -407,7 +262,6 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 							toSet = this.images.get(i).getPixelInterp(xt, yt, output.getPixelInterp(x, y));
 						else
 							toSet = this.images.get(i).getPixelInterp(xt, yt);
-						// Blend the pixel with the existing pixel
 						if (setMap.get(y * output.getWidth() + x) != null) {
 							blendingPallet.setPixel(1, 0, toSet);
 							blendingPallet.setPixel(0, 0, output.getPixel(x, y));
@@ -425,29 +279,17 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 	}
 
 	/**
-	 * @return Current matrix
+	 * 返回当前矩阵
 	 */
 	public Matrix getMatrix() {
 		return this.currentMatrix;
 	}
 
 	/**
-	 * Utility function, project one image with one matrix. Every valid pixel in
-	 * the space the image is projected into is displayed in the final image.
-	 *
-	 * @param <Q>
-	 *            the image pixel type
-	 * @param <T>
-	 *            image type
-	 * @param image
-	 *            the image to project
-	 * @param matrix
-	 *            the matrix to project against
-	 * @return projected image
+	 * 返回工程图像
 	 */
 	@SuppressWarnings("unchecked")
 	public static <Q, T extends Image<Q, T>> T project(T image, Matrix matrix) {
-		// Note: extra casts to work around compiler bug
 		if ((Image<?, ?>) image instanceof FImage) {
 			final FProjectionProcessor proc = new FProjectionProcessor();
 			proc.setMatrix(matrix);
@@ -467,22 +309,6 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 		}
 	}
 
-	/**
-	 * Utility function, project one image with one matrix. Every valid pixel in
-	 * the space the image is projected into is displayed in the final image.
-	 *
-	 * @param <Q>
-	 *            the image pixel type
-	 * @param <T>
-	 *            image type
-	 * @param image
-	 *            the image to project
-	 * @param matrix
-	 *            the matrix to project against
-	 * @param backgroundColour
-	 *            The colour of pixels with no data
-	 * @return projected image
-	 */
 	public static <Q, T extends Image<Q, T>> T project(T image, Matrix matrix, Q backgroundColour) {
 		final ProjectionProcessor<Q, T> proc = new ProjectionProcessor<Q, T>();
 		proc.setMatrix(matrix);
@@ -494,4 +320,5 @@ public class ProjectionProcessor<Q, T extends Image<Q, T>> implements Accumulati
 	public T combine() {
 		return performProjection();
 	}
+
 }

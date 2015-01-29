@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.face.feature;
 
 import java.io.DataInput;
@@ -53,24 +24,14 @@ import edu.hfut.fr.image.processing.face.detection.keypoints.FacialKeypoint.Faci
 import edu.hfut.fr.image.processing.face.detection.keypoints.KEDetectedFace;
 
 /**
- * A {@link FacialFeature} that is built by concatenating
- * each of the normalised facial part patches from a detected
- * face.
+ * 小块人脸特征
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
+ *@author wanggang
  */
 public class FacePatchFeature implements FacialFeature, FeatureVectorProvider<FloatFV> {
-	/**
-	 * A {@link FacialFeatureExtractor} for producing {@link FacialFeature}s
-	 *
-	 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
-	 *
-	 */
+
 	public static class Extractor implements FacialFeatureExtractor<FacePatchFeature, KEDetectedFace> {
-		/**
-		 * Default constructor
-		 */
+
 		public Extractor() {
 		}
 
@@ -83,49 +44,30 @@ public class FacePatchFeature implements FacialFeature, FeatureVectorProvider<Fl
 
 		@Override
 		public void readBinary(DataInput in) throws IOException {
-			//Do nothing
 		}
 
 		@Override
 		public byte[] binaryHeader() {
-			//Do nothing
 			return null;
 		}
 
 		@Override
 		public void writeBinary(DataOutput out) throws IOException {
-			//Do nothing
 		}
 	}
 
-	/**
-	 * A {@link FacialKeypoint} with an associated feature
-	 *
-	 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
-	 */
 	public static class DetectedFacePart extends FacialKeypoint implements ReadWriteableBinary {
 		float[] featureVector;
 		int featureRadius;
 
-		/**
-		 * Default constructor
-		 */
 		public DetectedFacePart() {
 			super();
 		}
 
-		/**
-		 * Construct with the given parameters
-		 * @param type the type of keypoint
-		 * @param position the position of the keypoint
-		 */
 		public DetectedFacePart(FacialKeypointType type, Point2d position) {
 			super(type, position);
 		}
 
-		/**
-		 * @return the image patch around the keypoint
-		 */
 		public FImage getImage() {
 			FImage image = new FImage(2 * featureRadius + 1, 2 * featureRadius + 1);
 
@@ -133,7 +75,7 @@ public class FacePatchFeature implements FacialFeature, FeatureVectorProvider<Fl
 				for (int cc = -featureRadius; cc <= featureRadius; cc++) {
 					float r2 = rr * rr + cc * cc;
 
-					if (r2 <= featureRadius * featureRadius) { //inside circle
+					if (r2 <= featureRadius * featureRadius) { // inside circle
 						float value = featureVector[i++];
 
 						image.pixels[rr + featureRadius][cc + featureRadius] = value < -3 ? 0 : value >= 3 ? 1
@@ -182,33 +124,28 @@ public class FacePatchFeature implements FacialFeature, FeatureVectorProvider<Fl
 		}
 	}
 
-	final static int[][] VP = { { 0 }, //	EYE_LEFT_LEFT,
-			{ 1 }, //	EYE_LEFT_RIGHT,
-			{ 2 }, //	EYE_RIGHT_LEFT,
-			{ 3 }, //	EYE_RIGHT_RIGHT,
-			{ 4 }, //	NOSE_LEFT,
-			{ 5 }, //	NOSE_MIDDLE,
-			{ 6 }, //	NOSE_RIGHT,
-			{ 7 }, //	MOUTH_LEFT,
-			{ 8 }, //	MOUTH_RIGHT,
-			{ 0, 1 }, //	EYE_LEFT_CENTER,
-			{ 2, 3 }, //	EYE_RIGHT_CENTER,
-			{ 1, 2 }, //	NOSE_BRIDGE,
-			{ 7, 8 } }; //	MOUTH_CENTER
+	final static int[][] VP = { { 0 }, // EYE_LEFT_LEFT,
+			{ 1 }, // EYE_LEFT_RIGHT,
+			{ 2 }, // EYE_RIGHT_LEFT,
+			{ 3 }, // EYE_RIGHT_RIGHT,
+			{ 4 }, // NOSE_LEFT,
+			{ 5 }, // NOSE_MIDDLE,
+			{ 6 }, // NOSE_RIGHT,
+			{ 7 }, // MOUTH_LEFT,
+			{ 8 }, // MOUTH_RIGHT,
+			{ 0, 1 }, // EYE_LEFT_CENTER,
+			{ 2, 3 }, // EYE_RIGHT_CENTER,
+			{ 1, 2 }, // NOSE_BRIDGE,
+			{ 7, 8 } }; // MOUTH_CENTER
 
 	protected FloatFV featureVector;
 
-	/** The radius of the descriptor samples about each point */
 	protected int radius = 7;
 
-	/** The scale of the descriptor samples about each point */
 	protected float scl = 1;
 
 	protected List<DetectedFacePart> faceParts = new ArrayList<DetectedFacePart>();
 
-	/**
-	 * Default constructor.
-	 */
 	public FacePatchFeature() {
 	}
 
@@ -237,7 +174,6 @@ public class FacePatchFeature implements FacialFeature, FeatureVectorProvider<Fl
 
 		float pyrScale = (float) (T0.get(0, 2) / T.get(0, 2));
 
-		//build a list of the center of each patch wrt image J
 		Point2dImpl[] P0 = new Point2dImpl[VP.length];
 		for (int j = 0; j < P0.length; j++) {
 			int[] vp = VP[j];
@@ -254,14 +190,12 @@ public class FacePatchFeature implements FacialFeature, FeatureVectorProvider<Fl
 			}
 		}
 
-		//Prebuild transform
 		List<Point2dImpl> transformed = new ArrayList<Point2dImpl>();
 		List<Pixel> nontransformed = new ArrayList<Pixel>();
 		for (int rr = -radius; rr <= radius; rr++) {
 			for (int cc = -radius; cc <= radius; cc++) {
 				float r2 = rr * rr + cc * cc;
-				if (r2 <= radius * radius) { //inside circle
-					//Note: do transform without the translation!!!
+				if (r2 <= radius * radius) { // inside circle
 					float px = (float) (cc * scl * T.get(0, 0) + rr * scl * T.get(0, 1));
 					float py = (float) (cc * scl * T.get(1, 0) + rr * scl * T.get(1, 1));
 
@@ -347,4 +281,5 @@ public class FacePatchFeature implements FacialFeature, FeatureVectorProvider<Fl
 			}
 		}.writeBinary(out);
 	}
+
 }

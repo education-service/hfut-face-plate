@@ -1,73 +1,27 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.analysis.algorithm.histogram;
 
 import org.openimaj.image.FImage;
 import org.openimaj.math.statistics.distribution.Histogram;
 
 /**
- * The {@link InterpolatedBinnedWindowedExtractor} is an extension to a
- * {@link BinnedWindowedExtractor} that performs soft assignment to the
- * histogram bins through linear interpolation. If a point being histogrammed
- * lies directly between two bins, half of its weight will be added to both
- * bins. If a point is directly in the centre of a bin, then its full weight
- * will be added to both bins. All other cases use linear interpolation to
- * distribute the weight across the two nearest bins.
- * <p>
- * Cyclic histograms are also supported (i.e. for angles).
- * <p>
- * For non cyclic histograms, the bin centres are at <code>min + binWidth/2 +
- * n*binWidth</code> for <code>n=0..<nbins</code>. Any point less than
- * <code>binWidth/2</code> from the end of a non-cyclic histogram counts fully
- * to the respective end bin.
- * <p>
- * For cyclic histograms, the bin centres are at <code>min + n*binWidth</code>
- * for <code>n=0..<nbins</code>.
+ * 差值直方图
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author  wanggang
  */
 public class InterpolatedBinnedWindowedExtractor extends BinnedWindowedExtractor {
+
 	/**
-	 * The weight to apply to the left bin (i.e. the one that was stored). The
-	 * weight of the right bin is 1-this.
+	 * 权重
 	 */
 	float[][] weights;
 
 	/**
-	 * Are the histograms cyclic?
+	 * 直方图是否循环
 	 */
 	boolean wrap = false;
 
 	/**
-	 * Construct with the given number of bins. The histogram is not cyclic. The
-	 * minimum expected value is assumed to be 0 and the maximum 1.
+	 *非循环直方图的构造.
 	 *
 	 * @param nbins
 	 *            number of bins
@@ -77,54 +31,24 @@ public class InterpolatedBinnedWindowedExtractor extends BinnedWindowedExtractor
 	}
 
 	/**
-	 * Construct with the given number of bins. The histogram is optionally
-	 * cyclic. The minimum expected value is assumed to be 0 and the maximum 1.
-	 *
-	 * @param nbins
-	 *            number of bins
-	 * @param wrap
-	 *            true if the histogram is cyclic; false otherwise
+	 * 插值直方图的构建
 	 */
 	public InterpolatedBinnedWindowedExtractor(int nbins, boolean wrap) {
 		super(nbins);
 		this.wrap = true;
 	}
 
-	/**
-	 * Construct with the given number of bins, and range. The histogram is not
-	 * cyclic.
-	 *
-	 * @param nbins
-	 *            number of bins
-	 * @param min
-	 *            minimum expected value
-	 * @param max
-	 *            maximum expected value
-	 */
 	public InterpolatedBinnedWindowedExtractor(int nbins, float min, float max) {
 		super(nbins, min, max);
 	}
 
-	/**
-	 * Construct with the given number of bins, and range. The histogram is
-	 * optionally cyclic.
-	 *
-	 * @param nbins
-	 *            number of bins
-	 * @param min
-	 *            minimum expected value
-	 * @param max
-	 *            maximum expected value
-	 * @param wrap
-	 *            true if the histogram is cyclic; false otherwise
-	 */
 	public InterpolatedBinnedWindowedExtractor(int nbins, float min, float max, boolean wrap) {
 		super(nbins, min, max);
 		this.wrap = wrap;
 	}
 
 	/**
-	 * Computes the bin-map for this image.
+	 * 计算图片的位图
 	 */
 	@Override
 	public void analyseImage(FImage image) {
@@ -158,11 +82,9 @@ public class InterpolatedBinnedWindowedExtractor extends BinnedWindowedExtractor
 					int lbin;
 					float lweight;
 					if (delta < 0.5) {
-						// right bin
 						lbin = bin - 1;
 						lweight = 0.5f + (delta);
 					} else {
-						// left bin
 						lbin = bin;
 						lweight = 1.5f - (delta);
 					}
@@ -267,11 +189,11 @@ public class InterpolatedBinnedWindowedExtractor extends BinnedWindowedExtractor
 	}
 
 	/**
-	 * Get the weights map
+	 * 得到权重
 	 *
-	 * @return the weights map
 	 */
 	public float[][] getWeightsMap() {
 		return weights;
 	}
+
 }

@@ -1,54 +1,21 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.convolution;
 
 import org.openimaj.image.FImage;
 import org.openimaj.image.processor.SinglebandImageProcessor;
 
 /**
- * Image processor for separable convolution of an FImage. Capable of doing
- * convolution in either the vertical, horizontal or both directions.
+ * 可分离的卷积图像处理器
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanghao
  */
 public class FImageConvolveSeparable implements SinglebandImageProcessor<Float, FImage> {
+
 	float[] hkernel;
 	float[] vkernel;
 
 	/**
-	 * Specify the horizontal kernel and vertical kernel separately.
+	 * 分开定义水平和竖直内核
 	 *
-	 * @param hkernel
-	 *            horizontal kernel
-	 * @param vkernel
-	 *            vertical kernel
 	 */
 	public FImageConvolveSeparable(float[] hkernel, float[] vkernel) {
 		this.hkernel = hkernel;
@@ -56,23 +23,14 @@ public class FImageConvolveSeparable implements SinglebandImageProcessor<Float, 
 	}
 
 	/**
-	 * Specify a single kernel to be used as the horizontal and vertical.
+	 * 定义内核
 	 *
-	 * @param kernel
-	 *            both kernels
 	 */
 	public FImageConvolveSeparable(float[] kernel) {
 		this.hkernel = kernel;
 		this.vkernel = kernel;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.openimaj.image.processor.ImageProcessor#processImage(org.openimaj
-	 * .image.Image)
-	 */
 	@Override
 	public void processImage(FImage image) {
 		if (hkernel != null)
@@ -82,10 +40,7 @@ public class FImageConvolveSeparable implements SinglebandImageProcessor<Float, 
 	}
 
 	/*
-	 * Convolve an array of data with a kernel. The data must be padded at each
-	 * end by half the kernel width (with replicated data or zeros). The output
-	 * is written back into the data buffer, starting at the beginning and is
-	 * valid through buffer.length-kernel.length.
+	 * 计算内核数组卷积
 	 */
 	protected static void convolveBuffer(float[] buffer, float[] kernel) {
 		final int l = buffer.length - kernel.length;
@@ -100,13 +55,7 @@ public class FImageConvolveSeparable implements SinglebandImageProcessor<Float, 
 	}
 
 	/**
-	 * Convolve the image in the horizontal direction with the kernel. Edge
-	 * effects are handled by duplicating the edge pixels.
-	 *
-	 * @param image
-	 *            the image to convolve.
-	 * @param kernel
-	 *            the convolution kernel.
+	 * 计算图像水平方向卷积
 	 */
 	public static void convolveHorizontal(FImage image, float[] kernel) {
 		final int halfsize = kernel.length / 2;
@@ -121,7 +70,6 @@ public class FImageConvolveSeparable implements SinglebandImageProcessor<Float, 
 			for (int i = 0; i < halfsize; i++)
 				buffer[halfsize + image.width + i] = image.pixels[r][image.width - 1];
 
-			// convolveBuffer(buffer, kernel);
 			final int l = buffer.length - kernel.length;
 			for (int i = 0; i < l; i++) {
 				float sum = 0.0f;
@@ -131,7 +79,6 @@ public class FImageConvolveSeparable implements SinglebandImageProcessor<Float, 
 
 				buffer[i] = sum;
 			}
-			// end convolveBuffer(buffer, kernel);
 
 			for (int c = 0; c < image.width; c++)
 				image.pixels[r][c] = buffer[c];
@@ -139,13 +86,8 @@ public class FImageConvolveSeparable implements SinglebandImageProcessor<Float, 
 	}
 
 	/**
-	 * Convolve the image in the vertical direction with the kernel. Edge
-	 * effects are handled by duplicating the edge pixels.
+	 * 计算图像竖直方向卷积
 	 *
-	 * @param image
-	 *            the image to convolve.
-	 * @param kernel
-	 *            the convolution kernel.
 	 */
 	public static void convolveVertical(FImage image, float[] kernel) {
 		final int halfsize = kernel.length / 2;
@@ -160,7 +102,6 @@ public class FImageConvolveSeparable implements SinglebandImageProcessor<Float, 
 			for (int i = 0; i < halfsize; i++)
 				buffer[halfsize + image.height + i] = image.pixels[image.height - 1][c];
 
-			// convolveBuffer(buffer, kernel);
 			final int l = buffer.length - kernel.length;
 			for (int i = 0; i < l; i++) {
 				float sum = 0.0f;
@@ -170,7 +111,6 @@ public class FImageConvolveSeparable implements SinglebandImageProcessor<Float, 
 
 				buffer[i] = sum;
 			}
-			// end convolveBuffer(buffer, kernel);
 
 			for (int r = 0; r < image.height; r++)
 				image.pixels[r][c] = buffer[r];
@@ -178,22 +118,8 @@ public class FImageConvolveSeparable implements SinglebandImageProcessor<Float, 
 	}
 
 	/**
-	 * Fast convolution for separated 3x3 kernels. Only valid pixels are
-	 * considered, so the output image bounds will be two pixels smaller than
-	 * the input image on all sides (the response of the kernel to the source
-	 * pixel at 1,1 is stored in the destination image at 0,0)
+	 * 快速计算3*3内核的卷积
 	 *
-	 * @param source
-	 *            the source image
-	 * @param dest
-	 *            the destination image
-	 * @param kx
-	 *            the x-kernel (can be null, implying [0 1 0] )
-	 * @param ky
-	 *            the y-kernel (can be null, implying [0 1 0])
-	 * @param buffer
-	 *            the working buffer (can be null, but ideally the same width as
-	 *            the source image)
 	 */
 	public static void fastConvolve3(FImage source, FImage dest, float[] kx, float[] ky, float[] buffer) {
 		final int dst_width = source.width - 2;
@@ -220,4 +146,5 @@ public class FImageConvolveSeparable implements SinglebandImageProcessor<Float, 
 			}
 		}
 	}
+
 }

@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.analysis.algorithm;
 
 import java.io.File;
@@ -46,24 +17,19 @@ import org.openimaj.util.queue.BoundedPriorityQueue;
 import edu.hfut.fr.image.processing.algorithm.MeanCenter;
 
 /**
- * Basic template matching for {@link FImage}s. Template matching is
- * performed in the spatial domain.
+ * 图像模板匹配
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanggang
  */
 public class TemplateMatcher implements ImageAnalyser<FImage> {
+
 	/**
-	 * Different algorithms for comparing templates to images.
+	 * 比较图像模板的算法
 	 *
-	 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
 	 */
 	public enum Mode {
 		/**
-		 * Compute the score at a point as the sum-squared difference between the image
-		 * and the template with the top-left at the given point. The {@link TemplateMatcher}
-		 * will account for the offset to the centre of the template internally.
-		 *
-		 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+		 * 计算图像和模板平方差的和
 		 */
 		SUM_SQUARED_DIFFERENCE {
 			@Override
@@ -96,15 +62,12 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 
 			@Override
 			public boolean scoresAscending() {
-				return false; //smaller scores are better
+				return false;
 			}
 		},
+
 		/**
-		 * Compute the normalised score at a point as the sum-squared difference between the image
-		 * and the template with the top-left at the given point. The {@link TemplateMatcher}
-		 * will account for the offset to the centre of the template internally.
-		 *
-		 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+		 * 计算图片和模板之间标准差
 		 */
 		NORM_SUM_SQUARED_DIFFERENCE {
 			@Override
@@ -159,7 +122,7 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 
 			@Override
 			public boolean scoresAscending() {
-				return false; //smaller scores are better
+				return false;
 			}
 
 			@Override
@@ -173,12 +136,9 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 				return new Float(sumsq);
 			}
 		},
+
 		/**
-		 * Compute the score at a point as the summed product between the image
-		 * and the template with the top-left at the point given. The {@link TemplateMatcher}
-		 * will account for the offset to the centre of the template internally.
-		 *
-		 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+		 * 计算图片和模板的关联度
 		 */
 		CORRELATION {
 			@Override
@@ -213,15 +173,11 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 
 			@Override
 			public boolean scoresAscending() {
-				return true; //bigger scores are better
+				return true;
 			}
 		},
 		/**
-		 * Compute the normalised score at a point as the summed product between the image
-		 * and the template with the top-left at the point given. The {@link TemplateMatcher}
-		 * will account for the offset to the centre of the template internally.
-		 *
-		 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+		 * 计算关联度的标准化的值
 		 */
 		NORM_CORRELATION {
 			@Override
@@ -277,7 +233,7 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 
 			@Override
 			public boolean scoresAscending() {
-				return true; //bigger scores are better
+				return true;
 			}
 
 			@Override
@@ -292,11 +248,7 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 			}
 		},
 		/**
-		 * Compute the score at a point as the summed product between the mean-centered image patch
-		 * and the mean-centered template with the top-left at the point given. The {@link TemplateMatcher}
-		 * will account for the offset to the centre of the template internally.
-		 *
-		 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+		 *计算图像和模板之间的相关系数的值
 		 */
 		CORRELATION_COEFFICIENT {
 			@Override
@@ -345,7 +297,7 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 
 			@Override
 			public boolean scoresAscending() {
-				return true; //bigger scores are better
+				return true;
 			}
 
 			@Override
@@ -354,11 +306,7 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 			}
 		},
 		/**
-		 * Compute the normalised score at a point as the summed product between the mean-centered image patch
-		 * and the mean-centered template with the top-left at the point given. The {@link TemplateMatcher}
-		 * will account for the offset to the centre of the template internally.
-		 *
-		 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+		 *计算规范相关系数
 		 */
 		NORM_CORRELATION_COEFFICIENT {
 			@Override
@@ -437,7 +385,7 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 
 			@Override
 			public boolean scoresAscending() {
-				return true; //bigger scores are better
+				return true;
 			}
 
 			@Override
@@ -458,62 +406,23 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 		};
 
 		/**
-		 * Compute the matching score between the image and template, with the top-left of the
-		 * template at (x, y) in the image.
-		 * @param image The image.
-		 * @param template The template.
-		 * @param x The x-ordinate top-left of the template in the image
-		 * @param y The y-ordinate top-left of the template in the image
-		 * @param workingSpace The working space created by #prepareWorkingSpace()
-		 * @return The match score.
+		 *计算图片匹配的得分值
 		 */
 		protected abstract float computeMatchScore(final FImage image, final FImage template, final int x, final int y,
 				final Object workingSpace);
 
-		/**
-		 * Compute the matching score between the image and template, with the top-left of the
-		 * template at (x, y) in the image. The coordinates of the template can be specified,
-		 * so it is possible for the actual template to be a sub-image of the given data.
-		 *
-		 * @param img the image data
-		 * @param x the x-ordinate of the top-left of the template
-		 * @param y the y-ordinate of the top-left of the template
-		 * @param template the template data
-		 * @param templateX the top-left x-ordinate of the template in the template data
-		 * @param templateY the top-left y-ordinate of the template in the template data
-		 * @param templateWidth the width of the template in the template data
-		 * @param templateHeight the height of the template in the template data
-		 * @return the match score.
-		 */
 		public abstract float computeMatchScore(final float[][] img, int x, int y, final float[][] template,
 				final int templateX, final int templateY, final int templateWidth, final int templateHeight);
 
 		/**
-		 * Are the scores ascending (i.e. bigger is better) or descending (smaller is better)?
-		 * @return true is bigger scores are better; false if smaller scores are better.
+		 * 如果是高分值计算，则是高分值返回为true,小得分值于此相反
 		 */
 		public abstract boolean scoresAscending();
 
-		/**
-		 * Prepare the template if necessary. The default implementation
-		 * just returns the template, but subclasses can override.
-		 * @param template the template image
-		 * @return the processed template image
-		 */
 		protected FImage prepareTemplate(FImage template) {
 			return template;
 		}
 
-		/**
-		 * Prepare an object to hold the working space required by the
-		 * mode during score computation. Most modes don't require
-		 * this, so the default implementation returns null, but
-		 * it can be overridden.
-		 *
-		 * @param template the template
-		 * @return an object representing the required working space for
-		 * 		the {@link #computeMatchScore(FImage, FImage, int, int, Object)} method.
-		 */
 		protected Object prepareWorkingSpace(FImage template) {
 			return null;
 		}
@@ -526,13 +435,7 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 	private FImage responseMap;
 
 	/**
-	 * Default constructor with the template to match and the mode
-	 * with which to estimate template responses. When matching is
-	 * performed by {@link #analyseImage(FImage)}, the whole image
-	 * will be searched.
-	 *
-	 * @param template The template
-	 * @param mode The mode.
+	 * 默认的匹配的模式和模板
 	 */
 	public TemplateMatcher(FImage template, Mode mode) {
 		this.mode = mode;
@@ -540,16 +443,6 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 		this.workingSpace = mode.prepareWorkingSpace(this.template);
 	}
 
-	/**
-	 * Construct with the template to match, the mode with which to
-	 * estimate template responses and the bounds rectangle in which
-	 * to search. The search bounds rectangle is defined with respect
-	 * to the centre of the template.
-	 *
-	 * @param template The template
-	 * @param mode The mode.
-	 * @param bounds The bounding box for search.
-	 */
 	public TemplateMatcher(FImage template, Mode mode, Rectangle bounds) {
 		this.searchBounds = bounds;
 		this.mode = mode;
@@ -558,33 +451,19 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 	}
 
 	/**
-	 * @return the search bound rectangle
+	 * 返回搜索的矩阵区域
 	 */
 	public Rectangle getSearchBounds() {
 		return searchBounds;
 	}
 
 	/**
-	 * Set the search bounds rectangle. The search bounds rectangle
-	 * is defined with respect to the centre of the template.
-	 * Setting to <code>null</code> results in the entire image
-	 * being searched.
-	 *
-	 * @param searchBounds the search bounds to set
+	 * 设置搜索的矩阵区域
 	 */
 	public void setSearchBounds(Rectangle searchBounds) {
 		this.searchBounds = searchBounds;
 	}
 
-	/**
-	 * Perform template matching. If a bounds rectangle
-	 * is has not been set or is null, then the whole
-	 * image will be searched. Otherwise the area of the image
-	 * which lies in the previously set search bounds will be
-	 * searched.
-	 *
-	 * @see org.openimaj.image.analyser.ImageAnalyser#analyseImage(org.openimaj.image.Image)
-	 */
 	@Override
 	public void analyseImage(FImage image) {
 		Rectangle searchSpace = null;
@@ -633,10 +512,7 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 	}
 
 	/**
-	 * Get the top-N "best" responses found by the template matcher.
-	 *
-	 * @param numResponses The number of responses
-	 * @return the best responses found
+	 *返回与模板匹配的前N个最佳匹配
 	 */
 	public FValuePixel[] getBestResponses(int numResponses) {
 		Comparator<FValuePixel> comparator = mode.scoresAscending() ? FValuePixel.ReverseValueComparator.INSTANCE
@@ -645,16 +521,6 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 		return getBestResponses(numResponses, responseMap, getXOffset(), getYOffset(), comparator);
 	}
 
-	/**
-	 * Get the top-N "best" responses found by the template matcher.
-	 *
-	 * @param numResponses The number of responses
-	 * @param responseMap The response map
-	 * @param offsetX the amount to shift pixels in the x direction
-	 * @param offsetY the amount to shift pixels in the y direction
-	 * @param comparator the comparator for determining the "best" responses
-	 * @return the best responses found
-	 */
 	public static FValuePixel[] getBestResponses(int numResponses, FImage responseMap, int offsetX, int offsetY,
 			Comparator<FValuePixel> comparator) {
 		BoundedPriorityQueue<FValuePixel> bestResponses = new BoundedPriorityQueue<FValuePixel>(numResponses,
@@ -668,8 +534,8 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 		FValuePixel tmpPixel = new FValuePixel(0, 0, 0);
 		for (int y = 0; y < scanHeight; y++) {
 			for (int x = 0; x < scanWidth; x++) {
-				tmpPixel.x = x + offsetX; //account for offset to centre
-				tmpPixel.y = y + offsetY; //account for offset to centre
+				tmpPixel.x = x + offsetX;
+				tmpPixel.y = y + offsetY;
 				tmpPixel.value = responseMapData[y][x];
 
 				FValuePixel removed = bestResponses.offerItem(tmpPixel);
@@ -685,9 +551,7 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 	}
 
 	/**
-	 * @return The x-offset of the top-left of the response map
-	 * 		returned by {@link #getResponseMap()} to the original image
-	 * 		analysed by {@link #analyseImage(FImage)}.
+	 * 返回x-offset的值
 	 */
 	public int getXOffset() {
 		final int halfWidth = template.width / 2;
@@ -699,9 +563,7 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 	}
 
 	/**
-	 * @return The y-offset of the top-left of the response map
-	 * 		returned by {@link #getResponseMap()} to the original image
-	 * 		analysed by {@link #analyseImage(FImage)}.
+	 * 返回y-offset的值
 	 */
 	public int getYOffset() {
 		final int halfHeight = template.height / 2;
@@ -712,25 +574,16 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 			return (int) Math.max(searchBounds.y, halfHeight);
 	}
 
-	/**
-	 * @return The responseMap generated from the last call to {@link #analyseImage(FImage)}
-	 */
 	public FImage getResponseMap() {
 		return responseMap;
 	}
 
-	/**
-	 * @return the template held by the matcher; this might be different
-	 * to the image used in construction as it might have been pre-processed.
-	 */
 	public FImage getTemplate() {
 		return template;
 	}
 
 	/**
-	 * Testing
-	 * @param args
-	 * @throws IOException
+	 *  测试功能主类
 	 */
 	public static void main(String[] args) throws IOException {
 		FImage image = ImageUtilities.readF(new File("/Users/jsh2/Desktop/image.png"));
@@ -754,4 +607,5 @@ public class TemplateMatcher implements ImageAnalyser<FImage> {
 
 		DisplayUtilities.display(cimg);
 	}
+
 }

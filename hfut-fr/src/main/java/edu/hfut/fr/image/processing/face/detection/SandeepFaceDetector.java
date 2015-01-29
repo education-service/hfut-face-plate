@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.face.detection;
 
 import java.io.ByteArrayInputStream;
@@ -57,17 +28,15 @@ import org.openimaj.math.geometry.shape.Rectangle;
 import edu.hfut.fr.image.processing.convolution.FSobelMagnitude;
 
 /**
- * Implementation of a face detector along the lines of
- * "Human Face Detection in Cluttered Color Images Using Skin Color and Edge Information"
- * K. Sandeep and A. N. Rajagopalan (IIT/Madras)
+ * Sandeep面部检测器
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
+ *@author wanggang
  */
 @Reference(type = ReferenceType.Article, author = { "Sandeep, K", "Rajagopalan, A N" }, title = "Human Face Detection in Cluttered Color Images Using Skin Color and Edge Information", year = "2002", journal = "Electrical Engineering", url = "http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.12.730&rep=rep1&type=pdf", publisher = "Citeseer")
 public class SandeepFaceDetector implements FaceDetector<CCDetectedFace, MBFImage> {
+
 	/**
-	 * The golden ratio (for comparing facial height/width)
+	 * 长宽黄金比例
 	 */
 	public final static double GOLDEN_RATIO = 1.618033989; // ((1 + sqrt(5) / 2)
 
@@ -81,25 +50,16 @@ public class SandeepFaceDetector implements FaceDetector<CCDetectedFace, MBFImag
 	float goldenRatioThreshold = 0.65F;
 	float percentageThreshold = 0.55F;
 
-	/**
-	 * Construct a new {@link SandeepFaceDetector} with the default skin-tone
-	 * model.
-	 */
 	public SandeepFaceDetector() {
 		ccl = new ConnectedComponentLabeler(ConnectMode.CONNECT_8);
 
 		try {
 			if (this.getClass().getResource(DEFAULT_MODEL) == null) {
-				// This is to create the skin model
 				skinModel = new HistogramPixelModel(16, 6);
 				final MBFImage rgb = ImageUtilities.readMBF(this.getClass().getResourceAsStream("skin.png"));
 				skinModel.learnModel(Transforms.RGB_TO_HS(rgb));
-				// ObjectOutputStream oos = new ObjectOutputStream(new
-				// FileOutputStream(new
-				// File("D:\\Programming\\skin-histogram-16-6.bin")));
-				// oos.writeObject(skinModel);
 			} else {
-				// Load in the skin model
+				// 导入模型
 				final ObjectInputStream ois = new ObjectInputStream(this.getClass().getResourceAsStream(DEFAULT_MODEL));
 				skinModel = (MBFPixelClassificationModel) ois.readObject();
 			}
@@ -110,10 +70,7 @@ public class SandeepFaceDetector implements FaceDetector<CCDetectedFace, MBFImag
 	}
 
 	/**
-	 * Construct the detector with the given pixel classification model.
-	 *
-	 * @param skinModel
-	 *            the underlying classification model.
+	 * 构造函数
 	 */
 	public SandeepFaceDetector(MBFPixelClassificationModel skinModel) {
 		ccl = new ConnectedComponentLabeler(ConnectMode.CONNECT_8);
@@ -207,75 +164,43 @@ public class SandeepFaceDetector implements FaceDetector<CCDetectedFace, MBFImag
 	}
 
 	/**
-	 * @return The underlying skin-tone classifier
+	 * 返回模型
 	 */
 	public MBFPixelClassificationModel getSkinModel() {
 		return skinModel;
 	}
 
-	/**
-	 * Set the underlying skin-tone classifier
-	 *
-	 * @param skinModel
-	 */
 	public void setSkinModel(MBFPixelClassificationModel skinModel) {
 		this.skinModel = skinModel;
 	}
 
-	/**
-	 * @return the detection threshold.
-	 */
 	public float getSkinThreshold() {
 		return skinThreshold;
 	}
 
 	/**
-	 * Set the detection threshold.
-	 *
-	 * @param skinThreshold
+	 * 设置
 	 */
 	public void setSkinThreshold(float skinThreshold) {
 		this.skinThreshold = skinThreshold;
 	}
 
-	/**
-	 * @return The edge threshold.
-	 */
 	public float getEdgeThreshold() {
 		return edgeThreshold;
 	}
 
-	/**
-	 * Set the edge threshold.
-	 *
-	 * @param edgeThreshold
-	 */
 	public void setEdgeThreshold(float edgeThreshold) {
 		this.edgeThreshold = edgeThreshold;
 	}
 
-	/**
-	 * @return The percentage threshold
-	 */
 	public float getPercentageThreshold() {
 		return percentageThreshold;
 	}
 
-	/**
-	 * Set the percentage threshold
-	 *
-	 * @param percentageThreshold
-	 */
 	public void setPercentageThreshold(float percentageThreshold) {
 		this.percentageThreshold = percentageThreshold;
 	}
 
-	/**
-	 * Run the face detector following the conventions of the ocv detector
-	 *
-	 * @param args
-	 * @throws IOException
-	 */
 	public static void main(String[] args) throws IOException {
 		if (args.length < 1 || args.length > 2) {
 			System.err.println("Usage: SandeepFaceDetector filename [filename_out]");
@@ -289,7 +214,6 @@ public class SandeepFaceDetector implements FaceDetector<CCDetectedFace, MBFImag
 
 		final SandeepFaceDetector sfd = new SandeepFaceDetector();
 
-		// tweek the default settings
 		sfd.edgeThreshold = 0.39F;
 		sfd.ccl = new ConnectedComponentLabeler(ConnectMode.CONNECT_4);
 
@@ -339,7 +263,6 @@ public class SandeepFaceDetector implements FaceDetector<CCDetectedFace, MBFImag
 
 	@Override
 	public void writeBinary(DataOutput out) throws IOException {
-		// ccl;
 
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		final ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -354,4 +277,5 @@ public class SandeepFaceDetector implements FaceDetector<CCDetectedFace, MBFImag
 		out.writeFloat(goldenRatioThreshold);
 		out.writeFloat(percentageThreshold);
 	}
+
 }

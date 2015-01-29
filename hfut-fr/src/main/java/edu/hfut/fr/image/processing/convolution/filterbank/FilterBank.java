@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.convolution.filterbank;
 
 import org.openimaj.feature.FloatFV;
@@ -38,16 +9,12 @@ import edu.hfut.fr.image.processing.algorithm.FourierTransform;
 import edu.hfut.fr.image.processing.convolution.FConvolution;
 
 /**
- * A FilterBank is a set of convolution filters which can be applied to an
- * image. The filterbank allows a response vector of the filter at each pixel in
- * the image to be generated. Convolution is performed in the fourier domain for
- * efficiency (the fft's of the filters are cached, and the fft of the image
- * only has to be performed once for all convolutions)
+ * 过滤器组抽象类
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
+ *@author wanghao
  */
 public abstract class FilterBank implements ImageAnalyser<FImage> {
+
 	private FConvolution[] filters;
 	protected FImage[] responses;
 
@@ -70,12 +37,6 @@ public abstract class FilterBank implements ImageAnalyser<FImage> {
 		this.paddingY = (int) Math.ceil(maxHeight / 2);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.openimaj.image.processor.ImageAnalyser#analyseImage(org.openimaj
-	 * .image.Image)
-	 */
 	@Override
 	public void analyseImage(FImage in) {
 		responses = new FImage[filters.length];
@@ -133,24 +94,12 @@ public abstract class FilterBank implements ImageAnalyser<FImage> {
 	}
 
 	/**
-	 * Get the response images for the image analysed with
-	 * {@link #analyseImage(FImage)}.
-	 *
-	 * @return the filter responses.
+	 * 返回分析后的图像
 	 */
 	public FImage[] getResponseImages() {
 		return responses;
 	}
 
-	/**
-	 * Get the response vector for a given pixel.
-	 *
-	 * @param x
-	 *            the x-ordinate
-	 * @param y
-	 *            the y-ordinate
-	 * @return the response vector
-	 */
 	public float[] getResponse(int x, int y) {
 		final float[] response = new float[responses.length];
 
@@ -160,28 +109,10 @@ public abstract class FilterBank implements ImageAnalyser<FImage> {
 		return response;
 	}
 
-	/**
-	 * Get the response vector for a given pixel as a {@link FloatFV}.
-	 *
-	 * @param x
-	 *            the x-ordinate
-	 * @param y
-	 *            the y-ordinate
-	 * @return the response vector
-	 */
 	public FloatFV getResponseFV(int x, int y) {
 		return new FloatFV(getResponse(x, y));
 	}
 
-	/**
-	 * Create an image to visualise the filters in the bank. Assumes that all
-	 * the filters are the same size. Filters are normalised and displayed in a
-	 * grid.
-	 *
-	 * @param numFiltersX
-	 *            number of filters to display per row
-	 * @return a visualisation of the filters
-	 */
 	public FImage renderFilters(int numFiltersX) {
 		final int border = 4;
 		final int numFiltersY = (int) Math.ceil((double) filters.length / numFiltersX);
@@ -201,12 +132,6 @@ public abstract class FilterBank implements ImageAnalyser<FImage> {
 		return image;
 	}
 
-	/**
-	 * Build an array of responses for every pixel. The response for each pixel
-	 * is added in scan order (left-right, top-bottom).
-	 *
-	 * @return the responses for each pixel.
-	 */
 	public float[][] getResponses() {
 		final int width = this.responses[0].width;
 		final int height = this.responses[0].height;
@@ -223,4 +148,5 @@ public abstract class FilterBank implements ImageAnalyser<FImage> {
 
 		return resp;
 	}
+
 }

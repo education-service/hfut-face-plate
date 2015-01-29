@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.face.feature;
 
 import java.io.DataInput;
@@ -54,9 +25,9 @@ import edu.hfut.fr.image.processing.face.alignment.FaceAligner;
 import edu.hfut.fr.image.processing.face.detection.DetectedFace;
 
 /**
- * A {@link FacialFeature} for FisherFaces.
+ * FisherFace特征
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanggang
  */
 @Reference(type = ReferenceType.Article, author = { "Belhumeur, Peter N.", "Hespanha, Jo\\~{a}o P.",
 		"Kriegman, David J." }, title = "Fisherfaces vs. Fisherfaces: Recognition Using Class Specific Linear Projection", year = "1997", journal = "IEEE Trans. Pattern Anal. Mach. Intell.", pages = {
@@ -65,47 +36,16 @@ import edu.hfut.fr.image.processing.face.detection.DetectedFace;
 		"Washington, DC, USA", "keywords",
 		"Appearance-based vision, face recognition, illumination invariance, Fisher's linear discriminant." })
 public class FisherFaceFeature implements FacialFeature, FeatureVectorProvider<DoubleFV> {
-	/**
-	 * A {@link FacialFeatureExtractor} for producing FisherFaces. Unlike most
-	 * {@link FacialFeatureExtractor}s, this one either needs to be trained or
-	 * provided with a pre-trained {@link FisherImages} object.
-	 * <p>
-	 * A {@link FaceAligner} can be used to produce aligned faces for training
-	 * and feature extraction.
-	 *
-	 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
-	 *
-	 * @param <T>
-	 *
-	 */
+
 	public static class Extractor<T extends DetectedFace> implements FacialFeatureExtractor<FisherFaceFeature, T>,
 			BatchTrainer<IndependentPair<?, T>> {
 		FisherImages fisher = null;
 		FaceAligner<T> aligner = null;
 
-		/**
-		 * Construct with the requested number of components (the number of PCs
-		 * to keep) and a face aligner. The principal components must be learned
-		 * by calling {@link #train(List)}.
-		 *
-		 * @param numComponents
-		 *            the number of principal components to keep.
-		 * @param aligner
-		 *            the face aligner
-		 */
 		public Extractor(int numComponents, FaceAligner<T> aligner) {
 			this(new FisherImages(numComponents), aligner);
 		}
 
-		/**
-		 * Construct with given pre-trained {@link FisherImages} basis and a
-		 * face aligner.
-		 *
-		 * @param basis
-		 *            the pre-trained basis
-		 * @param aligner
-		 *            the face aligner
-		 */
 		public Extractor(FisherImages basis, FaceAligner<T> aligner) {
 			this.fisher = basis;
 			this.aligner = aligner;
@@ -163,10 +103,7 @@ public class FisherFaceFeature implements FacialFeature, FeatureVectorProvider<D
 		}
 
 		/**
-		 * Train on a map of data.
-		 *
-		 * @param data
-		 *            the data
+		 * 进行训练
 		 */
 		public void train(Map<?, ? extends List<T>> data) {
 			final List<IndependentPair<?, FImage>> list = new ArrayList<IndependentPair<?, FImage>>();
@@ -181,12 +118,7 @@ public class FisherFaceFeature implements FacialFeature, FeatureVectorProvider<D
 		}
 
 		/**
-		 * Train on a grouped dataset.
-		 *
-		 * @param <KEY>
-		 *            The group type
-		 * @param data
-		 *            the data
+		 * 进行训练
 		 */
 		public <KEY> void train(GroupedDataset<KEY, ? extends ListDataset<T>, T> data) {
 			final List<IndependentPair<?, FImage>> list = new ArrayList<IndependentPair<?, FImage>>();
@@ -209,10 +141,7 @@ public class FisherFaceFeature implements FacialFeature, FeatureVectorProvider<D
 	}
 
 	/**
-	 * Construct the FisherFaceFeature with the given feature vector.
-	 *
-	 * @param fv
-	 *            the feature vector
+	 * 构造函数
 	 */
 	public FisherFaceFeature(DoubleFV fv) {
 		this.fv = fv;
@@ -238,4 +167,5 @@ public class FisherFaceFeature implements FacialFeature, FeatureVectorProvider<D
 	public DoubleFV getFeatureVector() {
 		return fv;
 	}
+
 }

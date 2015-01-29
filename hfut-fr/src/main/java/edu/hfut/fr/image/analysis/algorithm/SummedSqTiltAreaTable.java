@@ -1,83 +1,24 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.analysis.algorithm;
 
 import org.openimaj.image.FImage;
 import org.openimaj.math.geometry.shape.Rectangle;
 
 /**
- * Implementation of an Integral Image or Summed Area Table. This Implementation
- * calculates both the sum, squared sum values, and (optionally) 45-degree
- * tilted sum values.
- * <p>
- * See http://en.wikipedia.org/wiki/Summed_area_table and
- * http://research.microsoft
- * .com/en-us/um/people/viola/Pubs/Detect/violaJones_IJCV.pdf
- * <p>
- * Basically, this provides an efficient way to find the sum of all pixels in a
- * rectangular area of an image.
+ * 计算图像中矩阵区域像素点的总和
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanggang
  */
 public class SummedSqTiltAreaTable extends SummedSqAreaTable {
-	/**
-	 * The tilted sum data
-	 */
+
 	public FImage tiltSum;
 
-	/**
-	 * Construct an empty SAT.
-	 */
 	public SummedSqTiltAreaTable() {
 	}
 
-	/**
-	 * Construct a SAT for normal sum, squared sum and tilted sum from the
-	 * provided image.
-	 *
-	 * @param image
-	 *            the image.
-	 */
 	public SummedSqTiltAreaTable(FImage image) {
 		this(image, true);
 	}
 
-	/**
-	 * Construct a SAT for normal sum, squared sum and (optionally) tilted sum
-	 * from the provided image.
-	 *
-	 * @param image
-	 *            the image.
-	 * @param computeTilted
-	 *            if true compute the tilted features.
-	 */
 	public SummedSqTiltAreaTable(FImage image, boolean computeTilted) {
 		computeTable(image, computeTilted);
 	}
@@ -127,8 +68,6 @@ public class SummedSqTiltAreaTable extends SummedSqAreaTable {
 
 		final float[] buffer = new float[width];
 
-		// first two rows are special
-		// y == 1
 		if (height > 0) {
 			final float[] row = image.pixels[0];
 
@@ -147,7 +86,6 @@ public class SummedSqTiltAreaTable extends SummedSqAreaTable {
 			}
 		}
 
-		// y == 2
 		if (height > 1) {
 			final float[] row = image.pixels[1];
 
@@ -166,7 +104,6 @@ public class SummedSqTiltAreaTable extends SummedSqAreaTable {
 				buffer[x - 1] = gray;
 			}
 
-			// last column is special
 			if (width > 0) {
 				final float gray = (row[width - 1]);
 
@@ -223,15 +160,7 @@ public class SummedSqTiltAreaTable extends SummedSqAreaTable {
 	}
 
 	/**
-	 * Calculate the sum of pixels in the image used for constructing this SAT
-	 * within the 45 degree tilted rectangle.
-	 *
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 *
-	 * @return sum of pixels in given rectangle
+	 *返回给定矩阵中总像素点
 	 */
 	public float calculateTiltedSumArea(int x, int y, int width, int height) {
 		final float p0 = tiltSum.pixels[y][x];
@@ -242,27 +171,13 @@ public class SummedSqTiltAreaTable extends SummedSqAreaTable {
 		return p0 - p1 - p2 + p3;
 	}
 
-	/**
-	 * Calculate the sum pixels in the image used for constructing this SAT
-	 * within the given 45-degree tilted rectangle.
-	 *
-	 * @param r
-	 *            rectangle
-	 * @return sum of pixels in given rectangle
-	 */
 	public float calculateTiltedSumArea(Rectangle r) {
 		return calculateTiltedSumArea(Math.round(r.x), Math.round(r.y), Math.round(r.width), Math.round(r.height));
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.openimaj.image.analyser.ImageAnalyser#analyseImage(org.openimaj.image
-	 * .Image)
-	 */
 	@Override
 	public void analyseImage(FImage image) {
 		computeTable(image, true);
 	}
+
 }

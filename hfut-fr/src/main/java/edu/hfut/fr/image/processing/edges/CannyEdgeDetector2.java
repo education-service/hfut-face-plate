@@ -1,66 +1,20 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package edu.hfut.fr.image.processing.edges;
 
 import org.openimaj.image.DisplayUtilities;
 import org.openimaj.image.FImage;
 import org.openimaj.image.processor.SinglebandImageProcessor;
 
-import edu.hfut.fr.image.analysis.algorithm.EdgeDirectionCoherenceVector;
-
-/**
- * This implementation is deprecated and is only kept for backward-compatibility
- * of old {@link EdgeDirectionCoherenceVector} features. Use the
- * {@link CannyEdgeDetector} instead.
- * <p>
- * This is an implementation of the canny edge detector that was found somewhere
- * out there on the web with no attribution. If this is your code and you don't
- * want it in OpenIMAJ, please let us know.
- *
- * @author David Dupplaw (dpd@ecs.soton.ac.uk)
- */
 @Deprecated
 public class CannyEdgeDetector2 implements SinglebandImageProcessor<Float, FImage> {
+
 	private boolean complete;
 
-	/** The threshold */
 	private int threshold = 128;
 
-	/** The first hysteresis threshold */
 	private int hystThresh1 = 50;
 
-	/** The second hysteresis threshold */
 	private int hystThresh2 = 230;
 
-	/** The Guassian kernel size */
 	private int kernelSize = 15;
 
 	final float ORIENT_SCALE = 40F;
@@ -74,25 +28,17 @@ public class CannyEdgeDetector2 implements SinglebandImageProcessor<Float, FImag
 	private FImage sourceImage;
 	private FImage edgeImage;
 
-	/**
-	 * Default constructor
-	 */
 	public CannyEdgeDetector2() {
 		complete = false;
 	}
 
 	/**
-	 * @return Returns whether the processing has completed.
+	 * 返回结果是否完成
 	 */
 	public boolean isImageReady() {
 		return complete;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @see org.openimaj.image.processor.ImageProcessor#processImage(org.openimaj.image.Image)
-	 */
 	@Override
 	public void processImage(FImage image) {
 		complete = false;
@@ -138,11 +84,7 @@ public class CannyEdgeDetector2 implements SinglebandImageProcessor<Float, FImag
 	}
 
 	/**
-	 * Assumes the input is a one-dimensional representation of an image.
-	 * Displays the image.
-	 *
-	 * @param data
-	 *            A one-dimensional representation of an image.
+	 * 显示图像
 	 */
 	protected void display(int[] data) {
 		final FImage tmp = new FImage(width, height);
@@ -152,13 +94,6 @@ public class CannyEdgeDetector2 implements SinglebandImageProcessor<Float, FImag
 		DisplayUtilities.display(tmp);
 	}
 
-	/**
-	 * Assumes the input is a one-dimensional representation of an image.
-	 * Displays the image.
-	 *
-	 * @param data
-	 *            A one-dimensional representation of an image.
-	 */
 	protected void display(float[] data) {
 		final FImage tmp = new FImage(width, height);
 		for (int r = 0; r < height; r++)
@@ -167,16 +102,11 @@ public class CannyEdgeDetector2 implements SinglebandImageProcessor<Float, FImag
 		DisplayUtilities.display(tmp);
 	}
 
-	/**
-	 * @param f
-	 * @param i
-	 */
 	private void canny_core(float f, int i) {
 		derivative_mag = new int[picsize];
 		final float af4[] = new float[i];
 		final float af5[] = new float[i];
 		final float af6[] = new float[i];
-		// data = image2pixels( sourceImage );
 		data = sourceImage.clone().multiply(255.0f).getFloatPixelVector();
 		int k4 = 0;
 		do {
@@ -250,8 +180,6 @@ public class CannyEdgeDetector2 implements SinglebandImageProcessor<Float, FImag
 
 		}
 
-		// display(af3);
-
 		af1 = null;
 		j1 = width - j;
 		l = width * j;
@@ -303,14 +231,7 @@ public class CannyEdgeDetector2 implements SinglebandImageProcessor<Float, FImag
 	}
 
 	/**
-	 * If <code>f</code> and <code>f1</code> are the shorter sides of a
-	 * triangle, calculates the hypotenuse of the triangle.
-	 *
-	 * @param f
-	 *            short side of a triangle
-	 * @param f1
-	 *            short side of a triangle
-	 * @return The length of the hypotenuse.
+	 * 返回斜边的长度
 	 */
 	private float hypotenuse(float f, float f1) {
 		if (f == 0.0F && f1 == 0.0F)
@@ -336,12 +257,6 @@ public class CannyEdgeDetector2 implements SinglebandImageProcessor<Float, FImag
 
 	}
 
-	/**
-	 * @param i
-	 * @param j
-	 * @param k
-	 * @return
-	 */
 	private boolean follow(int i, int j, int k) {
 		int j1 = i + 1;
 		int k1 = i - 1;
@@ -384,108 +299,55 @@ public class CannyEdgeDetector2 implements SinglebandImageProcessor<Float, FImag
 		}
 	}
 
-	/**
-	 * @param image
-	 */
 	public void setSourceImage(FImage image) {
 		sourceImage = image;
 	}
 
 	/**
-	 * @return edgeImage
+	 * 返回边缘图像
 	 */
 	public FImage getEdgeImage() {
 		return edgeImage;
 	}
 
-	/**
-	 * @return magnitude
-	 */
 	public float[] getMagnitude() {
 		return magnitude;
 	}
 
-	/**
-	 * @return orientation
-	 */
 	public float[] getOrientation() {
 		return orientation;
 	}
 
-	/**
-	 * Get the threshold above which an edge pixel will be considered an edge.
-	 *
-	 * @return the threshold above which edge pixels will be considered edges.
-	 */
 	public int getThreshold() {
 		return threshold;
 	}
 
-	/**
-	 * Get the threshold above which an edge pixel will be considered an edge.
-	 *
-	 * @param threshold
-	 *            the threshold above which an edge pixel will be considered an
-	 *            edge.
-	 */
 	public void setThreshold(int threshold) {
 		this.threshold = threshold;
 	}
 
-	/**
-	 * Get the first hysteresis threshold.
-	 *
-	 * @return the first hysteresis threshold.
-	 */
 	public int getHystThresh1() {
 		return hystThresh1;
 	}
 
-	/**
-	 * Set the fist hysteresis threshold.
-	 *
-	 * @param hystThresh1
-	 *            the threshold value
-	 */
 	public void setHystThresh1(int hystThresh1) {
 		this.hystThresh1 = hystThresh1;
 	}
 
-	/**
-	 * Get the second hysteresis threshold.
-	 *
-	 * @return the second hysteresis threshold.
-	 */
 	public int getHystThresh2() {
 		return hystThresh2;
 	}
 
-	/**
-	 * Set the second hysteresis threshold.
-	 *
-	 * @param hystThresh2
-	 *            the threshold value
-	 */
 	public void setHystThresh2(int hystThresh2) {
 		this.hystThresh2 = hystThresh2;
 	}
 
-	/**
-	 * Get the kernel size being used.
-	 *
-	 * @return the kernel size being used for blurring
-	 */
 	public int getKernelSize() {
 		return kernelSize;
 	}
 
-	/**
-	 * Set the kernel size to use.
-	 *
-	 * @param kernelSize
-	 *            the size of the kernel to use for blurring.
-	 */
 	public void setKernelSize(int kernelSize) {
 		this.kernelSize = kernelSize;
 	}
+
 }

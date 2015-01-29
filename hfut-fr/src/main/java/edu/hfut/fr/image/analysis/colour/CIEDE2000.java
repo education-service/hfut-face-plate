@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.analysis.colour;
 
 import org.openimaj.image.FImage;
@@ -35,53 +6,27 @@ import org.openimaj.image.colour.ColourSpace;
 import org.openimaj.image.combiner.ImageCombiner;
 
 /**
- * Implementation of the CIE 2000 colour difference equation,
- * and a {@link ImageCombiner} to calculate a colour disparity map between
- * two images.
+ * CIE 2000 颜色差分方程实习和计算两幅图像之间的颜色差异图
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author   wanggang
  */
 public class CIEDE2000 implements ImageCombiner<MBFImage, MBFImage, FImage> {
+
 	/**
-	 * Calculate the colour difference value between two colours in lab space.
-	 * @param lab1 first colour
-	 * @param lab2 second colour
-	 * @return the CIE 2000 colour difference
+	 * 计算两个颜色差异
 	 */
 	public static double calculateDeltaE(double[] lab1, double[] lab2) {
 		return calculateDeltaE(lab1[0], lab1[1], lab1[2], lab2[0], lab2[1], lab2[2]);
 	}
 
-	/**
-	 * Calculate the colour difference value between two colours in lab space.
-	 * @param lab1 first colour
-	 * @param lab2 second colour
-	 * @return the CIE 2000 colour difference
-	 */
 	public static float calculateDeltaE(float[] lab1, float[] lab2) {
 		return (float) calculateDeltaE(lab1[0], lab1[1], lab1[2], lab2[0], lab2[1], lab2[2]);
 	}
 
-	/**
-	 * Calculate the colour difference value between two colours in lab space.
-	 * @param lab1 first colour
-	 * @param lab2 second colour
-	 * @return the CIE 2000 colour difference
-	 */
 	public static float calculateDeltaE(Float[] lab1, Float[] lab2) {
 		return (float) calculateDeltaE(lab1[0], lab1[1], lab1[2], lab2[0], lab2[1], lab2[2]);
 	}
 
-	/**
-	 * Calculate the colour difference value between two colours in lab space.
-	 * @param L1 first colour's L component
-	 * @param a1 first colour's a component
-	 * @param b1 first colour's b component
-	 * @param L2 second colour's L component
-	 * @param a2 second colour's a component
-	 * @param b2 second colour's b component
-	 * @return the CIE 2000 colour difference
-	 */
 	public static double calculateDeltaE(double L1, double a1, double b1, double L2, double a2, double b2) {
 		double Lmean = (L1 + L2) / 2.0; //ok
 		double C1 = Math.sqrt(a1 * a1 + b1 * b1); //ok
@@ -132,12 +77,7 @@ public class CIEDE2000 implements ImageCombiner<MBFImage, MBFImage, FImage> {
 	}
 
 	/**
-	 * Compute the disparity map between two images. If the images
-	 * are not in Lab colour space, then copies in lab space will
-	 * be created.
-	 * @param im1 The first image.
-	 * @param im2 The second image.
-	 * @return the disparity map between the colours in the two images.
+	 * 计算两幅图像之间的视差图
 	 */
 	public static FImage makeDisparityMap(MBFImage im1, MBFImage im2) {
 		if (im1.colourSpace != ColourSpace.CIE_Lab) {
@@ -162,4 +102,5 @@ public class CIEDE2000 implements ImageCombiner<MBFImage, MBFImage, FImage> {
 	public FImage combine(MBFImage image1, MBFImage image2) {
 		return makeDisparityMap(image2, image2);
 	}
+
 }

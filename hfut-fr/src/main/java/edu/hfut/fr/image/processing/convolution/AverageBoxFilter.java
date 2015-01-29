@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.convolution;
 
 import org.openimaj.image.FImage;
@@ -35,43 +6,30 @@ import org.openimaj.image.processor.SinglebandImageProcessor;
 import edu.hfut.fr.image.analysis.algorithm.SummedAreaTable;
 
 /**
- * A rectangular averaging convolution operator (often known as a Box filter).
- * For efficiency, this is implemented using a {@link SummedAreaTable} rather
- * than through an actual convolution.
+ * 矩阵平均卷积运算
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanghao
  */
 public class AverageBoxFilter implements SinglebandImageProcessor<Float, FImage> {
+
 	private int width;
 	private int height;
 
 	/**
-	 * Construct the averaging operator with a kernel of the given dimensions.
-	 *
-	 * @param width
-	 *            width of the kernel
-	 * @param height
-	 *            height of the kernel
+	 * 计算给定维度的平均卷积
 	 */
 	public AverageBoxFilter(int width, int height) {
 		this.width = width;
 		this.height = height;
 	}
 
-	/**
-	 * Construct the averaging operator with a square kernel of the given
-	 * dimension.
-	 *
-	 * @param dim
-	 *            The width and height of the box
-	 */
 	public AverageBoxFilter(int dim) {
 		this(dim, dim);
 	}
 
 	@Override
 	public void processImage(FImage image) {
-		// shortcut trivial case
+
 		if (this.height == 1 && this.width == 1)
 			return;
 
@@ -94,4 +52,5 @@ public class AverageBoxFilter implements SinglebandImageProcessor<Float, FImage>
 			}
 		}
 	}
+
 }

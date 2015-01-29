@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.analysis.algorithm.histogram;
 
 import org.openimaj.image.FImage;
@@ -35,113 +6,71 @@ import org.openimaj.math.geometry.shape.Rectangle;
 import org.openimaj.math.statistics.distribution.Histogram;
 
 /**
- * This class implements a {@link WindowedHistogramExtractor} with the primary
- * purpose of of producing efficient access to histograms of arbitrary windows
- * of the image.
- * <p>
- * This class analyses an image and produces an 2D array of integers with a
- * one-to-one correspondence with the image pixels. Each integer represents the
- * bin of the histogram into which the corresponding pixel would fall.
+ * 生成窗口显示直方图
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanggang
  */
 public class BinnedWindowedExtractor implements ImageAnalyser<FImage>, WindowedHistogramExtractor {
+
 	protected int[][] binMap;
 	protected int nbins;
 	protected float min = 0;
 	protected float max = 1;
 
 	/**
-	 * Construct with the given number of bins. The minimum expected value is
-	 * assumed to be 0 and the maximum 1.
-	 *
-	 * @param nbins
-	 *            number of bins
+	 * 设置直方图柱体的个数
 	 */
 	public BinnedWindowedExtractor(int nbins) {
 		this.nbins = nbins;
 	}
 
-	/**
-	 * Construct with the given number of bins, and range.
-	 *
-	 * @param nbins
-	 *            number of bins
-	 * @param min
-	 *            minimum expected value
-	 * @param max
-	 *            maximum expected value
-	 */
 	public BinnedWindowedExtractor(int nbins, float min, float max) {
 		this.nbins = nbins;
 		this.min = min;
 		this.max = max;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.openimaj.image.analysis.algorithm.ImageHistogramAnalyser#getNumBins()
-	 */
 	@Override
 	public int getNumBins() {
 		return nbins;
 	}
 
 	/**
-	 * Set the number of bins. The new value will not take effect until
-	 * {@link #analyseImage(FImage)} is called.
-	 *
-	 * @param nbins
-	 *            the number of bins to set
+	 * 设置个数
 	 */
 	public void setNbins(int nbins) {
 		this.nbins = nbins;
 	}
 
-	/**
-	 * Get the expected minimum value in the input image
-	 *
-	 * @return the expected minimum value
-	 */
 	public float getMin() {
 		return min;
 	}
 
 	/**
-	 * Set the expected minimum value. The new value will not take effect until
-	 * {@link #analyseImage(FImage)} is called.
-	 *
-	 * @param min
-	 *            the minimum to set
+	 * 设置最小个数
 	 */
 	public void setMin(float min) {
 		this.min = min;
 	}
 
 	/**
-	 * Get the expected maximum value in the input image.
+	 * 得到最大的个数.
 	 *
-	 * @return the expected maximum value
 	 */
 	public float getMax() {
 		return max;
 	}
 
 	/**
-	 * Set the expected maximum value. The new value will not take effect until
-	 * {@link #analyseImage(FImage)} is called.
+	 * 设置最大值和最小值
 	 *
-	 * @param max
-	 *            the maximum to set
 	 */
 	public void setMax(float max) {
 		this.max = max;
 	}
 
 	/**
-	 * Computes the bin-map for this image.
+	 * 计算图片的位图
 	 */
 	@Override
 	public void analyseImage(FImage image) {
@@ -163,34 +92,19 @@ public class BinnedWindowedExtractor implements ImageAnalyser<FImage>, WindowedH
 	}
 
 	/**
-	 * Get the bin-map created in the last call to {@link #analyseImage(FImage)}
+	 * 得到创建的位图
 	 * .
 	 *
-	 * @return the bin map
 	 */
 	public int[][] getBinMap() {
 		return binMap;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.openimaj.image.analysis.algorithm.ImageHistogramAnalyser#computeHistogram
-	 * (org.openimaj.math.geometry.shape.Rectangle)
-	 */
 	@Override
 	public Histogram computeHistogram(Rectangle roi) {
 		return computeHistogram((int) roi.x, (int) roi.y, (int) roi.width, (int) roi.height);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.openimaj.image.analysis.algorithm.ImageHistogramAnalyser#computeHistogram
-	 * (int, int, int, int)
-	 */
 	@Override
 	public Histogram computeHistogram(int x, int y, int w, int h) {
 		final Histogram hist = new Histogram(nbins);
@@ -201,37 +115,12 @@ public class BinnedWindowedExtractor implements ImageAnalyser<FImage>, WindowedH
 	}
 
 	/**
-	 * Compute the histogram for the given window. The weight for each bin is
-	 * taken from the given weights image.
-	 *
-	 * @param roi
-	 *            the window
-	 * @param weights
-	 *            the weights image. Must be the same size as the analysed
-	 *            image.
-	 * @return the histogram in the window of the last analysed image
+	 *通过给定的图像，计算直方图
 	 */
 	public Histogram computeHistogram(Rectangle roi, FImage weights) {
 		return computeHistogram((int) roi.x, (int) roi.y, (int) roi.width, (int) roi.height, weights);
 	}
 
-	/**
-	 * Compute the histogram for the given window. The weight for each bin is
-	 * taken from the given weights image.
-	 *
-	 * @param x
-	 *            The x-coordinate of the top-left of the window
-	 * @param y
-	 *            The y-coordinate of the top-left of the window
-	 * @param w
-	 *            The width of the window
-	 * @param h
-	 *            The height of the window
-	 * @param weights
-	 *            the weights image. Must be the same size as the analysed
-	 *            image.
-	 * @return the histogram in the window of the last analysed image
-	 */
 	public Histogram computeHistogram(int x, int y, int w, int h, FImage weights) {
 		final Histogram hist = new Histogram(nbins);
 
@@ -249,27 +138,6 @@ public class BinnedWindowedExtractor implements ImageAnalyser<FImage>, WindowedH
 		return hist;
 	}
 
-	/**
-	 * Compute the histogram for the given window. The weight for each bin is
-	 * taken from the given weights image, and is multiplied by the
-	 * corresponding weight in the window image before accumulation. The size of
-	 * the window is taken from the window weights image.
-	 * <p>
-	 * This method primarily allows you to compute a spatially weighted
-	 * histogram. For example, the window weights image could be a 2D Gaussian,
-	 * and thus the histogram would apply more weight on to the centre pixels.
-	 *
-	 * @param x
-	 *            The x-coordinate of the top-left of the window
-	 * @param y
-	 *            The y-coordinate of the top-left of the window
-	 * @param weights
-	 *            The weights image. Must be the same size as the analysed
-	 *            image.
-	 * @param windowWeights
-	 *            The weights for each pixel in the window.
-	 * @return the histogram in the window of the last analysed image
-	 */
 	public Histogram computeHistogram(int x, int y, FImage weights, FImage windowWeights) {
 		final Histogram hist = new Histogram(nbins);
 
@@ -308,4 +176,5 @@ public class BinnedWindowedExtractor implements ImageAnalyser<FImage>, WindowedH
 			}
 		}
 	}
+
 }

@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.face.alignment;
 
 import java.io.DataInput;
@@ -52,19 +23,12 @@ import edu.hfut.fr.image.processing.face.detection.keypoints.KEDetectedFace;
 import edu.hfut.fr.image.processing.transform.PiecewiseMeshWarp;
 
 /**
- * A MeshWarpAligner aligns facial images using a piecewise mesh warping such
- * that all detected facial keypoints are moved to their canonical coordinates.
- * The warping is accomplished by defining a mesh of triangles and
- * quadrilaterals over the facial keypoints and using bi-linear interpolation to
- * get corrected pixel values.
+ * Meshwarp矫正类
  *
- * @see PiecewiseMeshWarp
- *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
+ * @author wanggang
  */
 public class MeshWarpAligner implements FaceAligner<KEDetectedFace> {
-	// Define the default mesh
+
 	private static final String[][] DEFAULT_MESH_DEFINITION = { { "EYE_LEFT_RIGHT", "EYE_RIGHT_LEFT", "NOSE_MIDDLE" },
 			{ "EYE_LEFT_LEFT", "EYE_LEFT_RIGHT", "NOSE_LEFT" }, { "EYE_RIGHT_RIGHT", "EYE_RIGHT_LEFT", "NOSE_RIGHT" },
 			{ "EYE_LEFT_RIGHT", "NOSE_LEFT", "NOSE_MIDDLE" }, { "EYE_RIGHT_LEFT", "NOSE_RIGHT", "NOSE_MIDDLE" },
@@ -72,60 +36,31 @@ public class MeshWarpAligner implements FaceAligner<KEDetectedFace> {
 			{ "MOUTH_RIGHT", "NOSE_RIGHT", "NOSE_MIDDLE" }, { "MOUTH_LEFT", "NOSE_LEFT", "EYE_LEFT_LEFT" },
 			{ "MOUTH_RIGHT", "NOSE_RIGHT", "EYE_RIGHT_RIGHT" },
 
-	// { "P0", "EYE_LEFT_LEFT", "EYE_LEFT_RIGHT" },
-	// { "P1", "EYE_RIGHT_RIGHT", "EYE_RIGHT_LEFT" },
-	// { "P0", "EYE_LEFT_RIGHT", "EYE_RIGHT_LEFT", "P1" },
-	// { "P3", "MOUTH_LEFT", "MOUTH_RIGHT", "P2" },
-
-	// { "P0", "EYE_LEFT_LEFT", "MOUTH_LEFT" },
-	// { "P1", "EYE_RIGHT_RIGHT", "MOUTH_RIGHT" },
-	// {"P0", "P3", "MOUTH_LEFT"},
-	// {"P1", "P2", "MOUTH_RIGHT"},
-
-	// { "P0", "EYE_LEFT_RIGHT", "EYE_RIGHT_LEFT" },
-	// { "P1", "EYE_RIGHT_LEFT", "EYE_LEFT_RIGHT" },
-	//
-	// { "P3", "MOUTH_LEFT", "MOUTH_RIGHT" },
-	// { "P2", "MOUTH_RIGHT", "MOUTH_LEFT" },
-
-	// {"P3", "EYE_LEFT_LEFT", "MOUTH_LEFT"},
-	// {"P2", "EYE_RIGHT_RIGHT", "MOUTH_RIGHT"},
 	};
 
-	// Define the outer edges
 	private static final Point2d P0 = new Point2dImpl(0, 0);
 	private static final Point2d P1 = new Point2dImpl(80, 0);
 	private static final Point2d P2 = new Point2dImpl(80, 80);
 	private static final Point2d P3 = new Point2dImpl(0, 80);
 
-	// Define the canonical point positions
 	private static FacialKeypoint[] canonical = loadCanonicalPoints();
 
-	// Define the mesh
 	String[][] meshDefinition = DEFAULT_MESH_DEFINITION;
 
 	FImage mask;
 
 	/**
-	 * Default constructor
+	 * 默认构造方法
 	 */
 	public MeshWarpAligner() {
 		this(DEFAULT_MESH_DEFINITION);
 	}
 
-	/**
-	 * Construct with the given mesh definition
-	 *
-	 * @param meshDefinition
-	 *            The mesh definition
-	 */
 	public MeshWarpAligner(String[][] meshDefinition) {
 		this.meshDefinition = meshDefinition;
 
 		final List<Pair<Shape>> mesh = createMesh(canonical);
 
-		// build mask by mapping the canonical coords to themselves on a white
-		// image
 		mask = new FImage((int) P2.getX(), (int) P2.getY());
 		mask.fill(1f);
 		mask = mask.processInplace(new PiecewiseMeshWarp<Float, FImage>(mesh));
@@ -241,4 +176,5 @@ public class MeshWarpAligner implements FaceAligner<KEDetectedFace> {
 
 		ImageUtilities.write(mask, "png", out);
 	}
+
 }

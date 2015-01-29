@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.face.detection;
 
 import java.io.BufferedReader;
@@ -54,65 +25,45 @@ import com.jsaragih.MFCheck;
 import com.jsaragih.Tracker;
 
 /**
- * Face detector based on a constrained local model. Fits a 3D face model to
- * each detection.
+ * 在本地训练完成模型上脸部检测
  *
- * @see CLM
- *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
- *
+ *@author wanggang
  */
 @Reference(type = ReferenceType.Inproceedings, author = { "Jason M. Saragih", "Simon Lucey", "Jeffrey F. Cohn" }, title = "Face alignment through subspace constrained mean-shifts", year = "2009", booktitle = "IEEE 12th International Conference on Computer Vision, ICCV 2009, Kyoto, Japan, September 27 - October 4, 2009", pages = {
 		"1034", "1041" }, publisher = "IEEE", customData = { "doi", "http://dx.doi.org/10.1109/ICCV.2009.5459377",
 		"researchr", "http://researchr.org/publication/SaragihLC09", "cites", "0", "citedby", "0" })
 public class CLMFaceDetector implements FaceDetector<CLMDetectedFace, FImage> {
+
 	/**
-	 * Configuration for the face detector
-	 *
-	 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+	 * 面部检测器配置
 	 *
 	 */
 	public static class Configuration {
-		/** The constrained local model */
 		public CLM clm;
 
-		/** The reference shape */
 		public Matrix referenceShape;
 
-		/** The current shape */
 		public Matrix shape;
 
-		/** The Face detector */
+		/** 面部检测器 */
 		public FDet faceDetector;
 
-		/** The failure checker */
 		public MFCheck failureCheck;
 
-		/** Initialisation similarity */
 		double[] similarity;
 
-		/** The face mesh */
 		public int[][] triangles = null;
 
-		/** The face connections */
 		public int[][] connections = null;
 
-		/** Whether to use the face check (using pixels as a face classifier) */
 		public boolean fcheck = false;
 
-		/** Search window sizes */
 		public int[] windowSize = { 11, 9, 7 };
 
-		/** Number of iterations to use for model fitting */
 		public int nIter = 5;
 
-		/**
-		 * Number of standard deviations from the mean face to allow in the
-		 * model
-		 */
 		public double clamp = 3;
 
-		/** Model fitting optimisation tolerance */
 		public double fTol = 0.01;
 
 		private void read(final InputStream in) {
@@ -145,7 +96,7 @@ public class CLMFaceDetector implements FaceDetector<CLMDetectedFace, FImage> {
 		}
 
 		/**
-		 * Construct with the default model parameters
+		 * 默认模型构造
 		 */
 		public Configuration() {
 			read(Tracker.class.getResourceAsStream("face2.tracker"));
@@ -157,7 +108,7 @@ public class CLMFaceDetector implements FaceDetector<CLMDetectedFace, FImage> {
 	private Configuration config;
 
 	/**
-	 * Default constructor
+	 * 默认构造
 	 */
 	public CLMFaceDetector() {
 		config = new Configuration();
@@ -185,16 +136,6 @@ public class CLMFaceDetector implements FaceDetector<CLMDetectedFace, FImage> {
 		return detectFaces(image, detRects);
 	}
 
-	/**
-	 * Detect faces in the image using the given rectangles as the seeds from
-	 * which to start fitting the model.
-	 *
-	 * @param image
-	 *            the image
-	 * @param detRects
-	 *            the seed rectangles
-	 * @return the detected faces
-	 */
 	public List<CLMDetectedFace> detectFaces(FImage image, List<Rectangle> detRects) {
 		final List<CLMDetectedFace> faces = new ArrayList<CLMDetectedFace>();
 
@@ -222,17 +163,6 @@ public class CLMFaceDetector implements FaceDetector<CLMDetectedFace, FImage> {
 		return faces;
 	}
 
-	/**
-	 * Initialise the shape within the given rectangle based on the given
-	 * reference shape.
-	 *
-	 * @param r
-	 *            The rectangle
-	 * @param shape
-	 *            The shape to initialise
-	 * @param _rshape
-	 *            The reference shape
-	 */
 	private void initShape(final Rectangle r, final Matrix shape, final Matrix _rshape) {
 		assert ((shape.getRowDimension() == _rshape.getRowDimension()) && (shape.getColumnDimension() == _rshape
 				.getColumnDimension()));
@@ -255,11 +185,10 @@ public class CLMFaceDetector implements FaceDetector<CLMDetectedFace, FImage> {
 	}
 
 	/**
-	 * Get the internal configuration of the detector.
-	 *
-	 * @return the internal configuration of the detector.
+	 * 获得检测器内部配置
 	 */
 	public Configuration getConfiguration() {
 		return config;
 	}
+
 }

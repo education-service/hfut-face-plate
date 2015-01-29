@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.objectdetection.filtering;
 
 import java.util.ArrayList;
@@ -36,79 +7,45 @@ import org.openimaj.math.geometry.shape.Rectangle;
 import org.openimaj.util.pair.ObjectIntPair;
 
 /**
- * Filter to perform the grouping of detection rectangles in the way OpenCV
- * does. Basically the groups are formed by grouping together all the rectangles
- * that overlap by a certain amount. For each group, the mean rectangle is
- * calculated. Groups that have too little support are removed, as are groups
- * that are enclosed by other groups.
+ * 使用opencv方法显示检测矩阵区域
  *
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanghao
  */
 public final class OpenCVGrouping implements DetectionFilter<Rectangle, ObjectIntPair<Rectangle>> {
-	/**
-	 * The default eps value for determining whether two rectangles overlap
-	 * enough to be considered as being of the same group.
-	 */
+
 	public static final float DEFAULT_EPS = 0.2f;
 
-	/**
-	 * The default value for the minimum number of rectangles required within a
-	 * group.
-	 */
 	public static final int DEFAULT_MINIMUM_SUPPORT = 3;
 
 	float eps;
 	int minSupport;
 
 	/**
-	 * Construct a new {@link OpenCVGrouping} with the given parameters.
-	 *
-	 * @param eps
-	 *            The eps value for determining whether two rectangles overlap
-	 *            enough to be considered as being of the same group.
-	 * @param minSupport
-	 *            The minimum number of rectangles required within a group.
-	 *            Groups with less than this number of rectangles will be
-	 *            removed.
+	 *构造函数
 	 */
 	public OpenCVGrouping(float eps, int minSupport) {
 		this.eps = eps;
 		this.minSupport = minSupport;
 	}
 
-	/**
-	 * Construct a new {@link OpenCVGrouping} with the given minimum support
-	 * number. The {@link #DEFAULT_EPS} value is used for the eps.
-	 *
-	 * @param minSupport
-	 *            The minimum number of rectangles required within a group.
-	 *            Groups with less than this number of rectangles will be
-	 *            removed.
-	 */
 	public OpenCVGrouping(int minSupport) {
 		this(DEFAULT_EPS, minSupport);
 	}
 
-	/**
-	 * Construct a new {@link OpenCVGrouping} with the default values of
-	 * {@link #DEFAULT_EPS} for the eps and {@link #DEFAULT_MINIMUM_SUPPORT} for
-	 * the support.
-	 */
 	public OpenCVGrouping() {
 		this(DEFAULT_EPS, DEFAULT_MINIMUM_SUPPORT);
 	}
 
+	/**
+	 * 返回矩阵对象队列
+	 */
 	@Override
 	public List<ObjectIntPair<Rectangle>> apply(List<Rectangle> input) {
 		final int[] classes = new int[input.size()];
 		final int nClasses = partition(input, classes);
 
-		// Compute the mean rectangle per class
-		final Rectangle[] meanRects = new Rectangle[nClasses]; // mean rect
-																// storage per
-																// class
-		final int[] rectCounts = new int[nClasses]; // number of rectangles per
-													// class
+		final Rectangle[] meanRects = new Rectangle[nClasses];
+		final int[] rectCounts = new int[nClasses];
 		for (int i = 0; i < nClasses; i++) {
 			meanRects[i] = new Rectangle(0, 0, 0, 0);
 		}
@@ -130,8 +67,6 @@ public final class OpenCVGrouping implements DetectionFilter<Rectangle, ObjectIn
 					Math.round(r.height * s));
 		}
 
-		// now filter out any classes that have too few rectangles, or is a
-		// small rectangles inclosed by another class.
 		final List<ObjectIntPair<Rectangle>> rectList = new ArrayList<ObjectIntPair<Rectangle>>();
 		for (int i = 0; i < nClasses; i++) {
 			final Rectangle r1 = meanRects[i];
@@ -140,7 +75,6 @@ public final class OpenCVGrouping implements DetectionFilter<Rectangle, ObjectIn
 			if (n1 <= minSupport)
 				continue;
 
-			// filter out small face rectangles inside large rectangles
 			int j;
 			for (j = 0; j < nClasses; j++) {
 				final int n2 = rectCounts[j];
@@ -192,4 +126,5 @@ public final class OpenCVGrouping implements DetectionFilter<Rectangle, ObjectIn
 				&& Math.abs(r1.x + r1.width - r2.x - r2.width) <= delta && Math
 				.abs(r1.y + r1.height - r2.y - r2.height) <= delta);
 	}
+
 }

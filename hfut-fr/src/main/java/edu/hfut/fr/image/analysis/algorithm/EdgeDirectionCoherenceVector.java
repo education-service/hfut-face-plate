@@ -19,7 +19,6 @@ import edu.hfut.fr.image.processing.edges.CannyEdgeDetector2;
  * 边缘协同向量
  *
  * @author wanggang
- *
  */
 @SuppressWarnings("deprecation")
 public class EdgeDirectionCoherenceVector implements ImageAnalyser<FImage>, FeatureVectorProvider<DoubleFV> {
@@ -34,6 +33,7 @@ public class EdgeDirectionCoherenceVector implements ImageAnalyser<FImage>, Feat
 		public Histogram incoherentHistogram = null;
 
 		public DoubleFV asDoubleFV() {
+
 			final double[] d = new double[coherentHistogram.values.length + incoherentHistogram.values.length];
 			int i = 0;
 			for (final double dd : coherentHistogram.asDoubleVector())
@@ -70,19 +70,6 @@ public class EdgeDirectionCoherenceVector implements ImageAnalyser<FImage>, Feat
 
 	public EdgeDirectionCoherenceVector() {
 		cannyEdgeDetector = new CannyEdgeDetector2();
-	}
-
-	public int getNumberOfDirBins() {
-		return numberOfDirBins;
-	}
-
-	public void setNumberOfBins(int nb) {
-		this.numberOfDirBins = nb;
-		this.directionThreshold = 360 / numberOfDirBins;
-	}
-
-	public EdgeDirectionCoherenceHistogram getLastHistogram() {
-		return coDirHist;
 	}
 
 	@Override
@@ -168,6 +155,46 @@ public class EdgeDirectionCoherenceVector implements ImageAnalyser<FImage>, Feat
 		}
 
 		image.internalAssign(outputImage);
+	}
+
+	public CannyEdgeDetector2 getCannyEdgeDetector() {
+		return cannyEdgeDetector;
+	}
+
+	/**
+	 * 获取协同因子
+	 */
+	public double getCoherenceFactor() {
+		return coherenceFactor;
+	}
+
+	@Override
+	public DoubleFV getFeatureVector() {
+		return coDirHist.asMultidimensionalDoubleFV();
+	}
+
+	public EdgeDirectionCoherenceHistogram getHistogram() {
+		return coDirHist;
+	}
+
+	public EdgeDirectionCoherenceHistogram getLastHistogram() {
+		return coDirHist;
+	}
+
+	public int getNumberOfDirBins() {
+		return numberOfDirBins;
+	}
+
+	/**
+	 * 设置协同因子
+	 */
+	public void setCoherenceFactor(double coherenceFactor) {
+		this.coherenceFactor = coherenceFactor;
+	}
+
+	public void setNumberOfBins(int nb) {
+		this.numberOfDirBins = nb;
+		this.directionThreshold = 360 / numberOfDirBins;
 	}
 
 	private List<Point2d> getConnectedEdges(int xx, int yy, int w, int h, float p, int numberOfBins, FImage edgeImage,
@@ -266,33 +293,6 @@ public class EdgeDirectionCoherenceVector implements ImageAnalyser<FImage>, Feat
 				connected = false;
 		}
 		return v;
-	}
-
-	public EdgeDirectionCoherenceHistogram getHistogram() {
-		return coDirHist;
-	}
-
-	@Override
-	public DoubleFV getFeatureVector() {
-		return coDirHist.asMultidimensionalDoubleFV();
-	}
-
-	public CannyEdgeDetector2 getCannyEdgeDetector() {
-		return cannyEdgeDetector;
-	}
-
-	/**
-	 * 获取协同因子
-	 */
-	public double getCoherenceFactor() {
-		return coherenceFactor;
-	}
-
-	/**
-	 * 设置协同因子
-	 */
-	public void setCoherenceFactor(double coherenceFactor) {
-		this.coherenceFactor = coherenceFactor;
 	}
 
 }

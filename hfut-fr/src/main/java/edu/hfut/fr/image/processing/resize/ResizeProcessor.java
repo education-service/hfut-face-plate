@@ -1,32 +1,3 @@
-/**
- * Copyright (c) 2011, The University of Southampton and the individual contributors.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- *
- *   * 	Redistributions of source code must retain the above copyright notice,
- * 	this list of conditions and the following disclaimer.
- *
- *   *	Redistributions in binary form must reproduce the above copyright notice,
- * 	this list of conditions and the following disclaimer in the documentation
- * 	and/or other materials provided with the distribution.
- *
- *   *	Neither the name of the University of Southampton nor the names of its
- * 	contributors may be used to endorse or promote products derived from this
- * 	software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package edu.hfut.fr.image.processing.resize;
 
 import org.openimaj.citation.annotation.Reference;
@@ -39,115 +10,45 @@ import org.openimaj.math.geometry.shape.Rectangle;
 import edu.hfut.fr.image.processing.resize.filters.TriangleFilter;
 
 /**
- * Image processor and utility methods that can resize images.
- * <p>
- * Based on <code>filter_rcg.c</code> by Dale Schumacher and Ray Gardener from
- * Graphics Gems III, with improvements from TwelveMonkeys and ImageMagick,
- * which in-particular fix normalisation problems.
+ * 图像处理中调整图片大小的方法
  *
- * @author David Dupplaw (dpd@ecs.soton.ac.uk)
- * @author Sina Samangooei (ss@ecs.soton.ac.uk)
- * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
+ * @author wanggang
  */
 @Reference(type = ReferenceType.Incollection, author = { "Schumacher, Dale" }, title = "Graphics Gems III", year = "1992", pages = {
 		"8", "", "16" }, chapter = "General Filtered Image Rescaling", url = "http://dl.acm.org/citation.cfm?id=130745.130747", editor = { "Kirk, David" }, publisher = "Academic Press Professional, Inc.", customData = {
 		"isbn", "0-12-409671-9", "numpages", "9", "acmid", "130747", "address", "San Diego, CA, USA" })
 public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> {
+
 	/**
-	 * The resize mode to use.
-	 *
-	 * @author Sina Samangooei (ss@ecs.soton.ac.uk)
-	 * @author David Dupplaw (dpd@ecs.soton.ac.uk)
-	 * @author Jonathon Hare (jsh2@ecs.soton.ac.uk)
-	 *
-	 * @created 4 Apr 2011
+	 * 调整大小的模式
 	 */
 	public static enum Mode {
-		/** Double the size of the image using bilinear interpolation */
-		DOUBLE,
-		/** Halve the size of the image, by sampling alternate pixels */
-		HALF,
-		/** Scale the image using the given factors */
-		SCALE,
-		/** Resize the image preserving aspect ratio */
-		ASPECT_RATIO,
-		/** Resize the image to fit */
-		FIT,
-		/**
-		 * Resize to so that the longest side is at most the given maximum.
-		 * Images smaller than the max size are unchanged.
-		 */
-		MAX,
-		/**
-		 * Resize to so that the area is at most the given maximum. Images with
-		 * an area smaller than the max area are unchanged.
-		 */
-		MAX_AREA,
-		/** Lazyness operator to allow the quick switching off of resize filters **/
-		NONE,
+		DOUBLE, HALF, SCALE, ASPECT_RATIO, FIT, MAX, MAX_AREA, NONE,
 	}
 
-	/** The resize mode to use. */
 	private Mode mode = null;
 
-	/** The amount to scale the image by */
 	private float amount = 0;
 
-	/** The new width of the image */
 	private float newX;
 
-	/** The new height of the image */
 	private float newY;
 
-	/** The resize filter function to use */
 	private ResizeFilterFunction filterFunction;
 
-	/**
-	 * The default {@link TriangleFilter} (bilinear-interpolation filter) used
-	 * by instances of {@link ResizeProcessor}, unless otherwise specified.
-	 */
 	public static final ResizeFilterFunction DEFAULT_FILTER = TriangleFilter.INSTANCE;
 
-	/**
-	 * Constructor that takes the resize mode. Use this function if you only
-	 * want to {@link Mode#DOUBLE double} or {@link Mode#HALF halve} the image
-	 * size.
-	 *
-	 * @param mode
-	 *            The resize mode.
-	 */
 	public ResizeProcessor(Mode mode) {
 		this.mode = mode;
 		this.filterFunction = DEFAULT_FILTER;
 	}
 
-	/**
-	 * Constructor a resize processor that will rescale the image by a given
-	 * scale factor using the given filter function.
-	 *
-	 * @param amount
-	 *            The amount to scale the image by
-	 * @param ff
-	 *            The resize filter function to use.
-	 */
 	public ResizeProcessor(float amount, ResizeFilterFunction ff) {
 		this.mode = Mode.SCALE;
 		this.amount = amount;
 		this.filterFunction = ff;
 	}
 
-	/**
-	 * Construct a resize processor that will rescale the image to the given
-	 * width and height with the given filter function. By default, this method
-	 * will retain the image's aspect ratio.
-	 *
-	 * @param newX
-	 *            The new width of the image.
-	 * @param newY
-	 *            The new height of the image.
-	 * @param ff
-	 *            The filter function to use.
-	 */
 	public ResizeProcessor(float newX, float newY, ResizeFilterFunction ff) {
 		this.mode = Mode.ASPECT_RATIO;
 		this.newX = newX;
@@ -155,41 +56,14 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 		this.filterFunction = ff;
 	}
 
-	/**
-	 * Constructor a resize processor that will rescale the image by a given
-	 * scale factor using the default filter function.
-	 *
-	 * @param amount
-	 *            The amount to scale the image by
-	 */
 	public ResizeProcessor(float amount) {
 		this(amount, DEFAULT_FILTER);
 	}
 
-	/**
-	 * Construct a resize processor that will rescale the image to the given
-	 * width and height with the default filter function. By default, this
-	 * method will retain the image's aspect ratio which means that the
-	 * resulting image may have dimensions less than those specified here.
-	 *
-	 * @param newX
-	 *            The new width of the image.
-	 * @param newY
-	 *            The new height of the image.
-	 */
 	public ResizeProcessor(float newX, float newY) {
 		this(newX, newY, DEFAULT_FILTER);
 	}
 
-	/**
-	 * Construct a resize processor that will rescale images that are taller or
-	 * wider than the given size such that their biggest side is equal to the
-	 * given size. Images that have both sides smaller than the given size will
-	 * be unchanged.
-	 *
-	 * @param maxSize
-	 *            The maximum allowable height or width
-	 */
 	public ResizeProcessor(int maxSize) {
 		this.mode = Mode.MAX;
 		this.newX = maxSize;
@@ -197,40 +71,12 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 		this.filterFunction = DEFAULT_FILTER;
 	}
 
-	/**
-	 * Construct a resize processor that will rescale images that are either
-	 * bigger than a maximum area or are taller or wider than the given size
-	 * such that their biggest side is equal to the given size. Images that have
-	 * a smaller area or both sides smaller than the given size will be
-	 * unchanged.
-	 *
-	 * @param maxSizeArea
-	 *            The maximum allowable area, or height or width
-	 * @param area
-	 *            If true, then the limit is the area; false means limit is
-	 *            longest side.
-	 */
 	public ResizeProcessor(int maxSizeArea, boolean area) {
 		this.mode = area ? Mode.MAX_AREA : Mode.MAX;
 		this.newX = maxSizeArea;
 		this.newY = maxSizeArea;
 	}
 
-	/**
-	 * Construct a resize processor that will rescale the image to the given
-	 * width and height (optionally maintaining aspect ratio) with the default
-	 * filter function. If <code>aspectRatio</code> is false the image will be
-	 * stretched to fit within the new width and height. If
-	 * <code>aspectRatio</code> is set to true, the resulting images may have
-	 * dimensions less than those specified here.
-	 *
-	 * @param newX
-	 *            The new width of the image.
-	 * @param newY
-	 *            The new height of the image.
-	 * @param aspectRatio
-	 *            Whether to maintain the aspect ratio or not
-	 */
 	public ResizeProcessor(int newX, int newY, boolean aspectRatio) {
 		this(newX, newY, DEFAULT_FILTER);
 
@@ -240,23 +86,6 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 			this.mode = Mode.FIT;
 	}
 
-	/**
-	 * Construct a resize processor that will rescale the image to the given
-	 * width and height (optionally maintaining aspect ratio) with the given
-	 * filter function. If <code>aspectRatio</code> is false the image will be
-	 * stretched to fit within the new width and height. If
-	 * <code>aspectRatio</code> is set to true, the resulting images may have
-	 * dimensions less than those specified here.
-	 *
-	 * @param newX
-	 *            The new width of the image.
-	 * @param newY
-	 *            The new height of the image.
-	 * @param aspectRatio
-	 *            Whether to maintain the aspect ratio or not
-	 * @param filterf
-	 *            The filter function
-	 */
 	public ResizeProcessor(int newX, int newY, boolean aspectRatio, ResizeFilterFunction filterf) {
 		this(newX, newY, filterf);
 
@@ -266,11 +95,6 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 			this.mode = Mode.FIT;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @see org.openimaj.image.processor.ImageProcessor#processImage(org.openimaj.image.Image)
-	 */
 	@Override
 	public void processImage(FImage image) {
 		switch (this.mode) {
@@ -303,26 +127,16 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * Set the filter function used by the filter
+	 * 设置滤波器方法
 	 *
-	 * @param filterFunction
-	 *            the filter function
 	 */
 	public void setFilterFunction(ResizeFilterFunction filterFunction) {
 		this.filterFunction = filterFunction;
 	}
 
 	/**
-	 * Resize an image such that its biggest size is at most as big as the given
-	 * size. Images whose sides are smaller than the given size are untouched.
+	 * 调整图像大小
 	 *
-	 * @param image
-	 *            the image to resize
-	 * @param maxDim
-	 *            the maximum allowable length for the longest side.
-	 * @param filterf
-	 *            The filter function
-	 * @return the input image, appropriately resized.
 	 */
 	public static FImage resizeMax(FImage image, int maxDim, ResizeFilterFunction filterf) {
 		final int width = image.width;
@@ -347,16 +161,7 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * Resize an image such that its area size is at most as big as the given
-	 * area. Images whose ares are smaller than the given area are untouched.
-	 *
-	 * @param image
-	 *            the image to resize
-	 * @param maxArea
-	 *            the maximum allowable area.
-	 * @param filterf
-	 *            The filter function
-	 * @return the input image, appropriately resized.
+	 * 调整图像大小
 	 */
 	public static FImage resizeMaxArea(FImage image, int maxArea, ResizeFilterFunction filterf) {
 		final int width = image.width;
@@ -377,14 +182,7 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * Resize an image such that its biggest size is at most as big as the given
-	 * size. Images whose sides are smaller than the given size are untouched.
-	 *
-	 * @param image
-	 *            the image to resize
-	 * @param maxDim
-	 *            the maximum allowable length for the longest side.
-	 * @return the input image, resized appropriately
+	 * 调整图像大小
 	 */
 	public static FImage resizeMax(FImage image, int maxDim) {
 		final int width = image.width;
@@ -409,14 +207,7 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * Resize an image such that its area size is at most as big as the given
-	 * area. Images whose ares are smaller than the given area are untouched.
-	 *
-	 * @param image
-	 *            the image to resize
-	 * @param maxArea
-	 *            the maximum allowable area.
-	 * @return the input image, resized appropriately
+	 * 调整图像大小
 	 */
 	public static FImage resizeMaxArea(FImage image, int maxArea) {
 		final int width = image.width;
@@ -437,25 +228,14 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * Double the size of the image.
-	 *
-	 * @param <I>
-	 *            the image type
-	 *
-	 * @param image
-	 *            The image to double in size
-	 * @return a copy of the original image with twice the size
+	 * 双倍大小
 	 */
 	public static <I extends Image<?, I> & SinglebandImageProcessor.Processable<Float, FImage, I>> I doubleSize(I image) {
 		return image.process(new ResizeProcessor(Mode.DOUBLE));
 	}
 
 	/**
-	 * Double the size of the image.
-	 *
-	 * @param image
-	 *            The image to double in size
-	 * @return a copy of the original image with twice the size
+	 * 双倍大小
 	 */
 	public static FImage doubleSize(FImage image) {
 		int nheight, nwidth;
@@ -486,26 +266,14 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * Halve the size of the image.
-	 *
-	 * @param <I>
-	 *
-	 * @param image
-	 *            The image halve in size
-	 * @return a copy of the input image with half the size
+	 * 一半大小
 	 */
 	public static <I extends Image<?, I> & SinglebandImageProcessor.Processable<Float, FImage, I>> I halfSize(I image) {
 		return image.process(new ResizeProcessor(Mode.HALF));
 	}
 
 	/**
-	 * Halve the size of the image. Note that this method just samples every
-	 * other pixel and will produce aliasing unless the image has been
-	 * pre-filtered.
-	 *
-	 * @param image
-	 *            The image halve in size
-	 * @return a copy the the image with half the size
+	 * 一半大小
 	 */
 	public static FImage halfSize(FImage image) {
 		int newheight, newwidth;
@@ -532,40 +300,17 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * Returns a new image that is a resampled version of the given image.
-	 *
-	 * @param in
-	 *            The source image
-	 * @param newX
-	 *            The new width of the image
-	 * @param newY
-	 *            The new height of the image
-	 * @return A new {@link FImage}
+	 * 指定大小
 	 */
 	public static FImage resample(FImage in, int newX, int newY) {
 		return resample(in.clone(), newX, newY, false);
 	}
 
 	/**
-	 * Resamples the given image returning it as a reference. If
-	 * <code>aspect</code> is true, the aspect ratio of the image will be
-	 * retained, which means newX or newY could be smaller than given here. The
-	 * dimensions of the new image will not be larger than newX or newY.
-	 * Side-affects the given image.
-	 *
-	 * @param in
-	 *            The source image
-	 * @param newX
-	 *            The new width of the image
-	 * @param newY
-	 *            The new height of the image
-	 * @param aspect
-	 *            Whether to maintain the aspect ratio
-	 * @return the input image, resized appropriately
+	 * 指定大小
 	 */
 	public static FImage resample(FImage in, int newX, int newY, boolean aspect) {
-		// Work out the size of the resampled image
-		// if the aspect ratio is set to true
+
 		int nx = newX;
 		int ny = newY;
 		if (aspect) {
@@ -580,27 +325,10 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * Resamples the given image returning it as a reference. If
-	 * <code>aspect</code> is true, the aspect ratio of the image will be
-	 * retained, which means newX or newY could be smaller than given here. The
-	 * dimensions of the new image will not be larger than newX or newY.
-	 * Side-affects the given image.
-	 *
-	 * @param in
-	 *            The source image
-	 * @param newX
-	 *            The new width of the image
-	 * @param newY
-	 *            The new height of the image
-	 * @param aspect
-	 *            Whether to maintain the aspect ratio
-	 * @param filterf
-	 *            The filter function
-	 * @return the input image, resized appropriately
+	 * 指定大小
 	 */
 	public static FImage resample(FImage in, int newX, int newY, boolean aspect, ResizeFilterFunction filterf) {
-		// Work out the size of the resampled image
-		// if the aspect ratio is set to true
+
 		int nx = newX;
 		int ny = newY;
 		if (aspect) {
@@ -615,22 +343,18 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * For the port of the zoom function
+	 * 变焦
 	 *
-	 * @author David Dupplaw (dpd@ecs.soton.ac.uk)
 	 *
 	 */
 	static class PixelContribution {
-		/** Index of the pixel */
 		int pixel;
 
 		double weight;
 	}
 
 	/**
-	 * For the port of the zoom function
-	 *
-	 * @author David Dupplaw (dpd@ecs.soton.ac.uk)
+	 * 变焦
 	 *
 	 */
 	static class PixelContributions {
@@ -640,25 +364,7 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * Calculates the filter weights for a single target column. contribX->p
-	 * must be freed afterwards.
-	 *
-	 * @param contribX
-	 *            Receiver of contrib info
-	 * @param xscale
-	 *            Horizontal zooming scale
-	 * @param fwidth
-	 *            Filter sampling width
-	 * @param dstwidth
-	 *            Target bitmap width
-	 * @param srcwidth
-	 *            Source bitmap width
-	 * @param filterf
-	 *            Filter processor
-	 * @param i
-	 *            Pixel column in source bitmap being processed
-	 *
-	 * @returns -1 if error, 0 otherwise.
+	 * 计算滤波器权重
 	 */
 	private static void calc_x_contrib(PixelContributions contribX, double xscale, double fwidth, int dstwidth,
 			int srcwidth, ResizeFilterFunction filterf, int i) {
@@ -668,12 +374,12 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 		double weight;
 
 		if (xscale < 1.0) {
-			/* Shrinking image */
+
 			width = fwidth / xscale;
 			fscale = 1.0 / xscale;
 
 			if (width <= .5) {
-				// Reduce to point sampling.
+
 				width = .5 + 1.0e-6;
 				fscale = 1.0;
 			}
@@ -718,14 +424,13 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 			}
 
 			if ((density != 0.0) && (density != 1.0)) {
-				// Normalize.
+
 				density = 1.0 / density;
 				for (int k = 0; k < contribX.numberOfContributors; k++) {
 					contribX.contributions[k].weight *= density;
 				}
 			}
 		} else {
-			/* Expanding image */
 			contribX.numberOfContributors = 0;
 			contribX.contributions = new PixelContribution[(int) (fwidth * 2.0 + 1.0)];
 
@@ -760,18 +465,10 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 				contribX.contributions[k].weight = weight;
 			}
 		}
-	}/* calcXContrib */
+	}
 
 	/**
-	 * Resizes an image.
-	 *
-	 * @param in
-	 *            The source image
-	 * @param newX
-	 *            The desired width of the image
-	 * @param newY
-	 *            The desired height of the image
-	 * @return the input image, resized appropriately
+	 * 调整图片大小
 	 */
 	public static FImage zoomInplace(FImage in, int newX, int newY) {
 		final ResizeFilterFunction filter = DEFAULT_FILTER;
@@ -779,17 +476,7 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * Resizes an image.
-	 *
-	 * @param newX
-	 *            New width of the image
-	 * @param newY
-	 *            New height of the image
-	 * @param in
-	 *            The source image
-	 * @param filterf
-	 *            The filter function
-	 * @return the input image, resized appropriately
+	 * 调整图片大小
 	 */
 	public static FImage zoomInplace(FImage in, int newX, int newY, ResizeFilterFunction filterf) {
 		final FImage dst = new FImage(newX, newY);
@@ -799,16 +486,7 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 	}
 
 	/**
-	 * Resizes bitmaps while resampling them.
-	 *
-	 * @param dst
-	 *            Destination Image
-	 * @param in
-	 *            Source Image
-	 * @param filterf
-	 *            Filter to use
-	 *
-	 * @return the destination image
+	 * 调整图片大小
 	 */
 	public static FImage zoom(FImage in, FImage dst, ResizeFilterFunction filterf) {
 		final int dstWidth = dst.getWidth();
@@ -820,7 +498,6 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 		final double xscale = (double) dstWidth / (double) srcWidth;
 		final double yscale = (double) dstHeight / (double) srcHeight;
 
-		/* create intermediate column to hold horizontal dst column zoom */
 		final float[] work = new float[in.height];
 
 		final PixelContributions[] contribY = new PixelContributions[dstHeight];
@@ -830,14 +507,14 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 
 		final float maxValue = in.max();
 
-		// TODO: What to do when fwidth > srcHeight or dstHeight
+		// TODO
 		final double fwidth = filterf.getSupport();
 		if (yscale < 1.0) {
 			double width = fwidth / yscale;
 			double fscale = 1.0 / yscale;
 
 			if (width <= .5) {
-				// Reduce to point sampling.
+
 				width = .5 + 1.0e-6;
 				fscale = 1.0;
 			}
@@ -881,7 +558,7 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 				}
 
 				if ((density != 0.0) && (density != 1.0)) {
-					// Normalize.
+
 					density = 1.0 / density;
 					for (int k = 0; k < contribY[i].numberOfContributors; k++) {
 						contribY[i].contributions[k].weight *= density;
@@ -928,12 +605,10 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 			final PixelContributions contribX = new PixelContributions();
 			calc_x_contrib(contribX, xscale, fwidth, dst.width, in.width, filterf, xx);
 
-			/* Apply horiz filter to make dst column in tmp. */
 			for (int k = 0; k < srcHeight; k++) {
 				double weight = 0.0;
 				boolean bPelDelta = false;
-				// TODO: This line throws index out of bounds, if the image
-				// is smaller than filter.support()
+
 				final double pel = in.pixels[k][contribX.contributions[0].pixel];
 				for (int j = 0; j < contribX.numberOfContributors; j++) {
 					final double pel2 = j == 0 ? pel : in.pixels[k][contribX.contributions[j].pixel];
@@ -951,20 +626,14 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 				}
 
 				work[k] = (float) weight;
-			}/* next row in temp column */
+			}
 
-			/*
-			 * The temp column has been built. Now stretch it vertically into
-			 * dst column.
-			 */
 			for (int i = 0; i < dstHeight; i++) {
 				double weight = 0.0;
 				boolean bPelDelta = false;
 				final double pel = work[contribY[i].contributions[0].pixel];
 
 				for (int j = 0; j < contribY[i].numberOfContributors; j++) {
-					// TODO: This line throws index out of bounds, if the
-					// image is smaller than filter.support()
 					final double pel2 = j == 0 ? pel : work[contribY[i].contributions[j].pixel];
 					if (pel2 != pel) {
 						bPelDelta = true;
@@ -980,61 +649,36 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 				}
 
 				dst.pixels[i][xx] = (float) weight;
-			} /* next dst row */
-		} /* next dst column */
+			}
+		}
 
 		return dst;
 	}
 
 	/**
-	 * Draws one portion of an image into another, resampling as necessary using
-	 * the default filter function.
-	 *
-	 * @param dst
-	 *            Destination Image
-	 * @param in
-	 *            Source Image
-	 * @param inRect
-	 *            the location of pixels in the source image
-	 * @param dstRect
-	 *            the destination of pixels in the destination image
-	 * @return the destination image
+	 * 抽取图像一部分加入到另一幅图中
 	 */
 	public static FImage zoom(FImage in, Rectangle inRect, FImage dst, Rectangle dstRect) {
 		return zoom(in, inRect, dst, dstRect, DEFAULT_FILTER);
 	}
 
 	/**
-	 * Draws one portion of an image into another, resampling as necessary.
-	 *
-	 * @param dst
-	 *            Destination Image
-	 * @param in
-	 *            Source Image
-	 * @param inRect
-	 *            the location of pixels in the source image
-	 * @param dstRect
-	 *            the destination of pixels in the destination image
-	 * @param filterf
-	 *            Filter to use
-	 *
-	 * @return the destination image
+	 * 抽取图像一部分加入到另一幅图中
 	 */
 	public static FImage zoom(FImage in, Rectangle inRect, FImage dst, Rectangle dstRect, ResizeFilterFunction filterf) {
-		// First some sanity checking!
+
 		if (!in.getBounds().isInside(inRect) || !dst.getBounds().isInside(dstRect))
 			throw new IllegalArgumentException("Bad bounds");
 
-		double xscale, yscale; /* zoom scale factors */
-		int n; /* pixel number */
-		double center, left, right; /* filter calculation variables */
+		double xscale, yscale;
+		int n;
+		double center, left, right;
 		double width, fscale;
-		double weight; /* filter calculation variables */
+		double weight;
 		boolean bPelDelta;
 		float pel, pel2;
 		PixelContributions contribX;
 
-		// This is a convenience
 		final FImage src = in;
 		final int srcX = (int) inRect.x;
 		final int srcY = (int) inRect.y;
@@ -1048,13 +692,10 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 
 		final float maxValue = in.max();
 
-		/* create intermediate column to hold horizontal dst column zoom */
 		final Float[] work = new Float[srcHeight];
 
 		xscale = (double) dstWidth / (double) srcWidth;
 
-		/* Build y weights */
-		/* pre-calculate filter contributions for a column */
 		final PixelContributions[] contribY = new PixelContributions[dstHeight];
 
 		yscale = (double) dstHeight / (double) srcHeight;
@@ -1092,7 +733,7 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 				}
 
 				if ((density != 0.0) && (density != 1.0)) {
-					// Normalize.
+
 					density = 1.0 / density;
 					for (int k = 0; k < contribY[i].numberOfContributors; k++) {
 						contribY[i].contributions[k].weight *= density;
@@ -1132,7 +773,6 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 			contribX = new PixelContributions();
 			calc_x_contrib(contribX, xscale, fwidth, dstWidth, srcWidth, filterf, xx);
 
-			/* Apply horz filter to make dst column in tmp. */
 			for (int k = 0; k < srcHeight; ++k) {
 				weight = 0.0;
 				bPelDelta = false;
@@ -1154,12 +794,8 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 				}
 
 				work[k] = (float) weight;
-			} /* next row in temp column */
+			}
 
-			/*
-			 * The temp column has been built. Now stretch it vertically into
-			 * dst column.
-			 */
 			for (int i = 0; i < dstHeight; ++i) {
 				weight = 0.0;
 				bPelDelta = false;
@@ -1182,9 +818,10 @@ public class ResizeProcessor implements SinglebandImageProcessor<Float, FImage> 
 
 				dst.pixels[i + dstY][xx + dstX] = (float) weight;
 
-			} /* next dst row */
-		} /* next dst column */
+			}
+		}
 
 		return dst;
-	} /* zoom */
+	}
+
 }
