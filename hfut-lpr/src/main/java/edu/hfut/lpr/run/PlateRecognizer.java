@@ -24,7 +24,7 @@ public class PlateRecognizer {
 	private static Logger logger = LoggerFactory.getLogger(PlateRecognizer.class);
 
 	public static void main(String[] args) {
-		String str = PlateRecognizer.recognizeResult("china-plates/test_007.jpg");
+		String str = PlateRecognizer.recognizeResult("english-plates/test_001.jpg");
 		System.out.println(str);
 	}
 

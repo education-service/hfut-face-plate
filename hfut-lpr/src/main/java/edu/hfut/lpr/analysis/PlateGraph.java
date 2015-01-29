@@ -96,7 +96,7 @@ public class PlateGraph extends Graph {
 				break;
 			}
 
-			int leftIndex = this.indexOfLeftPeakRel(maxIndex, PlateGraph.peakFootConstant); // urci
+			int leftIndex = this.indexOfLeftPeakRel(maxIndex, PlateGraph.peakFootConstant);
 			int rightIndex = this.indexOfRightPeakRel(maxIndex, PlateGraph.peakFootConstant);
 
 			spacesTemp.add(new Peak(Math.max(0, leftIndex), maxIndex, Math.min(this.yValues.size() - 1, rightIndex)));

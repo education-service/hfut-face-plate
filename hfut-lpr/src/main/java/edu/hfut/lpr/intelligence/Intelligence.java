@@ -395,7 +395,7 @@ public class Intelligence {
 					continue;
 				}
 
-				Vector<Char> chars = plate.getChars("china", (bandCount - 1) + "_" + plateCount++ + ".jpg");
+				Vector<Char> chars = plate.getChars();
 
 				// 将候选车牌图保存下来，用于校验
 				try {
@@ -405,7 +405,7 @@ public class Intelligence {
 				}
 
 				// 将字符图保存下来，用于校验
-				//				int charCount = 0;
+				int charCount = 0;
 				//				for (Char chr : chars) {
 				//					try {
 				//						chr.saveImage("tmp/car/bands/plates/chars/char_" + (bandCount - 1) + "_" + (plateCount - 1)

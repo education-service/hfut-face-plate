@@ -19,7 +19,7 @@ public class PlateRecognizerTest {
 
 	@Test
 	public void testRecognizeResult() throws IOException {
-		BufferedImage image = ImageIO.read(new File("src/test/resources/snapshots/test_041.jpg"));
+		BufferedImage image = ImageIO.read(new File("src/test/resources/en-snapshots/test_041.jpg"));
 		String spz = PlateRecognizer.recognizeResult(image);
 		assertEquals("LM025BD", spz);
 	}

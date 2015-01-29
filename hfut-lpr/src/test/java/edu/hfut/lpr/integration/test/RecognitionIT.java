@@ -42,7 +42,7 @@ public class RecognitionIT {
 	 */
 	@Test
 	public void intelligenceSingleTest() throws IOException, ParserConfigurationException, SAXException {
-		final String image = "snapshots/test_041.jpg";
+		final String image = "en-snapshots/test_041.jpg";
 
 		//	5秒中加载图像
 		/*InputStream is = Configurator.getConfigurator().getResourceAsStream(image);
@@ -86,7 +86,7 @@ public class RecognitionIT {
 	@Test
 	public void testAllSnapshots() throws Exception {
 
-		String snapshotDirPath = "src/test/resources/snapshots";
+		String snapshotDirPath = "src/test/resources/en-snapshots";
 		String resultsPath = "src/test/resources/results.properties";
 		InputStream resultsStream = new FileInputStream(new File(resultsPath));
 

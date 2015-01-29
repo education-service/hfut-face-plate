@@ -31,7 +31,7 @@ public class ReportGeneratorTest {
 	@Test
 	public void testInsertImage_Valid() throws IllegalArgumentException, IOException {
 		final int w = 1;
-		try (final CarSnapshot carSnapshot = new CarSnapshot("snapshots/test_001.jpg");) {
+		try (final CarSnapshot carSnapshot = new CarSnapshot("en-snapshots/test_002.jpg");) {
 			final BufferedImage image = carSnapshot.renderGraph();
 			final String cls = "test";
 			final int h = 1;
@@ -47,7 +47,7 @@ public class ReportGeneratorTest {
 	 */
 	@Test
 	public void testInsertImage_BadInput() throws IllegalArgumentException, IOException {
-		try (final CarSnapshot carSnapshot = new CarSnapshot("snapshots/test_00.jpg");) {
+		try (final CarSnapshot carSnapshot = new CarSnapshot("en-snapshots/test_00.jpg");) {
 			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
 			final int w = 1;
 			final BufferedImage image = carSnapshot.renderGraph();
@@ -106,7 +106,7 @@ public class ReportGeneratorTest {
 	public void testSaveStreamToFile_InvalidOutput() throws IllegalArgumentException, IOException {
 		try {
 			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
-			final InputStream inStream = new FileInputStream("src/test/resources/snapshots/test_001.jpg");
+			final InputStream inStream = new FileInputStream("src/test/resources/en-snapshots/test_002.jpg");
 			reportGenerator.saveStreamToFile(inStream, null);
 		} catch (final Exception e) {
 			assertEquals(null, e.getMessage());
@@ -119,7 +119,7 @@ public class ReportGeneratorTest {
 	@Test
 	public void testSaveStreamToFile_Valid() throws IllegalArgumentException, IOException {
 		final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
-		final InputStream inStream = new FileInputStream("src/test/resources/snapshots/test_001.jpg");
+		final InputStream inStream = new FileInputStream("src/test/resources/en-snapshots/test_002.jpg");
 		final File io = new File("target/test-classes/out.txt");
 		reportGenerator.saveStreamToFile(inStream, io);
 		StringBuilder sb = new StringBuilder();
@@ -132,7 +132,7 @@ public class ReportGeneratorTest {
 	 */
 	@Test
 	public void testSaveImage_Valid() throws IllegalArgumentException, IOException {
-		try (final CarSnapshot carSnapshot = new CarSnapshot("snapshots/test_001.jpg");) {
+		try (final CarSnapshot carSnapshot = new CarSnapshot("en-snapshots/test_002.jpg");) {
 			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
 			final BufferedImage image = carSnapshot.renderGraph();
 			reportGenerator.saveImage(image, "png");
@@ -146,7 +146,7 @@ public class ReportGeneratorTest {
 	 */
 	@Test
 	public void testSaveImage_InvalidInput() throws IllegalArgumentException, IOException {
-		try (final CarSnapshot carSnapshot = new CarSnapshot("snapshots/test_001.jpg");) {
+		try (final CarSnapshot carSnapshot = new CarSnapshot("en-snapshots/test_002.jpg");) {
 			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
 			final BufferedImage image = carSnapshot.renderGraph();
 			reportGenerator.saveImage(image, "target/test-classes/txt");

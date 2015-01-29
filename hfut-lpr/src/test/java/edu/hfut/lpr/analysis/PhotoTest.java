@@ -19,7 +19,7 @@ public class PhotoTest {
 
 	@Test
 	public void cloneTest() throws Exception {
-		InputStream fstream = Configurator.getConfigurator().getResourceAsStream("snapshots/test_041.jpg");
+		InputStream fstream = Configurator.getConfigurator().getResourceAsStream("en-snapshots/test_041.jpg");
 		assertNotNull(fstream);
 		Photo photo = new Photo(fstream);
 		fstream.close();

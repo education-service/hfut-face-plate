@@ -10,7 +10,7 @@
 
 	<!-- 倾斜检测 -->
 	
-    <entry key="intelligence_skewdetection">1</entry><!-- 倾斜矫正： 0 - 关闭， 1 - 开启 -->
+    <entry key="intelligence_skewdetection">0</entry><!-- 倾斜矫正： 0 - 关闭， 1 - 开启 -->
 
 	<!-- 候选车牌搜索 -->
 
@@ -23,8 +23,8 @@
     <entry key="intelligence_minimumChars">5</entry> <!-- 检测字符的最小数量 -->
     <entry key="intelligence_maximumChars">15</entry> <!-- 检测字符的最大数量 -->
     <entry key="intelligence_maxCharWidthDispersion">0.5</entry> <!-- 最大字符宽度分散系或离差 -->
-    <entry key="intelligence_minPlateWidthHeightRatio">1.5</entry> <!-- 最小车牌宽长比例width/height --> 
-    <entry key="intelligence_maxPlateWidthHeightRatio">5.0</entry> <!-- 最大车牌宽长比例 --> 
+    <entry key="intelligence_minPlateWidthHeightRatio">0.5</entry> <!-- 最小车牌宽长比例width/height --> 
+    <entry key="intelligence_maxPlateWidthHeightRatio">15.0</entry> <!-- 最大车牌宽长比例 --> 
 
 	<!-- 字符启发式处理参数 (确定字符的限制条件) -->
 
@@ -61,24 +61,23 @@
 
 	<!-- 已识别车牌的有序评分分析 -->
 
-	<!-- 评分分析模式 : 0 - 不进行纠错， 1 - 仅当字符数匹配时进行纠错， 2 - 总是进行纠错 (消除冗余字符) -->
-    <entry key="intelligence_syntaxanalysis">2</entry> 
-    <entry key="intelligence_syntaxDescriptionFile">syntax/syntax.xml</entry>
+    <entry key="intelligence_syntaxanalysis">2</entry> <!-- 评分分析模式 : 0 - 不进行纠错， 1 - 仅当字符数匹配时进行纠错， 2 - 总是进行纠错 (消除冗余字符) -->
+    <entry key="intelligence_syntaxDescriptionFile">syntax/syntax.xml</entry> <!-- 评分描述文件 -->
 
 	<!-- 车辆快照图，带状图，车牌分析图分析 -->
 
-    <entry key="carsnapshot_graphrankfilter">9</entry>
-    <entry key="carsnapshot_distributormargins">25</entry>
-    <entry key="carsnapshotgraph_peakDiffMultiplicationConstant">0.1</entry>
-    <entry key="carsnapshotgraph_peakfootconstant">0.55</entry>
+    <entry key="carsnapshot_graphrankfilter">9</entry> <!-- 车辆快照分析图排名过滤器 -->
+    <entry key="carsnapshot_distributormargins">25</entry> <!-- 车辆拍照快照图分布器边际分布因数 -->
+    <entry key="carsnapshotgraph_peakDiffMultiplicationConstant">0.1</entry> <!-- 车牌快照分析图峰差乘积常量 -->
+    <entry key="carsnapshotgraph_peakfootconstant">0.55</entry> <!-- 车辆快照分析图峰脚常量 -->
 
-    <entry key="bandgraph_peakDiffMultiplicationConstant">0.2</entry>
-    <entry key="bandgraph_peakfootconstant">0.55</entry>
+    <entry key="bandgraph_peakDiffMultiplicationConstant">0.2</entry> <!-- 带状图峰差乘积常量 -->
+    <entry key="bandgraph_peakfootconstant">0.55</entry> <!-- 带状图峰脚常量 -->
 
     <entry key="platehorizontalgraph_detectionType">1</entry> <!-- 车牌水平分析图检测类型：0 - 幅度值倒数, 1 - 边缘检测 -->
-    <entry key="platehorizontalgraph_peakfootconstant">0.05</entry>
-    <entry key="plateverticalgraph_peakfootconstant">0.42</entry>
-    <entry key="plategraph_rel_minpeaksize">0.86</entry>
-    <entry key="plategraph_peakfootconstant">0.7</entry>
+    <entry key="platehorizontalgraph_peakfootconstant">0.05</entry> <!-- 车牌水平分析图峰脚常量 -->
+    <entry key="plateverticalgraph_peakfootconstant">0.42</entry> <!-- 车牌垂直分析图峰脚常量 -->
+    <entry key="plategraph_rel_minpeaksize">0.86</entry> <!-- 车牌分析图实际最小峰大小 -->
+    <entry key="plategraph_peakfootconstant">0.7</entry> <!-- 车牌分析图峰脚常量 -->
 
 </properties>
