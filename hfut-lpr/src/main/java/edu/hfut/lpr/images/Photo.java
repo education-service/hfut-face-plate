@@ -18,7 +18,7 @@ import java.math.BigInteger;
 
 import javax.imageio.ImageIO;
 
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * 照片对象
@@ -459,7 +459,7 @@ public class Photo implements AutoCloseable, Cloneable {
 	public void adaptiveThresholding() {
 
 		Statistics stat = new Statistics(this);
-		int radius = ConfUtil.getConfigurator().getIntProperty("photo_adaptivethresholdingradius");
+		int radius = ConfigUtil.getConfigurator().getIntProperty("photo_adaptivethresholdingradius");
 		if (radius == 0) {
 			this.plainThresholding(stat);
 			return;

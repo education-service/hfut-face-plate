@@ -12,7 +12,7 @@ import edu.hfut.lpr.frame.Reporter;
 import edu.hfut.lpr.images.CarSnapshot;
 import edu.hfut.lpr.images.Char;
 import edu.hfut.lpr.tackle.TackleCore;
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * <p>简单的车牌识别，通过命令行输入参数</p>
@@ -57,8 +57,8 @@ public class SimpleLPR {
 	 */
 	public static void newAlphabet(String srcdir, String dstdir) throws IOException {
 
-		int x = ConfUtil.getConfigurator().getIntProperty("char_normalizeddimensions_x");
-		int y = ConfUtil.getConfigurator().getIntProperty("char_normalizeddimensions_y");
+		int x = ConfigUtil.getConfigurator().getIntProperty("char_normalizeddimensions_x");
+		int y = ConfigUtil.getConfigurator().getIntProperty("char_normalizeddimensions_y");
 		System.out.println("\nCreating new alphabet (" + x + " x " + y + " px)... \n");
 
 		for (String fileName : Char.getAlphabetList(srcdir)) {
@@ -118,7 +118,7 @@ public class SimpleLPR {
 
 		} else if ((args.length == 3) && args[0].equals("-newconfig") && args[1].equals("-o")) {
 			// 保存配置文件信息到args[2]中
-			ConfUtil configurator = new ConfUtil();
+			ConfigUtil configurator = new ConfigUtil();
 			try {
 				configurator.saveConfiguration(args[2]);
 			} catch (IOException e) {

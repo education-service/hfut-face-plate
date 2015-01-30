@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
 
 import edu.hfut.lpr.core.CharRecognizer.RecognizedChar;
 import edu.hfut.lpr.run.SimpleLPR;
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * 解析器
@@ -106,13 +106,13 @@ public class XMLParser {
 
 		this.plateForms = new Vector<>();
 
-		String fileName = ConfUtil.getConfigurator().getPathProperty("intelligence_syntaxDescriptionFile");
+		String fileName = ConfigUtil.getConfigurator().getPathProperty("intelligence_syntaxDescriptionFile");
 
 		if (fileName == null || fileName.isEmpty()) {
 			throw new IOException("Failed to get syntax description file from Configurator");
 		}
 
-		InputStream inStream = ConfUtil.getConfigurator().getResourceAsStream(fileName);
+		InputStream inStream = ConfigUtil.getConfigurator().getResourceAsStream(fileName);
 
 		if (inStream == null) {
 			throw new IOException("Couldn't find parser syntax description file");
@@ -133,7 +133,7 @@ public class XMLParser {
 	@Deprecated
 	public Vector<PlateForm> loadFromXml(String fileName) throws ParserConfigurationException, SAXException,
 			IOException {
-		InputStream inStream = ConfUtil.getConfigurator().getResourceAsStream(fileName);
+		InputStream inStream = ConfigUtil.getConfigurator().getResourceAsStream(fileName);
 		return this.loadFromXml(inStream);
 	}
 

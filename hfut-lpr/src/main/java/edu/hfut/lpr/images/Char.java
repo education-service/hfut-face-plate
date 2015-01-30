@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Vector;
 
 import edu.hfut.lpr.core.CharRecognizer;
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * 车牌中字符图像
@@ -51,7 +51,7 @@ public class Char extends Photo {
 	 * @throws IOException
 	 */
 	public Char(String fileName) throws IOException {
-		super(ConfUtil.getConfigurator().getResourceAsStream(fileName));
+		super(ConfigUtil.getConfigurator().getResourceAsStream(fileName));
 		// this.thresholdedImage = this.image;
 		BufferedImage origin = Photo.duplicateBufferedImage(this.image);
 		this.adaptiveThresholding();
@@ -156,14 +156,14 @@ public class Char extends Photo {
 	 * 对图像进行大小标准化
 	 */
 	private void normalizeResizeOnly() {
-		int x = ConfUtil.getConfigurator().getIntProperty("char_normalizeddimensions_x");
-		int y = ConfUtil.getConfigurator().getIntProperty("char_normalizeddimensions_y");
+		int x = ConfigUtil.getConfigurator().getIntProperty("char_normalizeddimensions_x");
+		int y = ConfigUtil.getConfigurator().getIntProperty("char_normalizeddimensions_y");
 		if ((x == 0) || (y == 0)) {
 			return;
 			// this.linearResize(x,y);
 		}
 
-		if (ConfUtil.getConfigurator().getIntProperty("char_resizeMethod") == 0) {
+		if (ConfigUtil.getConfigurator().getIntProperty("char_resizeMethod") == 0) {
 			this.linearResize(x, y);
 		} else {
 			this.averageResize(x, y);
@@ -310,7 +310,7 @@ public class Char extends Photo {
 	 * 提取特征信息
 	 */
 	public Vector<Double> extractFeatures() {
-		int featureExtractionMethod = ConfUtil.getConfigurator().getIntProperty("char_featuresExtractionMethod");
+		int featureExtractionMethod = ConfigUtil.getConfigurator().getIntProperty("char_featuresExtractionMethod");
 		if (featureExtractionMethod == 0) {
 			return this.extractMapFeatures();
 		} else {
@@ -348,7 +348,7 @@ public class Char extends Photo {
 		for (int i = 0; i < alphaString.length(); i++) {
 			s = directory + File.separator + alphaString.charAt(i) + suffix + ".jpg";
 
-			if (ConfUtil.getConfigurator().getResourceAsStream(s) != null) {
+			if (ConfigUtil.getConfigurator().getResourceAsStream(s) != null) {
 				filenames.add(s);
 			}
 		}

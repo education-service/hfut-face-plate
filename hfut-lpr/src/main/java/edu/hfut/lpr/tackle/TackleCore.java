@@ -21,7 +21,7 @@ import edu.hfut.lpr.images.HoughTransformation;
 import edu.hfut.lpr.images.Photo;
 import edu.hfut.lpr.images.Plate;
 import edu.hfut.lpr.run.SimpleLPR;
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * 智能信息处理类
@@ -35,7 +35,7 @@ public class TackleCore {
 	private static long lastProcessDuration = 0;
 
 	// 配置文件类
-	private static ConfUtil configurator = ConfUtil.getConfigurator();
+	private static ConfigUtil configurator = ConfigUtil.getConfigurator();
 
 	// 字符识别
 	public static CharRecognizer chrRecog;

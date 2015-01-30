@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Vector;
 
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * 车辆快照图
@@ -18,7 +18,7 @@ import edu.hfut.lpr.utils.ConfUtil;
 public class CarSnapshot extends Photo {
 
 	// 车辆快照图的分布器边缘值
-	private static int distributor_margins = ConfUtil.getConfigurator().getIntProperty(
+	private static int distributor_margins = ConfigUtil.getConfigurator().getIntProperty(
 			"carsnapshot_distributormargins");
 
 	// private static int carsnapshot_projectionresize_x =
@@ -27,11 +27,11 @@ public class CarSnapshot extends Photo {
 	// Main.configurator.getIntProperty("carsnapshot_projectionresize_y");
 
 	// 车辆快照图的统计图排名过滤值
-	public static int carsnapshot_graphrankfilter = ConfUtil.getConfigurator().getIntProperty(
+	public static int carsnapshot_graphrankfilter = ConfigUtil.getConfigurator().getIntProperty(
 			"carsnapshot_graphrankfilter");
 
 	// 候选车牌区域数
-	static private int numberOfCandidates = ConfUtil.getConfigurator().getIntProperty("intelligence_numberOfBands");
+	static private int numberOfCandidates = ConfigUtil.getConfigurator().getIntProperty("intelligence_numberOfBands");
 
 	// 车辆快照统计图
 	private CarSnapshotGraph graphHandle = null;
@@ -41,7 +41,7 @@ public class CarSnapshot extends Photo {
 			CarSnapshot.distributor_margins, CarSnapshot.distributor_margins);
 
 	public CarSnapshot(String filename) throws IOException {
-		super(ConfUtil.getConfigurator().getResourceAsStream(filename));
+		super(ConfigUtil.getConfigurator().getResourceAsStream(filename));
 
 	}
 

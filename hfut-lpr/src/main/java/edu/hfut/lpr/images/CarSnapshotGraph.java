@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * 车辆快照统计图
@@ -15,11 +15,11 @@ import edu.hfut.lpr.utils.ConfUtil;
 public class CarSnapshotGraph extends Graph {
 
 	// 车辆快照峰脚值，方便在图像中搜索带状图
-	private static double peakFootConstant = ConfUtil.getConfigurator().getDoubleProperty(
+	private static double peakFootConstant = ConfigUtil.getConfigurator().getDoubleProperty(
 			"carsnapshotgraph_peakfootconstant"); // 0.55
 
 	// 波峰差相乘常量
-	private static double peakDiffMultiplicationConstant = ConfUtil.getConfigurator().getDoubleProperty(
+	private static double peakDiffMultiplicationConstant = ConfigUtil.getConfigurator().getDoubleProperty(
 			"carsnapshotgraph_peakDiffMultiplicationConstant"); // 0.1
 
 	CarSnapshot handle;

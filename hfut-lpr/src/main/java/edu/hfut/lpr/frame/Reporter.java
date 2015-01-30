@@ -10,7 +10,7 @@ import java.io.Writer;
 
 import javax.imageio.ImageIO;
 
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * 生成报告
@@ -91,8 +91,8 @@ public class Reporter {
 		writer.flush();
 		writer.close();
 
-		String cssPath = ConfUtil.getConfigurator().getPathProperty("reportgeneratorcss");
-		InputStream inStream = ConfUtil.getConfigurator().getResourceAsStream(cssPath);
+		String cssPath = ConfigUtil.getConfigurator().getPathProperty("reportgeneratorcss");
+		InputStream inStream = ConfigUtil.getConfigurator().getResourceAsStream(cssPath);
 
 		this.saveStreamToFile(inStream, new File(this.directory + File.separator + "style.css"));
 	}

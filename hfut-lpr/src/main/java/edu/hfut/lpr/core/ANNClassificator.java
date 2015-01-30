@@ -9,7 +9,7 @@ import edu.hfut.lpr.ann.IOPair;
 import edu.hfut.lpr.ann.NeuralNetwork;
 import edu.hfut.lpr.ann.SetOfIOPairs;
 import edu.hfut.lpr.images.Char;
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * 神经网络分类器
@@ -20,9 +20,9 @@ import edu.hfut.lpr.utils.ConfUtil;
 public class ANNClassificator extends CharRecognizer {
 
 	// 字符标准化x维度值
-	private static int normalize_x = ConfUtil.getConfigurator().getIntProperty("char_normalizeddimensions_x");
+	private static int normalize_x = ConfigUtil.getConfigurator().getIntProperty("char_normalizeddimensions_x");
 	// 字符标准化y维度值
-	private static int normalize_y = ConfUtil.getConfigurator().getIntProperty("char_normalizeddimensions_y");
+	private static int normalize_y = ConfigUtil.getConfigurator().getIntProperty("char_normalizeddimensions_y");
 
 	// 神经网络规模： 10 x 16 = 160
 	public NeuralNetwork network;
@@ -34,7 +34,7 @@ public class ANNClassificator extends CharRecognizer {
 
 	public ANNClassificator(boolean learn) {
 
-		ConfUtil configurator = ConfUtil.getConfigurator();
+		ConfigUtil configurator = ConfigUtil.getConfigurator();
 
 		//		this.normalize_x = configurator.getIntProperty("char_normalizeddimensions_x");
 		//		this.normalize_y = configurator.getIntProperty("char_normalizeddimensions_y");
@@ -140,7 +140,7 @@ public class ANNClassificator extends CharRecognizer {
 		ArrayList<String> fileList = (ArrayList<String>) Char.getAlphabetList(folder);
 
 		for (String fileName : fileList) {
-			InputStream is = ConfUtil.getConfigurator().getResourceAsStream(fileName);
+			InputStream is = ConfigUtil.getConfigurator().getResourceAsStream(fileName);
 
 			Char imgChar = new Char(is);
 			imgChar.normalize();
@@ -149,9 +149,9 @@ public class ANNClassificator extends CharRecognizer {
 			is.close();
 		}
 
-		this.network.learn(train, ConfUtil.getConfigurator().getIntProperty("neural_maxk"), ConfUtil
+		this.network.learn(train, ConfigUtil.getConfigurator().getIntProperty("neural_maxk"), ConfigUtil
 				.getConfigurator().getDoubleProperty("neural_eps"),
-				ConfUtil.getConfigurator().getDoubleProperty("neural_lambda"), ConfUtil.getConfigurator()
+				ConfigUtil.getConfigurator().getDoubleProperty("neural_lambda"), ConfigUtil.getConfigurator()
 						.getDoubleProperty("neural_micro"));
 	}
 

@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.net.URL;
 
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * Frame帮助类
@@ -29,11 +29,11 @@ public class FrameAssit extends javax.swing.JFrame {
 		this.setLocation((screenSize.width - width) / 2, (screenSize.height - height) / 2);
 		try {
 			if (mode == FrameAssit.SHOW_ABOUT) {
-				URL url = getClass().getResource(ConfUtil.getConfigurator().getPathProperty("help_file_about"));
+				URL url = getClass().getResource(ConfigUtil.getConfigurator().getPathProperty("help_file_about"));
 				System.out.println(url);
 				this.editorPane.setPage(url);
 			} else {
-				URL url = getClass().getResource(ConfUtil.getConfigurator().getPathProperty("help_file_help"));
+				URL url = getClass().getResource(ConfigUtil.getConfigurator().getPathProperty("help_file_help"));
 				System.out.println(url);
 				this.editorPane.setPage(url);
 			}

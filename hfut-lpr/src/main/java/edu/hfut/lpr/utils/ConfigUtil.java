@@ -2,12 +2,9 @@ package edu.hfut.lpr.utils;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
@@ -17,9 +14,9 @@ import java.util.Properties;
  * @author wanggang
  *
  */
-public class ConfUtil {
+public class ConfigUtil {
 
-	private static ConfUtil configurator;
+	private static ConfigUtil configurator;
 
 	/* 默认的配置文件名 */
 	private String fileName = "config.xml";
@@ -30,7 +27,7 @@ public class ConfUtil {
 	/* 包含配置文件中的所有配置属性 */
 	private Properties list;
 
-	public ConfUtil() throws IOException {
+	public ConfigUtil() throws IOException {
 		this.list = new Properties();
 
 		/********* Start：默认属性值定义 ********/
@@ -108,14 +105,14 @@ public class ConfUtil {
 		this.setStrProperty("help_file_about", "/help/about.html");
 		this.setStrProperty("reportgeneratorcss", "/reportgenerator/style.css");
 
-		InputStream is = this.getResourceAsStream(this.fileName);
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream(this.fileName);
 
 		if (is != null) {
 			this.loadConfiguration(is);
 			is.close();
 		}
 
-		ConfUtil.configurator = this;
+		ConfigUtil.configurator = this;
 	}
 
 	public void setConfigurationFileName(String name) {
@@ -194,52 +191,17 @@ public class ConfUtil {
 	}
 
 	public InputStream getResourceAsStream(String filename) {
-
-		String corrected = filename;
-
-		URL f = this.getClass().getResource(corrected);
-		//		URL f = this.getClass().getClassLoader().getResource(corrected);
-		if (f != null) {
-			return this.getClass().getResourceAsStream(corrected);
-			//			return this.getClass().getResourceAsStream(corrected);
-		}
-
 		if (filename.startsWith("/")) {
-			corrected = filename.substring(1);
-		} else if (filename.startsWith("./")) {
-			corrected = filename.substring(2);
+			return this.getClass().getClassLoader().getResourceAsStream(filename.substring(1));
 		} else {
-			corrected = "/" + filename;
+			return this.getClass().getClassLoader().getResourceAsStream(filename);
 		}
-
-		f = this.getClass().getResource(corrected);
-		//		f = this.getClass().getClassLoader().getResource(corrected);
-
-		if (f != null) {
-			return this.getClass().getResourceAsStream(corrected);
-			//			return this.getClass().getClassLoader().getResourceAsStream(corrected);
-		}
-
-		File file = new File(filename);
-		if (file.exists()) {
-			FileInputStream fis = null;
-
-			try {
-				fis = new FileInputStream(file);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-
-			return fis;
-		}
-
-		return null;
 	}
 
-	public static ConfUtil getConfigurator() {
+	public static ConfigUtil getConfigurator() {
 		if (configurator == null) {
 			try {
-				configurator = new ConfUtil();
+				configurator = new ConfigUtil();
 			} catch (IOException e) {
 				e.printStackTrace();
 				return null;

@@ -5,7 +5,7 @@ import java.awt.image.ConvolveOp;
 import java.awt.image.Kernel;
 import java.util.Vector;
 
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * 完整车牌图像对象
@@ -19,10 +19,10 @@ public class Plate extends Photo {
 	static public Graph.ProbabilityDistributor distributor = new Graph.ProbabilityDistributor(0, 0, 0, 0);
 
 	// 候选车牌数量
-	static private int numberOfCandidates = ConfUtil.getConfigurator().getIntProperty("intelligence_numberOfChars");
+	static private int numberOfCandidates = ConfigUtil.getConfigurator().getIntProperty("intelligence_numberOfChars");
 
 	// 水平检测类型
-	private static int horizontalDetectionType = ConfUtil.getConfigurator().getIntProperty(
+	private static int horizontalDetectionType = ConfigUtil.getConfigurator().getIntProperty(
 			"platehorizontalgraph_detectionType");
 
 	// 车牌统计图

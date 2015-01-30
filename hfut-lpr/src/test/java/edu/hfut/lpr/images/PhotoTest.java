@@ -8,7 +8,7 @@ import java.io.InputStream;
 import org.junit.Test;
 
 import edu.hfut.lpr.images.Photo;
-import edu.hfut.lpr.utils.ConfUtil;
+import edu.hfut.lpr.utils.ConfigUtil;
 
 /**
  * 照片类测试
@@ -20,7 +20,7 @@ public class PhotoTest {
 
 	@Test
 	public void cloneTest() throws Exception {
-		InputStream fstream = ConfUtil.getConfigurator().getResourceAsStream("en-snapshots/test_041.jpg");
+		InputStream fstream = ConfigUtil.getConfigurator().getResourceAsStream("en-snapshots/test_041.jpg");
 		assertNotNull(fstream);
 		Photo photo = new Photo(fstream);
 		fstream.close();
