@@ -16,6 +16,7 @@ import edu.hfut.mapred.images.run.fr.FaceDetectionColor;
 import edu.hfut.mapred.images.run.fr.FaceDetectionGray;
 import edu.hfut.mapred.images.run.fr.FaceRecognitionDistribution;
 import edu.hfut.mapred.images.run.fr.FaceRecognitionTools;
+import edu.hfut.mapred.images.run.fr.FacesSequenceWrite;
 import edu.hfut.mapred.images.run.lpr.PlateRecognitionDistribution;
 
 /**
@@ -51,6 +52,7 @@ public class MapredImagesDriver {
 			pgd.addClass("faceCountGrayOther", FaceCountGrayOther.class, "人脸检测并计数，另一种实现，有默认输入输出格式");
 			pgd.addClass("faceDetectionGray", FaceDetectionGray.class, "灰度图人脸检");
 			pgd.addClass("faceDetectionColor", FaceDetectionColor.class, "彩色图人脸检测");
+			pgd.addClass("facesSequenceWrite", FacesSequenceWrite.class, "人脸样本数据库序列化");
 			pgd.addClass("faceRecognitionDistribution", FaceRecognitionDistribution.class, "人脸识别分布式处理");
 			// 车牌识别相关分布式处理
 			pgd.addClass("plateRecognitionDistribution", PlateRecognitionDistribution.class, "车牌识别分布式处理");
