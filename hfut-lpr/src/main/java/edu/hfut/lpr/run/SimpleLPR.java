@@ -5,13 +5,13 @@ import java.io.IOException;
 
 import javax.swing.UIManager;
 
-import edu.hfut.lpr.analysis.CarSnapshot;
-import edu.hfut.lpr.analysis.Char;
-import edu.hfut.lpr.gui.utils.ReportGenerator;
-import edu.hfut.lpr.gui.windows.FrameComponentInit;
-import edu.hfut.lpr.gui.windows.FrameMain;
-import edu.hfut.lpr.intelligence.Intelligence;
-import edu.hfut.lpr.recognizer.NeuralPatternClassificator;
+import edu.hfut.lpr.core.NeuralPatternClassificator;
+import edu.hfut.lpr.frame.FrameComponentInit;
+import edu.hfut.lpr.frame.FrameMain;
+import edu.hfut.lpr.frame.ReportGenerator;
+import edu.hfut.lpr.images.CarSnapshot;
+import edu.hfut.lpr.images.Char;
+import edu.hfut.lpr.tackle.Intelligence;
 import edu.hfut.lpr.utils.Configurator;
 
 /**

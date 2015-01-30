@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import edu.hfut.lpr.analysis.HoughTransformation;
-import edu.hfut.lpr.analysis.Photo;
+import edu.hfut.lpr.images.HoughTransformation;
+import edu.hfut.lpr.images.Photo;
 
 /**
  * Hough变换工具类

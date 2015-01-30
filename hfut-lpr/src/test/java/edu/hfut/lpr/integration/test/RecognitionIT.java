@@ -19,8 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import edu.hfut.lpr.analysis.CarSnapshot;
-import edu.hfut.lpr.intelligence.Intelligence;
+import edu.hfut.lpr.images.CarSnapshot;
+import edu.hfut.lpr.tackle.Intelligence;
 
 /**
  * 车牌识别集成测试
