@@ -13,7 +13,7 @@ import edu.hfut.lpr.images.Photo;
  * @author wanggang
  *
  */
-public class HoughTool {
+public class HoughUtil {
 
 	/**
 	 * 测试函数
@@ -32,7 +32,7 @@ public class HoughTool {
 		transformed.close();
 	}
 
-	public HoughTool() {
+	public HoughUtil() {
 		//
 	}
 

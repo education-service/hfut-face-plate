@@ -2,7 +2,7 @@ package edu.hfut.lpr.images;
 
 import java.util.Vector;
 
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * 车牌图像水平统计图
@@ -17,7 +17,7 @@ public class PlateHorizontalGraph extends Graph {
 	//			.getDoubleProperty("platehorizontalgraph_peakfootconstant");
 
 	// 水平检测类型
-	private static int horizontalDetectionType = Configurator.getConfigurator().getIntProperty(
+	private static int horizontalDetectionType = ConfUtil.getConfigurator().getIntProperty(
 			"platehorizontalgraph_detectionType");
 
 	Plate handle;

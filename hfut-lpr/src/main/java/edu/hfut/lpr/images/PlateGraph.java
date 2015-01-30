@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * 车牌统计图
@@ -17,11 +17,11 @@ public class PlateGraph extends Graph {
 	Plate handle;
 
 	// 车牌统计图中最小波峰大小
-	private static double plategraph_rel_minpeaksize = Configurator.getConfigurator().getDoubleProperty(
+	private static double plategraph_rel_minpeaksize = ConfUtil.getConfigurator().getDoubleProperty(
 			"plategraph_rel_minpeaksize");
 
 	// 峰脚常量值
-	private static double peakFootConstant = Configurator.getConfigurator().getDoubleProperty(
+	private static double peakFootConstant = ConfUtil.getConfigurator().getDoubleProperty(
 			"plategraph_peakfootconstant");
 
 	public PlateGraph(Plate handle) {

@@ -9,14 +9,14 @@ import java.awt.Toolkit;
  * @author wanggang
  *
  */
-public class FrameComponentInit extends javax.swing.JFrame {
+public class FrameCompInit extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = 1476389227096293590L;
 
 	/**
 	 * 创建新的表单FrameComponentInit
 	 */
-	public FrameComponentInit() {
+	public FrameCompInit() {
 		this.initComponents();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int width = this.getWidth();

@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * 车牌区域统计图
@@ -18,11 +18,11 @@ public class BandGraph extends Graph {
 	private final Band handle;
 
 	// 车牌区域统计图，峰脚常量 0.75
-	private static double peakFootConstant = Configurator.getConfigurator().getDoubleProperty(
+	private static double peakFootConstant = ConfUtil.getConfigurator().getDoubleProperty(
 			"bandgraph_peakfootconstant");
 
 	// 车牌区域统计图，峰差相乘常量值 0.2
-	private static double peakDiffMultiplicationConstant = Configurator.getConfigurator().getDoubleProperty(
+	private static double peakDiffMultiplicationConstant = ConfUtil.getConfigurator().getDoubleProperty(
 			"bandgraph_peakDiffMultiplicationConstant");
 
 	public BandGraph(Band handle) {

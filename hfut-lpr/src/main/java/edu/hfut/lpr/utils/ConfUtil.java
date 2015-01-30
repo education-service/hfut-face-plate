@@ -17,9 +17,9 @@ import java.util.Properties;
  * @author wanggang
  *
  */
-public class Configurator {
+public class ConfUtil {
 
-	private static Configurator configurator;
+	private static ConfUtil configurator;
 
 	/* 默认的配置文件名 */
 	private String fileName = "config.xml";
@@ -30,7 +30,7 @@ public class Configurator {
 	/* 包含配置文件中的所有配置属性 */
 	private Properties list;
 
-	public Configurator() throws IOException {
+	public ConfUtil() throws IOException {
 		this.list = new Properties();
 
 		/********* Start：默认属性值定义 ********/
@@ -115,7 +115,7 @@ public class Configurator {
 			is.close();
 		}
 
-		Configurator.configurator = this;
+		ConfUtil.configurator = this;
 	}
 
 	public void setConfigurationFileName(String name) {
@@ -236,10 +236,10 @@ public class Configurator {
 		return null;
 	}
 
-	public static Configurator getConfigurator() {
+	public static ConfUtil getConfigurator() {
 		if (configurator == null) {
 			try {
-				configurator = new Configurator();
+				configurator = new ConfUtil();
 			} catch (IOException e) {
 				e.printStackTrace();
 				return null;

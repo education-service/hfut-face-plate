@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.net.URL;
 
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * Frame帮助类
@@ -12,7 +12,7 @@ import edu.hfut.lpr.utils.Configurator;
  * @author wanggang
  *
  */
-public class FrameHelp extends javax.swing.JFrame {
+public class FrameAssit extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = -999025095118371586L;
 
@@ -20,7 +20,7 @@ public class FrameHelp extends javax.swing.JFrame {
 	public static int SHOW_ABOUT = 1;
 	public int mode;
 
-	public FrameHelp(int mode) {
+	public FrameAssit(int mode) {
 		this.initComponents();
 		this.mode = mode;
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -28,12 +28,12 @@ public class FrameHelp extends javax.swing.JFrame {
 		int height = this.getHeight();
 		this.setLocation((screenSize.width - width) / 2, (screenSize.height - height) / 2);
 		try {
-			if (mode == FrameHelp.SHOW_ABOUT) {
-				URL url = getClass().getResource(Configurator.getConfigurator().getPathProperty("help_file_about"));
+			if (mode == FrameAssit.SHOW_ABOUT) {
+				URL url = getClass().getResource(ConfUtil.getConfigurator().getPathProperty("help_file_about"));
 				System.out.println(url);
 				this.editorPane.setPage(url);
 			} else {
-				URL url = getClass().getResource(Configurator.getConfigurator().getPathProperty("help_file_help"));
+				URL url = getClass().getResource(ConfUtil.getConfigurator().getPathProperty("help_file_help"));
 				System.out.println(url);
 				this.editorPane.setPage(url);
 			}
@@ -61,7 +61,7 @@ public class FrameHelp extends javax.swing.JFrame {
 		this.helpWindowClose.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				FrameHelp.this.helpWindowCloseActionPerformed(evt);
+				FrameAssit.this.helpWindowCloseActionPerformed(evt);
 			}
 		});
 

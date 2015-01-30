@@ -10,7 +10,7 @@ import java.io.Writer;
 
 import javax.imageio.ImageIO;
 
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * 生成报告
@@ -18,14 +18,14 @@ import edu.hfut.lpr.utils.Configurator;
  * @author wanggang
  *
  */
-public class ReportGenerator {
+public class Reporter {
 
 	private String directory;
 	private String output;
 	// private BufferedWriter out;
 	private boolean enabled;
 
-	public ReportGenerator(String directory) throws IOException {
+	public Reporter(String directory) throws IOException {
 		this.directory = directory;
 		this.enabled = true;
 
@@ -39,7 +39,7 @@ public class ReportGenerator {
 				+ "</style>";
 	}
 
-	public ReportGenerator() {
+	public Reporter() {
 		this.enabled = false;
 	}
 
@@ -91,8 +91,8 @@ public class ReportGenerator {
 		writer.flush();
 		writer.close();
 
-		String cssPath = Configurator.getConfigurator().getPathProperty("reportgeneratorcss");
-		InputStream inStream = Configurator.getConfigurator().getResourceAsStream(cssPath);
+		String cssPath = ConfUtil.getConfigurator().getPathProperty("reportgeneratorcss");
+		InputStream inStream = ConfUtil.getConfigurator().getResourceAsStream(cssPath);
 
 		this.saveStreamToFile(inStream, new File(this.directory + File.separator + "style.css"));
 	}

@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import edu.hfut.lpr.images.CarSnapshot;
-import edu.hfut.lpr.tackle.Intelligence;
+import edu.hfut.lpr.tackle.TackleCore;
 
 /**
  * 车牌识别类
@@ -33,7 +33,7 @@ public class PlateRecognizer {
 		logger.info("Recognizing ImageFile is {}", imageFile);
 		try {
 			CarSnapshot carSnap = new CarSnapshot(imageFile);
-			Intelligence intel = new Intelligence();
+			TackleCore intel = new TackleCore();
 			return intel.recognize(carSnap);
 		} catch (IOException | ParserConfigurationException | SAXException e) {
 			throw new RuntimeException(e);
@@ -44,7 +44,7 @@ public class PlateRecognizer {
 		logger.info("Recognizing ImageFile's width={}, hight={}", imageFile.getWidth(), imageFile.getHeight());
 		try {
 			CarSnapshot carSnap = new CarSnapshot(imageFile);
-			Intelligence intel = new Intelligence();
+			TackleCore intel = new TackleCore();
 			return intel.recognize(carSnap);
 		} catch (IOException | ParserConfigurationException | SAXException e) {
 			throw new RuntimeException(e);
@@ -54,7 +54,7 @@ public class PlateRecognizer {
 	public static String recognizeResult(InputStream imageFile) {
 		try {
 			CarSnapshot carSnap = new CarSnapshot(imageFile);
-			Intelligence intel = new Intelligence();
+			TackleCore intel = new TackleCore();
 			return intel.recognize(carSnap);
 		} catch (IOException | ParserConfigurationException | SAXException e) {
 			throw new RuntimeException(e);

@@ -9,7 +9,7 @@ import edu.hfut.lpr.ann.IOPair;
 import edu.hfut.lpr.ann.NeuralNetwork;
 import edu.hfut.lpr.ann.SetOfIOPairs;
 import edu.hfut.lpr.images.Char;
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * 神经网络分类器
@@ -17,24 +17,24 @@ import edu.hfut.lpr.utils.Configurator;
  * @author wanggang
  *
  */
-public class NeuralPatternClassificator extends CharacterRecognizer {
+public class ANNClassificator extends CharRecognizer {
 
 	// 字符标准化x维度值
-	private static int normalize_x = Configurator.getConfigurator().getIntProperty("char_normalizeddimensions_x");
+	private static int normalize_x = ConfUtil.getConfigurator().getIntProperty("char_normalizeddimensions_x");
 	// 字符标准化y维度值
-	private static int normalize_y = Configurator.getConfigurator().getIntProperty("char_normalizeddimensions_y");
+	private static int normalize_y = ConfUtil.getConfigurator().getIntProperty("char_normalizeddimensions_y");
 
 	// 神经网络规模： 10 x 16 = 160
 	public NeuralNetwork network;
 
 	// 通过加载配置文件来获取训练后的网络模型
-	public NeuralPatternClassificator() {
+	public ANNClassificator() {
 		this(false);
 	}
 
-	public NeuralPatternClassificator(boolean learn) {
+	public ANNClassificator(boolean learn) {
 
-		Configurator configurator = Configurator.getConfigurator();
+		ConfUtil configurator = ConfUtil.getConfigurator();
 
 		//		this.normalize_x = configurator.getIntProperty("char_normalizeddimensions_x");
 		//		this.normalize_y = configurator.getIntProperty("char_normalizeddimensions_y");
@@ -44,15 +44,15 @@ public class NeuralPatternClassificator extends CharacterRecognizer {
 		// 根据选取的特征提取方法来确定输入层大小
 		int inputLayerSize;
 		if (configurator.getIntProperty("char_featuresExtractionMethod") == 0) {
-			inputLayerSize = NeuralPatternClassificator.normalize_x * NeuralPatternClassificator.normalize_y;
+			inputLayerSize = ANNClassificator.normalize_x * ANNClassificator.normalize_y;
 		} else {
-			inputLayerSize = CharacterRecognizer.features.length * 4;
+			inputLayerSize = CharRecognizer.features.length * 4;
 		}
 
 		// 使用指定的维度构造新的神经网络
 		dimensions.add(inputLayerSize);
 		dimensions.add(configurator.getIntProperty("neural_topology"));
-		dimensions.add(CharacterRecognizer.alphabet.length);
+		dimensions.add(CharRecognizer.alphabet.length);
 		this.network = new NeuralNetwork(dimensions);
 
 		// 网络学习阶段
@@ -140,7 +140,7 @@ public class NeuralPatternClassificator extends CharacterRecognizer {
 		ArrayList<String> fileList = (ArrayList<String>) Char.getAlphabetList(folder);
 
 		for (String fileName : fileList) {
-			InputStream is = Configurator.getConfigurator().getResourceAsStream(fileName);
+			InputStream is = ConfUtil.getConfigurator().getResourceAsStream(fileName);
 
 			Char imgChar = new Char(is);
 			imgChar.normalize();
@@ -149,9 +149,9 @@ public class NeuralPatternClassificator extends CharacterRecognizer {
 			is.close();
 		}
 
-		this.network.learn(train, Configurator.getConfigurator().getIntProperty("neural_maxk"), Configurator
+		this.network.learn(train, ConfUtil.getConfigurator().getIntProperty("neural_maxk"), ConfUtil
 				.getConfigurator().getDoubleProperty("neural_eps"),
-				Configurator.getConfigurator().getDoubleProperty("neural_lambda"), Configurator.getConfigurator()
+				ConfUtil.getConfigurator().getDoubleProperty("neural_lambda"), ConfUtil.getConfigurator()
 						.getDoubleProperty("neural_micro"));
 	}
 

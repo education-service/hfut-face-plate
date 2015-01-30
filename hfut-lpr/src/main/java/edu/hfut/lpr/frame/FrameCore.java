@@ -21,7 +21,7 @@ import edu.hfut.lpr.run.SimpleLPR;
  * @author wanggang
  *
  */
-public class FrameMain extends javax.swing.JFrame {
+public class FrameCore extends javax.swing.JFrame {
 
 	private static final long serialVersionUID = 1283761798262612123L;
 
@@ -30,9 +30,9 @@ public class FrameMain extends javax.swing.JFrame {
 	 */
 	public class RecognizeThread extends Thread {
 
-		FrameMain parentFrame = null;
+		FrameCore parentFrame = null;
 
-		public RecognizeThread(FrameMain parentFrame) {
+		public RecognizeThread(FrameCore parentFrame) {
 			this.parentFrame = parentFrame;
 		}
 
@@ -58,10 +58,10 @@ public class FrameMain extends javax.swing.JFrame {
 	 */
 	public class LoadImageThread extends Thread {
 
-		FrameMain parentFrame = null;
+		FrameCore parentFrame = null;
 		String url = null;
 
-		public LoadImageThread(FrameMain parentFrame, String url) {
+		public LoadImageThread(FrameCore parentFrame, String url) {
 			this.parentFrame = parentFrame;
 			this.url = url;
 		}
@@ -89,12 +89,12 @@ public class FrameMain extends javax.swing.JFrame {
 	// Java文件选择器
 	JFileChooser fileChooser;
 	// 文件列表模型
-	private FileListModel fileListModel;
+	private FilesModel fileListModel;
 	// 选择图像索引
 	int selectedIndex = -1;
 
 	// 创建Frame主函数
-	public FrameMain() {
+	public FrameCore() {
 		this.initComponents();
 
 		// 初始化：文件选择
@@ -123,7 +123,7 @@ public class FrameMain extends javax.swing.JFrame {
 			@Override
 			public void paint(Graphics g) {
 				super.paint(g);
-				g.drawImage(FrameMain.this.panelCarContent, 0, 0, null);
+				g.drawImage(FrameCore.this.panelCarContent, 0, 0, null);
 			}
 		};
 		this.fileListScrollPane = new javax.swing.JScrollPane();
@@ -164,7 +164,7 @@ public class FrameMain extends javax.swing.JFrame {
 		this.fileList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
 			@Override
 			public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-				FrameMain.this.fileListValueChanged(evt);
+				FrameCore.this.fileListValueChanged(evt);
 			}
 		});
 
@@ -175,7 +175,7 @@ public class FrameMain extends javax.swing.JFrame {
 		this.recognizeButton.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				FrameMain.this.recognizeButtonActionPerformed(evt);
+				FrameCore.this.recognizeButtonActionPerformed(evt);
 			}
 		});
 
@@ -190,7 +190,7 @@ public class FrameMain extends javax.swing.JFrame {
 		this.openItem.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				FrameMain.this.openItemActionPerformed(evt);
+				FrameCore.this.openItemActionPerformed(evt);
 			}
 		});
 
@@ -201,7 +201,7 @@ public class FrameMain extends javax.swing.JFrame {
 		this.exitItem.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				FrameMain.this.exitItemActionPerformed(evt);
+				FrameCore.this.exitItemActionPerformed(evt);
 			}
 		});
 
@@ -214,7 +214,7 @@ public class FrameMain extends javax.swing.JFrame {
 		this.helpMenu.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				FrameMain.this.helpMenuActionPerformed(evt);
+				FrameCore.this.helpMenuActionPerformed(evt);
 			}
 		});
 
@@ -223,7 +223,7 @@ public class FrameMain extends javax.swing.JFrame {
 		this.aboutItem.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				FrameMain.this.aboutItemActionPerformed(evt);
+				FrameCore.this.aboutItemActionPerformed(evt);
 			}
 		});
 
@@ -234,7 +234,7 @@ public class FrameMain extends javax.swing.JFrame {
 		this.helpItem.addActionListener(new java.awt.event.ActionListener() {
 			@Override
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				FrameMain.this.helpItemActionPerformed(evt);
+				FrameCore.this.helpItemActionPerformed(evt);
 			}
 		});
 
@@ -290,11 +290,11 @@ public class FrameMain extends javax.swing.JFrame {
 	}
 
 	private void helpItemActionPerformed(java.awt.event.ActionEvent evt) {
-		new FrameHelp(FrameHelp.SHOW_HELP);
+		new FrameAssit(FrameAssit.SHOW_HELP);
 	}
 
 	private void aboutItemActionPerformed(java.awt.event.ActionEvent evt) {
-		new FrameHelp(FrameHelp.SHOW_ABOUT);
+		new FrameAssit(FrameAssit.SHOW_ABOUT);
 	}
 
 	private void recognizeButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -314,7 +314,7 @@ public class FrameMain extends javax.swing.JFrame {
 		if ((selectedNow != -1)) {
 			this.recognitionLabel.setText(this.fileListModel.fileList.elementAt(selectedNow).recognizedPlate);
 			this.selectedIndex = selectedNow;
-			String path = ((FileListModel.FileListModelEntry) this.fileListModel.getElementAt(selectedNow)).fullPath;
+			String path = ((FilesModel.FileListModelEntry) this.fileListModel.getElementAt(selectedNow)).fullPath;
 			//			this.showImage(path);
 			new LoadImageThread(this, path).start();
 		}
@@ -342,7 +342,7 @@ public class FrameMain extends javax.swing.JFrame {
 		}
 
 		File[] selectedFiles = this.fileChooser.getSelectedFiles();
-		this.fileListModel = new FileListModel();
+		this.fileListModel = new FilesModel();
 
 		for (File selectedFile : selectedFiles) {
 
@@ -352,7 +352,7 @@ public class FrameMain extends javax.swing.JFrame {
 
 			else if (selectedFile.isDirectory()) {
 				for (String fileName : selectedFile.list()) {
-					if (ImageFileFilter.accept(fileName)) {
+					if (ImageFilter.accept(fileName)) {
 						this.fileListModel.addFileListModelEntry(fileName, selectedFile + File.separator + fileName);
 					}
 				}

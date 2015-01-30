@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * 车牌图像垂直统计图
@@ -15,7 +15,7 @@ import edu.hfut.lpr.utils.Configurator;
 public class PlateVerticalGraph extends Graph {
 
 	// 车牌区域垂直图-峰脚常量值
-	private static double peakFootConstant = Configurator.getConfigurator().getDoubleProperty(
+	private static double peakFootConstant = ConfUtil.getConfigurator().getDoubleProperty(
 			"plateverticalgraph_peakfootconstant");
 
 	Plate handle;

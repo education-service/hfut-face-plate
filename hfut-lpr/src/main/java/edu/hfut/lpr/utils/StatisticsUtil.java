@@ -13,13 +13,13 @@ import java.util.Vector;
  * @author wanggang
  *
  */
-public class StatisticsTool {
+public class StatisticsUtil {
 
 	public static String helpText = "" + "-----------------------------------------------------------\n"
 			+ "LPR 统计分析生成器\n\n命令行参数s\n\n    -help         帮助信息\n    -i <file>     对测试文件创建统计信息\n\n"
 			+ "测试文件必须有一个CSV格式文件\n文件中每一行必须包含车辆图片的名字,\n实际的车辆图片名和识别后的车牌号示例 : \n001.jpg, 1B01234, 1B012??";
 
-	public StatisticsTool() {
+	public StatisticsUtil() {
 		//
 	}
 
@@ -49,7 +49,7 @@ public class StatisticsTool {
 				System.out.println(e.getMessage());
 			}
 		} else {
-			System.out.println(StatisticsTool.helpText);
+			System.out.println(StatisticsUtil.helpText);
 		}
 
 	}

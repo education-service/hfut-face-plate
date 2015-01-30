@@ -8,14 +8,14 @@ import java.util.Calendar;
  * @author wanggang
  *
  */
-public class TimeMeter {
+public class TimeUtil {
 
 	private long startTime;
 
 	/**
 	 * 初始化当前时间
 	 */
-	public TimeMeter() {
+	public TimeUtil() {
 		this.startTime = Calendar.getInstance().getTimeInMillis();
 	}
 

@@ -11,7 +11,7 @@ import javax.swing.event.ListDataListener;
  * @author wanggang
  *
  */
-public class FileListModel implements ListModel<Object> {
+public class FilesModel implements ListModel<Object> {
 
 	/**
 	 * 实体类
@@ -40,7 +40,7 @@ public class FileListModel implements ListModel<Object> {
 	/**
 	 * 创建文件列表模型实例
 	 */
-	public FileListModel() {
+	public FilesModel() {
 		this.fileList = new Vector<FileListModelEntry>();
 	}
 

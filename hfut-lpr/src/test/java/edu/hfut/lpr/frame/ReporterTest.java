@@ -11,22 +11,22 @@ import java.io.InputStream;
 
 import org.junit.Test;
 
-import edu.hfut.lpr.frame.ReportGenerator;
+import edu.hfut.lpr.frame.Reporter;
 import edu.hfut.lpr.images.CarSnapshot;
 import edu.hfut.lpr.utils.TestUtility;
 
 /**
- * ReportGenerator测试类 {@link ReportGenerator}
+ * ReportGenerator测试类 {@link Reporter}
  *
  * @author wanggang
  *
  */
-public class ReportGeneratorTest {
+public class ReporterTest {
 
 	TestUtility testUtility = new TestUtility();
 
 	/**
-	 * 使用无效的输入数据测试 {@link ReportGenerator#insertImage(BufferedImage, String, int, int)}
+	 * 使用无效的输入数据测试 {@link Reporter#insertImage(BufferedImage, String, int, int)}
 	 */
 	@Test
 	public void testInsertImage_Valid() throws IllegalArgumentException, IOException {
@@ -35,7 +35,7 @@ public class ReportGeneratorTest {
 			final BufferedImage image = carSnapshot.renderGraph();
 			final String cls = "test";
 			final int h = 1;
-			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
+			final Reporter reportGenerator = new Reporter("target/test-classes/");
 			reportGenerator.insertImage(image, cls, w, h);
 		} catch (final Exception e) {
 			fail();
@@ -43,12 +43,12 @@ public class ReportGeneratorTest {
 	}
 
 	/**
-	 * 使用无效的输入数据测试抛出异常 {@link ReportGenerator#insertImage(BufferedImage, String, int, int)}
+	 * 使用无效的输入数据测试抛出异常 {@link Reporter#insertImage(BufferedImage, String, int, int)}
 	 */
 	@Test
 	public void testInsertImage_BadInput() throws IllegalArgumentException, IOException {
 		try (final CarSnapshot carSnapshot = new CarSnapshot("en-snapshots/test_00.jpg");) {
-			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
+			final Reporter reportGenerator = new Reporter("target/test-classes/");
 			final int w = 1;
 			final BufferedImage image = carSnapshot.renderGraph();
 			final String cls = "test";
@@ -60,12 +60,12 @@ public class ReportGeneratorTest {
 	}
 
 	/**
-	 * 测试null输入 {@link ReportGenerator#insertText(String)}
+	 * 测试null输入 {@link Reporter#insertText(String)}
 	 */
 	@Test
 	public void testInsertText_NullInput() throws IllegalArgumentException, IOException {
 		try {
-			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
+			final Reporter reportGenerator = new Reporter("target/test-classes/");
 			reportGenerator.insertText(null);
 		} catch (final Exception e) {
 			fail();
@@ -73,12 +73,12 @@ public class ReportGeneratorTest {
 	}
 
 	/**
-	 * 测试空字符串输入 {@link ReportGenerator#insertText(String)}
+	 * 测试空字符串输入 {@link Reporter#insertText(String)}
 	 */
 	@Test
 	public void testInsertText_EmptyInput() throws IllegalArgumentException, IOException {
 		try {
-			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
+			final Reporter reportGenerator = new Reporter("target/test-classes/");
 			reportGenerator.insertText("");
 		} catch (final Exception e) {
 			fail();
@@ -86,12 +86,12 @@ public class ReportGeneratorTest {
 	}
 
 	/**
-	 * 测试null输入流 {@link ReportGenerator#saveStreamToFile(java.io.InputStream, java.io.File)}
+	 * 测试null输入流 {@link Reporter#saveStreamToFile(java.io.InputStream, java.io.File)}
 	 */
 	@Test
 	public void testSaveStreamToFile_InvalidInput() throws IllegalArgumentException, IOException {
 		try {
-			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
+			final Reporter reportGenerator = new Reporter("target/test-classes/");
 			final File io = new File("target/test-classes/out.txt");
 			reportGenerator.saveStreamToFile(null, io);
 		} catch (final Exception e) {
@@ -100,12 +100,12 @@ public class ReportGeneratorTest {
 	}
 
 	/**
-	 * 测试null输出流 {@link ReportGenerator#saveStreamToFile(java.io.InputStream, java.io.File)}
+	 * 测试null输出流 {@link Reporter#saveStreamToFile(java.io.InputStream, java.io.File)}
 	 */
 	@Test
 	public void testSaveStreamToFile_InvalidOutput() throws IllegalArgumentException, IOException {
 		try {
-			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
+			final Reporter reportGenerator = new Reporter("target/test-classes/");
 			final InputStream inStream = new FileInputStream("src/test/resources/en-snapshots/test_002.jpg");
 			reportGenerator.saveStreamToFile(inStream, null);
 		} catch (final Exception e) {
@@ -114,11 +114,11 @@ public class ReportGeneratorTest {
 	}
 
 	/**
-	 * 测试无效的输入输出流 {@link ReportGenerator#saveStreamToFile(java.io.InputStream, java.io.File)}
+	 * 测试无效的输入输出流 {@link Reporter#saveStreamToFile(java.io.InputStream, java.io.File)}
 	 */
 	@Test
 	public void testSaveStreamToFile_Valid() throws IllegalArgumentException, IOException {
-		final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
+		final Reporter reportGenerator = new Reporter("target/test-classes/");
 		final InputStream inStream = new FileInputStream("src/test/resources/en-snapshots/test_002.jpg");
 		final File io = new File("target/test-classes/out.txt");
 		reportGenerator.saveStreamToFile(inStream, io);
@@ -128,12 +128,12 @@ public class ReportGeneratorTest {
 	}
 
 	/**
-	 * 测试无效的输入 {@link ReportGenerator#saveImage(BufferedImage, String)}
+	 * 测试无效的输入 {@link Reporter#saveImage(BufferedImage, String)}
 	 */
 	@Test
 	public void testSaveImage_Valid() throws IllegalArgumentException, IOException {
 		try (final CarSnapshot carSnapshot = new CarSnapshot("en-snapshots/test_002.jpg");) {
-			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
+			final Reporter reportGenerator = new Reporter("target/test-classes/");
 			final BufferedImage image = carSnapshot.renderGraph();
 			reportGenerator.saveImage(image, "png");
 		} catch (final Exception e) {
@@ -142,12 +142,12 @@ public class ReportGeneratorTest {
 	}
 
 	/**
-	 * 测试无效的字符串输入和无效的图像输入 {@link ReportGenerator#saveImage(BufferedImage, String)}
+	 * 测试无效的字符串输入和无效的图像输入 {@link Reporter#saveImage(BufferedImage, String)}
 	 */
 	@Test
 	public void testSaveImage_InvalidInput() throws IllegalArgumentException, IOException {
 		try (final CarSnapshot carSnapshot = new CarSnapshot("en-snapshots/test_002.jpg");) {
-			final ReportGenerator reportGenerator = new ReportGenerator("target/test-classes/");
+			final Reporter reportGenerator = new Reporter("target/test-classes/");
 			final BufferedImage image = carSnapshot.renderGraph();
 			reportGenerator.saveImage(image, "target/test-classes/txt");
 		} catch (final Exception e) {

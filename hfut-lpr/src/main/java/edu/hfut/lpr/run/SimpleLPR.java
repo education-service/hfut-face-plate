@@ -5,14 +5,14 @@ import java.io.IOException;
 
 import javax.swing.UIManager;
 
-import edu.hfut.lpr.core.NeuralPatternClassificator;
-import edu.hfut.lpr.frame.FrameComponentInit;
-import edu.hfut.lpr.frame.FrameMain;
-import edu.hfut.lpr.frame.ReportGenerator;
+import edu.hfut.lpr.core.ANNClassificator;
+import edu.hfut.lpr.frame.FrameCompInit;
+import edu.hfut.lpr.frame.FrameCore;
+import edu.hfut.lpr.frame.Reporter;
 import edu.hfut.lpr.images.CarSnapshot;
 import edu.hfut.lpr.images.Char;
-import edu.hfut.lpr.tackle.Intelligence;
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.tackle.TackleCore;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * <p>简单的车牌识别，通过命令行输入参数</p>
@@ -34,10 +34,10 @@ import edu.hfut.lpr.utils.Configurator;
 public class SimpleLPR {
 
 	// 报告生成器
-	public static ReportGenerator rg = new ReportGenerator();
+	public static Reporter rg = new Reporter();
 
 	// 智能信息处理
-	public static Intelligence systemLogic;
+	public static TackleCore systemLogic;
 
 	// 帮助信息
 	public static String helpText = "" + "-----------------------------------------------------------\n"
@@ -57,8 +57,8 @@ public class SimpleLPR {
 	 */
 	public static void newAlphabet(String srcdir, String dstdir) throws IOException {
 
-		int x = Configurator.getConfigurator().getIntProperty("char_normalizeddimensions_x");
-		int y = Configurator.getConfigurator().getIntProperty("char_normalizeddimensions_y");
+		int x = ConfUtil.getConfigurator().getIntProperty("char_normalizeddimensions_x");
+		int y = ConfUtil.getConfigurator().getIntProperty("char_normalizeddimensions_y");
 		System.out.println("\nCreating new alphabet (" + x + " x " + y + " px)... \n");
 
 		for (String fileName : Char.getAlphabetList(srcdir)) {
@@ -81,7 +81,7 @@ public class SimpleLPR {
 			throw new IOException("Can't find the path specified");
 		}
 		System.out.println();
-		NeuralPatternClassificator npc = new NeuralPatternClassificator(true);
+		ANNClassificator npc = new ANNClassificator(true);
 		npc.network.saveToXml(destinationFile);
 	}
 
@@ -93,14 +93,14 @@ public class SimpleLPR {
 		if ((args.length == 0) || ((args.length == 1) && args[0].equals("-gui"))) {
 			// DONE run gui
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			FrameComponentInit frameComponentInit = new FrameComponentInit(); // 显示等待
-			SimpleLPR.systemLogic = new Intelligence();
+			FrameCompInit frameComponentInit = new FrameCompInit(); // 显示等待
+			SimpleLPR.systemLogic = new TackleCore();
 			frameComponentInit.dispose(); // 隐藏等待
-			new FrameMain();
+			new FrameCore();
 		} else if ((args.length == 3) && args[0].equals("-recognize") && args[1].equals("-i")) {
 			// 加载arg[2]中的车辆图片，并进行车牌识别
 			try {
-				SimpleLPR.systemLogic = new Intelligence();
+				SimpleLPR.systemLogic = new TackleCore();
 				System.out.println(SimpleLPR.systemLogic.recognize(new CarSnapshot(args[2])));
 			} catch (IOException e) {
 				System.out.println(e.getMessage());
@@ -108,8 +108,8 @@ public class SimpleLPR {
 		} else if ((args.length == 5) && args[0].equals("-recognize") && args[1].equals("-i") && args[3].equals("-o")) {
 			// 加载arg[2]中的车辆图片，生成报告信息到arg[4]中
 			try {
-				SimpleLPR.rg = new ReportGenerator(args[4]);
-				SimpleLPR.systemLogic = new Intelligence();
+				SimpleLPR.rg = new Reporter(args[4]);
+				SimpleLPR.systemLogic = new TackleCore();
 				SimpleLPR.systemLogic.recognizeWithReport(new CarSnapshot(args[2]));
 				SimpleLPR.rg.finish();
 			} catch (IOException e) {
@@ -118,7 +118,7 @@ public class SimpleLPR {
 
 		} else if ((args.length == 3) && args[0].equals("-newconfig") && args[1].equals("-o")) {
 			// 保存配置文件信息到args[2]中
-			Configurator configurator = new Configurator();
+			ConfUtil configurator = new ConfUtil();
 			try {
 				configurator.saveConfiguration(args[2]);
 			} catch (IOException e) {

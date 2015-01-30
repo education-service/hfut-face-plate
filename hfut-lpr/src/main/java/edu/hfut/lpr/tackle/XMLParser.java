@@ -16,9 +16,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import edu.hfut.lpr.core.CharacterRecognizer.RecognizedChar;
+import edu.hfut.lpr.core.CharRecognizer.RecognizedChar;
 import edu.hfut.lpr.run.SimpleLPR;
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * 解析器
@@ -26,7 +26,7 @@ import edu.hfut.lpr.utils.Configurator;
  * @author wanggang
  *
  */
-public class Parser {
+public class XMLParser {
 
 	/**
 	 * 车牌表单
@@ -102,17 +102,17 @@ public class Parser {
 	/**
 	 * 创建解析器示例
 	 */
-	public Parser() throws ParserConfigurationException, SAXException, IOException {
+	public XMLParser() throws ParserConfigurationException, SAXException, IOException {
 
 		this.plateForms = new Vector<>();
 
-		String fileName = Configurator.getConfigurator().getPathProperty("intelligence_syntaxDescriptionFile");
+		String fileName = ConfUtil.getConfigurator().getPathProperty("intelligence_syntaxDescriptionFile");
 
 		if (fileName == null || fileName.isEmpty()) {
 			throw new IOException("Failed to get syntax description file from Configurator");
 		}
 
-		InputStream inStream = Configurator.getConfigurator().getResourceAsStream(fileName);
+		InputStream inStream = ConfUtil.getConfigurator().getResourceAsStream(fileName);
 
 		if (inStream == null) {
 			throw new IOException("Couldn't find parser syntax description file");
@@ -128,12 +128,12 @@ public class Parser {
 	}
 
 	/**
-	 * @deprecated use {@link Parser#loadFromXml(InputStream)}
+	 * @deprecated use {@link XMLParser#loadFromXml(InputStream)}
 	 */
 	@Deprecated
 	public Vector<PlateForm> loadFromXml(String fileName) throws ParserConfigurationException, SAXException,
 			IOException {
-		InputStream inStream = Configurator.getConfigurator().getResourceAsStream(fileName);
+		InputStream inStream = ConfUtil.getConfigurator().getResourceAsStream(fileName);
 		return this.loadFromXml(inStream);
 	}
 
@@ -228,7 +228,7 @@ public class Parser {
 	 * @param recognizedPlate 已经识别的车牌
 	 * @param syntaxAnalysisMode 符号分析模式
 	 */
-	public String parse(RecognizedPlate recognizedPlate, int syntaxAnalysisMode) {
+	public String parse(TackledPlate recognizedPlate, int syntaxAnalysisMode) {
 
 		if (syntaxAnalysisMode == 0) {
 			SimpleLPR.rg.insertText(" result : " + recognizedPlate.getString() + " --> <font size=15>"

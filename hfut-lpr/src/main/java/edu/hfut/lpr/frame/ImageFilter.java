@@ -12,7 +12,7 @@ import javax.swing.filechooser.FileFilter;
  * @author wanggang
  *
  */
-public class ImageFileFilter extends FileFilter {
+public class ImageFilter extends FileFilter {
 
 	@Override
 	public boolean accept(File f) {

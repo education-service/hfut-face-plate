@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import edu.hfut.lpr.images.Char;
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * KNN分类器
@@ -14,21 +14,21 @@ import edu.hfut.lpr.utils.Configurator;
  * @author wanggang
  *
  */
-public class KnnPatternClassificator extends CharacterRecognizer {
+public class KNNClassificator extends CharRecognizer {
 
 	// 学习向量
 	Vector<Vector<Double>> learnVectors;
 
-	public KnnPatternClassificator() {
+	public KNNClassificator() {
 
-		String path = Configurator.getConfigurator().getPathProperty("char_learnAlphabetPath");
+		String path = ConfUtil.getConfigurator().getPathProperty("char_learnAlphabetPath");
 
 		this.learnVectors = new Vector<Vector<Double>>(36);
 
 		ArrayList<String> filenames = (ArrayList<String>) Char.getAlphabetList(path);
 
 		for (String fileName : filenames) {
-			InputStream is = Configurator.getConfigurator().getResourceAsStream(fileName);
+			InputStream is = ConfUtil.getConfigurator().getResourceAsStream(fileName);
 
 			Char imgChar = null;
 

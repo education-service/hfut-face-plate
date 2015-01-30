@@ -9,11 +9,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-import edu.hfut.lpr.core.CharacterRecognizer;
-import edu.hfut.lpr.core.KnnPatternClassificator;
-import edu.hfut.lpr.core.NeuralPatternClassificator;
-import edu.hfut.lpr.core.CharacterRecognizer.RecognizedChar;
-import edu.hfut.lpr.frame.TimeMeter;
+import edu.hfut.lpr.core.CharRecognizer;
+import edu.hfut.lpr.core.KNNClassificator;
+import edu.hfut.lpr.core.ANNClassificator;
+import edu.hfut.lpr.core.CharRecognizer.RecognizedChar;
+import edu.hfut.lpr.frame.TimeUtil;
 import edu.hfut.lpr.images.Band;
 import edu.hfut.lpr.images.CarSnapshot;
 import edu.hfut.lpr.images.Char;
@@ -21,7 +21,7 @@ import edu.hfut.lpr.images.HoughTransformation;
 import edu.hfut.lpr.images.Photo;
 import edu.hfut.lpr.images.Plate;
 import edu.hfut.lpr.run.SimpleLPR;
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * 智能信息处理类
@@ -29,30 +29,30 @@ import edu.hfut.lpr.utils.Configurator;
  * @author wanggang
  *
  */
-public class Intelligence {
+public class TackleCore {
 
 	// 上次处理的持续时间
 	private static long lastProcessDuration = 0;
 
 	// 配置文件类
-	private static Configurator configurator = Configurator.getConfigurator();
+	private static ConfUtil configurator = ConfUtil.getConfigurator();
 
 	// 字符识别
-	public static CharacterRecognizer chrRecog;
+	public static CharRecognizer chrRecog;
 	// 解析器
-	public static Parser parser;
+	public static XMLParser parser;
 
-	public Intelligence() throws ParserConfigurationException, SAXException, IOException {
+	public TackleCore() throws ParserConfigurationException, SAXException, IOException {
 
 		int classification_method = configurator.getIntProperty("intelligence_classification_method");
 
 		if (classification_method == 0) {
-			chrRecog = new KnnPatternClassificator();
+			chrRecog = new KNNClassificator();
 		} else {
-			chrRecog = new NeuralPatternClassificator();
+			chrRecog = new ANNClassificator();
 		}
 
-		parser = new Parser();
+		parser = new XMLParser();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class Intelligence {
 	public String recognizeWithReport(CarSnapshot carSnapshot) throws IllegalArgumentException, IOException {
 		final boolean enableReportGeneration = true;
 
-		TimeMeter time = new TimeMeter();
+		TimeUtil time = new TimeUtil();
 		int syntaxAnalysisMode = configurator.getIntProperty("intelligence_syntaxanalysis");
 		int skewDetectionMode = configurator.getIntProperty("intelligence_skewdetection");
 
@@ -173,7 +173,7 @@ public class Intelligence {
 					SimpleLPR.rg.insertText("倾斜角度为: <b>" + hough.angle + "</b>");
 				}
 
-				RecognizedPlate recognizedPlate = new RecognizedPlate();
+				TackledPlate recognizedPlate = new TackledPlate();
 
 				// 字符识别
 				if (enableReportGeneration) {
@@ -320,7 +320,7 @@ public class Intelligence {
 				}
 
 				lastProcessDuration = time.getTime();
-				String parsedOutput = Intelligence.parser.parse(recognizedPlate, syntaxAnalysisMode);
+				String parsedOutput = TackleCore.parser.parse(recognizedPlate, syntaxAnalysisMode);
 
 				if (enableReportGeneration) {
 					SimpleLPR.rg.insertText("<span class='recognized'>");
@@ -346,7 +346,7 @@ public class Intelligence {
 	@SuppressWarnings("unused")
 	public String recognize(CarSnapshot carSnapshot) {
 
-		TimeMeter time = new TimeMeter();
+		TimeUtil time = new TimeUtil();
 		int syntaxAnalysisMode = configurator.getIntProperty("intelligence_syntaxanalysis");
 		int skewDetectionMode = configurator.getIntProperty("intelligence_skewdetection");
 
@@ -426,7 +426,7 @@ public class Intelligence {
 				//					}
 				//				}
 
-				RecognizedPlate recognizedPlate = new RecognizedPlate();
+				TackledPlate recognizedPlate = new TackledPlate();
 
 				for (Char chr : chars) {
 					chr.normalize();
@@ -521,7 +521,7 @@ public class Intelligence {
 				}
 
 				lastProcessDuration = time.getTime();
-				return Intelligence.parser.parse(recognizedPlate, syntaxAnalysisMode);
+				return TackleCore.parser.parse(recognizedPlate, syntaxAnalysisMode);
 
 			}
 

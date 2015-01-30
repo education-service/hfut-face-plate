@@ -2,7 +2,7 @@ package edu.hfut.lpr.tackle;
 
 import java.util.Vector;
 
-import edu.hfut.lpr.core.CharacterRecognizer.RecognizedChar;
+import edu.hfut.lpr.core.CharRecognizer.RecognizedChar;
 
 /**
  * 已经识别的车牌类
@@ -10,11 +10,11 @@ import edu.hfut.lpr.core.CharacterRecognizer.RecognizedChar;
  * @author wanggang
  *
  */
-public class RecognizedPlate {
+public class TackledPlate {
 
 	Vector<RecognizedChar> chars;
 
-	public RecognizedPlate() {
+	public TackledPlate() {
 		this.chars = new Vector<RecognizedChar>();
 	}
 

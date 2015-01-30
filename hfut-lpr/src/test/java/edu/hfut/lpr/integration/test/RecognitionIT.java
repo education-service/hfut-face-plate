@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import edu.hfut.lpr.images.CarSnapshot;
-import edu.hfut.lpr.tackle.Intelligence;
+import edu.hfut.lpr.tackle.TackleCore;
 
 /**
  * 车牌识别集成测试
@@ -66,7 +66,7 @@ public class RecognitionIT {
 		Thread.sleep(5000);
 		t.frame.dispose();*/
 
-		Intelligence intel = new Intelligence();
+		TackleCore intel = new TackleCore();
 		assertNotNull(intel);
 
 		String spz = intel.recognize(carSnap);
@@ -100,7 +100,7 @@ public class RecognitionIT {
 		assertNotNull(snapshots);
 		assertTrue(snapshots.length > 0);
 
-		Intelligence intel = new Intelligence();
+		TackleCore intel = new TackleCore();
 		assertNotNull(intel);
 
 		int correctCount = 0;

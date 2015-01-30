@@ -6,7 +6,7 @@ import java.awt.image.Kernel;
 //import java.io.IOException;
 import java.util.Vector;
 
-import edu.hfut.lpr.utils.Configurator;
+import edu.hfut.lpr.utils.ConfUtil;
 
 /**
  * 车牌区域图
@@ -20,7 +20,7 @@ public class Band extends Photo {
 	static public Graph.ProbabilityDistributor distributor = new Graph.ProbabilityDistributor(0, 0, 25, 25);
 
 	// 候选车牌数量
-	static private int numberOfCandidates = Configurator.getConfigurator()
+	static private int numberOfCandidates = ConfUtil.getConfigurator()
 			.getIntProperty("intelligence_numberOfPlates");
 
 	// 车牌区域统计图
