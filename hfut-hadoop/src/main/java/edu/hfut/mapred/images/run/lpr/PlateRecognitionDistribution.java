@@ -1,23 +1,31 @@
 package edu.hfut.mapred.images.run.lpr;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+import org.apache.hadoop.util.ReflectionUtils;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.openimaj.image.FImage;
 
-import edu.hfut.lpr.run.PlateRecognizer;
 import edu.hfut.mapred.images.io.BufferedImageInputFormat;
-import edu.hfut.mapred.images.writable.BufferedImageWritable;
+import edu.hfut.mapred.images.writable.GrayImageWritable;
 
 /**
  * 车牌识别分布式处理
@@ -43,7 +51,7 @@ public class PlateRecognitionDistribution extends Configured implements Tool {
 
 		job.setInputFormatClass(BufferedImageInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
-		job.setMapperClass(PlateRecognitionMapper.class);
+		job.setMapperClass(PlateRecognitionDistributionMapper.class);
 		job.setNumReduceTasks(0);
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
@@ -62,20 +70,40 @@ public class PlateRecognitionDistribution extends Configured implements Tool {
 		System.exit(exitCode);
 	}
 
-	public static class PlateRecognitionMapper extends Mapper<NullWritable, BufferedImageWritable, Text, Text> {
-
-		/**
-		 * key：图像文件名
-		 */
-		@Override
-		public void map(NullWritable key, BufferedImageWritable value, Context context) throws IOException,
-				InterruptedException {
-			String plateNumber = PlateRecognizer.recognizeResult(value.getImage());
-			if (value.getImage() != null) {
-				context.write(new Text(value.getFileName()), new Text(plateNumber));
+	/**
+	 * 从HDFS中读取序列化形式的中心数据
+	 */
+	public static HashMap<String, List<FImage>> readFaceSamples(Configuration conf, Path facesDBSeq) throws IOException {
+		System.out.println("开始读取人脸样本库序列化数据......");
+		HashMap<String, List<FImage>> faceDB = new HashMap<>();
+		// 序列化人脸识别样本库目录
+		FileSystem fs = FileSystem.get(facesDBSeq.toUri(), conf);
+		FileStatus[] statuses = fs.listStatus(facesDBSeq);
+		Path[] listedPaths = FileUtil.stat2Paths(statuses);
+		// 循环每个子目录
+		for (Path path : listedPaths) {
+			Path iterPath = new Path(String.format("%s/%s", facesDBSeq.getName(), path.getName()));
+			FileStatus[] list = fs.globStatus(new Path(iterPath, "part-m-*"));
+			// 循环每个子目录下面的每个文件
+			List<FImage> biList = new ArrayList<>();
+			for (FileStatus status : list) {
+				SequenceFile.Reader reader = null;
+				try {
+					reader = new SequenceFile.Reader(fs, status.getPath(), conf);
+					NullWritable key = (NullWritable) ReflectionUtils.newInstance(reader.getKeyClass(), conf);
+					GrayImageWritable value = (GrayImageWritable) ReflectionUtils.newInstance(reader.getValueClass(),
+							conf);
+					if (reader.next(key, value)) {
+						biList.add(value.getImage());
+					}
+				} finally {
+					IOUtils.closeStream(reader);
+				}
 			}
+			faceDB.put(path.getName(), biList);
 		}
-
+		System.out.println("读取人脸样本库序列化数据结束......");
+		return faceDB;
 	}
 
 }
