@@ -11,7 +11,7 @@ public class DifferentDetectors {
 	public static void main(String[] args) {
 
 		HaarCascadeFaceDetector haarCascadeFaceDetector = new HaarCascadeFaceDetector();
-		FKEFacePointDetector fkeFacePointDetector = new FKEFacePointDetector();
+		//		FKEFacePointDetector fkeFacePointDetector = new FKEFacePointDetector();
 
 		/*
 		 * 多线程测试

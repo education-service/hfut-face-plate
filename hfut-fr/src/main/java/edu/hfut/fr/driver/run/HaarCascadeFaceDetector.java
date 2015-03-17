@@ -28,7 +28,7 @@ public class HaarCascadeFaceDetector implements Display, Runnable {
 	public HaarCascadeFaceDetector() {
 		try {
 			this.colorImage = ImageUtilities.readMBF(new File("faces_test/multifaces.jpg"));
-			displayMBF(this.colorImage);
+			//			displayMBF(this.colorImage);
 			this.faceDetector = new HaarCascadeDetector(20);
 			this.faces = faceDetector.detectFaces(Transforms.calculateIntensity(this.colorImage));
 			for (DetectedFace face : this.faces) {
