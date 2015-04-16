@@ -7,9 +7,9 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import zx.soft.utils.http.RestletClientDaoImpl;
 import edu.hfut.api.resource.PostData;
 import edu.hfut.api.utils.JsonUtils;
+import edu.hfut.utils.http.RestletClientDaoImpl;
 
 public class ClientDemo {
 
@@ -23,7 +23,7 @@ public class ClientDemo {
 		ImageIO.write(img, "jpg", baos);
 		baos.flush();
 		byte[] data = baos.toByteArray();
-		PostData postData = new PostData("mayun", data);
+		PostData postData = new PostData("cl2", data);
 		RestletClientDaoImpl rcdi = new RestletClientDaoImpl();
 		System.out.println(rcdi.doPost(url, JsonUtils.toJsonWithoutPretty(postData)));
 

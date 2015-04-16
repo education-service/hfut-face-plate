@@ -5,7 +5,7 @@
 
 ### 使用实例
 
-* *启动Server主类* :  `edu.hfut.api.server`
+* *启动Server主类* :  `edu.hfut.api.Apiserver`
 * *启动Client主类* :  `edu.hfut.api.example.ClientDemo`
 
 ### 开发人员
