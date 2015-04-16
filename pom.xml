@@ -12,6 +12,8 @@
 		<module>hfut-lpr</module>
 		<module>hfut-fr</module>
 		<module>hfut-hadoop</module>
+		<module>hfut-api</module>
+		<module>hfut-rpc</module>
 	</modules>
 
 	<build>

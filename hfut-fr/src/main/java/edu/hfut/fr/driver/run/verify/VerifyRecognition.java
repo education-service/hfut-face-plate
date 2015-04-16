@@ -1,5 +1,6 @@
 package edu.hfut.fr.driver.run.verify;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -89,6 +90,42 @@ public class VerifyRecognition {
 		long t4 = System.currentTimeMillis();
 		System.out.println("测试完成...");
 		System.out.println("测试时间为：" + (t4 - t3) + "ms");
+	}
+
+	public static String recognizeFaceName(HashMap<String, List<double[]>> corpus, BufferedImage bi) {
+		String result = "error";
+		MBFImage image = ImageUtilities.createMBFImage(bi, Boolean.TRUE);
+		FaceDetector<KEDetectedFace, FImage> faceDetector = new FKEFaceDetector(20);
+		List<KEDetectedFace> faces = faceDetector.detectFaces(Transforms.calculateIntensity(image));
+		AffineAligner faceAligner = new AffineAligner();
+		// 找出检测中的最大图像块即为人脸
+		int max = Integer.MIN_VALUE;
+		KEDetectedFace maxFace = null;
+		for (KEDetectedFace face : faces) {
+			if (face.getFacePatch().getHeight() > max) {
+				max = face.getFacePatch().getHeight();
+				maxFace = face;
+			}
+		}
+		if (maxFace == null) {
+			return "error";
+		}
+		FImage fimage = faceAligner.align(maxFace);
+		DoubleFV fv1 = FImage2DoubleFV.INSTANCE.extractFeature(fimage);
+		double MinDistances = Double.MAX_VALUE;
+		for (Entry<String, List<double[]>> tmp : corpus.entrySet()) {
+			double distances = 0;
+			for (double[] d : tmp.getValue()) {
+				distances = distances + cos(fv1.getVector(), d, fv1.getVector().length);
+			}
+			distances = distances / (tmp.getValue().size());
+			if (distances < MinDistances) {
+				MinDistances = distances;
+				result = tmp.getKey();
+			}
+		}
+
+		return result;
 	}
 
 	/**
