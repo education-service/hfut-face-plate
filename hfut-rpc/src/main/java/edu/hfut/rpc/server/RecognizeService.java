@@ -1,22 +1,15 @@
 package edu.hfut.rpc.server;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.openimaj.image.ImageUtilities;
 import org.openimaj.image.feature.FImage2DoubleFV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import edu.hfut.fr.driver.run.verify.VerifyRecognition;
 
 public class RecognizeService implements Recognize {
 
@@ -48,16 +41,21 @@ public class RecognizeService implements Recognize {
 	}
 
 	@Override
-	public String runRecognize(ImageData data) {
-		InputStream ian = new ByteArrayInputStream(data.getData());
-		BufferedImage image = null;
-		try {
-			image = ImageIO.read(ian);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-		logger.info("Face:{} has high:{},width:{}.", data.getFileName(), image.getHeight(), image.getWidth());
-		return VerifyRecognition.recognizeFaceName(corpus, image);
+	public String runRecognize(String data) {
+		return data;
 	}
+
+	/*	@Override
+		public String runRecognize(ImageData data) {
+			InputStream ian = new ByteArrayInputStream(data.getData());
+			BufferedImage image = null;
+			try {
+				image = ImageIO.read(ian);
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			logger.info("Face:{} has high:{},width:{}.", data.getFileName(), image.getHeight(), image.getWidth());
+			return VerifyRecognition.recognizeFaceName(corpus, image);
+		}*/
 
 }

@@ -24,7 +24,8 @@ public class ClientDemo {
 		ImageData imageData = new ImageData("cl2", data);
 		Registry registry = new Registry();
 		Recognize stub = registry.lookup(Recognize.class, "localhost", 8888);
-		System.out.println(stub.runRecognize(imageData));
+		//		System.out.println(stub.runRecognize(imageData));
+		System.out.println(stub.runRecognize("Hello"));
 
 	}
 
