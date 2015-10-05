@@ -14,6 +14,7 @@
 		<module>hfut-hadoop</module>
 		<module>hfut-api</module>
 		<module>hfut-rpc</module>
+		<module>hfut-test</module>
 	</modules>
 
 	<build>

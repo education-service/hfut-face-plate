@@ -2,7 +2,7 @@ package edu.hfut.fr.driver;
 
 import org.apache.hadoop.util.ProgramDriver;
 
-import edu.hfut.fr.driver.run.FaceRecognition;
+import edu.hfut.fr.no.demo.FaceRecognition;
 
 /**
  * 人脸识别Hadoop驱动器

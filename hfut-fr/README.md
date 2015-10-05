@@ -16,6 +16,14 @@
 * *打包项目*（不含源码） :  `mvn clean package -DskipTests`
 * *安装项目*（含源码） :  `mvn clean install -DskipTests`
 
+### 测试人脸库
+
+> 本项目使用两类测试库：hdfaces和orlfaces，相关信息如下：
+
+`hdfaces`：洪都测试库
+
+`orlfaces`：ORL国外标准测试库[http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html](http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html)
+
 ### 开发人员
 
 WeChat: wgybzb
