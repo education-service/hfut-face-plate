@@ -35,7 +35,7 @@ public class HdFacesTest {
 	 */
 	public static void main(String args[]) {
 		// 随机测试次数
-		int N = 10;
+		int N = 30;
 		// 平均测试精度
 		double avgAccuracy = 0.0d;
 		// 循环测试
