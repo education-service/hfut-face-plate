@@ -39,52 +39,6 @@ public class SimpleLPR {
 	// 智能信息处理
 	public static TackleCore systemLogic;
 
-	// 帮助信息
-	public static String helpText = "" + "-----------------------------------------------------------\n"
-			+ "分布式车牌识别系统\n\n" //
-			+ "使用方法 : java -jar LPR.jar [-options]\n\n" //
-			+ "options包括:\n\n" //
-			+ "    -help       提示帮助信息。\n" //
-			+ "    -gui        运行可视化界面 (默认)。\n" //
-			+ "    -recognize -i <snapshot>\n         识别单个图片。\n" //
-			+ "    -recognize -i <snapshot> -o <dstdir>\n         识别单个图片，并保存报告信息到指定目录。\n" //
-			+ "    -newconfig -o <file>\n          生成默认的配置文件。\n" //
-			+ "    -newnetwork -o <file>\n         根据指定的特征提取方法和学习参数训练神经网络（配置文为config.xml），并保存到输出文件中。\n" //
-			+ "    -newalphabet -i <srcdir> -o <dstdir>\n         标准化目录<srcdir>中的所有图片，并保存到目录<dstdir>中。";
-
-	/**
-	 * 标准化目录srcdir中的所有图片，并保存到目录dstdir中。
-	 */
-	public static void newAlphabet(String srcdir, String dstdir) throws IOException {
-
-		int x = ConfigUtil.getConfigurator().getIntProperty("char_normalizeddimensions_x");
-		int y = ConfigUtil.getConfigurator().getIntProperty("char_normalizeddimensions_y");
-		System.out.println("\nCreating new alphabet (" + x + " x " + y + " px)... \n");
-
-		for (String fileName : Char.getAlphabetList(srcdir)) {
-			Char c = new Char(fileName);
-			c.normalize();
-			c.saveImage(dstdir + File.separator + fileName);
-			System.out.println(fileName + " done");
-			c.close();
-		}
-	}
-
-	/**
-	 * 根据选取的特征提取方法和学习参数（在config.xml中）来训练神经网络，并将训练好的模型数据保存到输出文件中。
-	 */
-	public static void learnAlphabet(String destinationFile) throws Exception {
-		try {
-			File f = new File(destinationFile);
-			f.createNewFile();
-		} catch (Exception e) {
-			throw new IOException("Can't find the path specified");
-		}
-		System.out.println();
-		ANNClassificator npc = new ANNClassificator(true);
-		npc.network.saveToXml(destinationFile);
-	}
-
 	/**
 	 * 主函数
 	 */
@@ -143,6 +97,52 @@ public class SimpleLPR {
 			System.out.println(SimpleLPR.helpText);
 		}
 
+	}
+
+	// 帮助信息
+	public static String helpText = "" + "-----------------------------------------------------------\n"
+			+ "分布式车牌识别系统\n\n" //
+			+ "使用方法 : java -jar LPR.jar [-options]\n\n" //
+			+ "options包括:\n\n" //
+			+ "    -help       提示帮助信息。\n" //
+			+ "    -gui        运行可视化界面 (默认)。\n" //
+			+ "    -recognize -i <snapshot>\n         识别单个图片。\n" //
+			+ "    -recognize -i <snapshot> -o <dstdir>\n         识别单个图片，并保存报告信息到指定目录。\n" //
+			+ "    -newconfig -o <file>\n          生成默认的配置文件。\n" //
+			+ "    -newnetwork -o <file>\n         根据指定的特征提取方法和学习参数训练神经网络（配置文为config.xml），并保存到输出文件中。\n" //
+			+ "    -newalphabet -i <srcdir> -o <dstdir>\n         标准化目录<srcdir>中的所有图片，并保存到目录<dstdir>中。";
+
+	/**
+	 * 标准化目录srcdir中的所有图片，并保存到目录dstdir中。
+	 */
+	public static void newAlphabet(String srcdir, String dstdir) throws IOException {
+
+		int x = ConfigUtil.getConfigurator().getIntProperty("char_normalizeddimensions_x");
+		int y = ConfigUtil.getConfigurator().getIntProperty("char_normalizeddimensions_y");
+		System.out.println("\nCreating new alphabet (" + x + " x " + y + " px)... \n");
+
+		for (String fileName : Char.getAlphabetList(srcdir)) {
+			Char c = new Char(fileName);
+			c.normalize();
+			c.saveImage(dstdir + File.separator + fileName);
+			System.out.println(fileName + " done");
+			c.close();
+		}
+	}
+
+	/**
+	 * 根据选取的特征提取方法和学习参数（在config.xml中）来训练神经网络，并将训练好的模型数据保存到输出文件中。
+	 */
+	public static void learnAlphabet(String destinationFile) throws Exception {
+		try {
+			File f = new File(destinationFile);
+			f.createNewFile();
+		} catch (Exception e) {
+			throw new IOException("Can't find the path specified");
+		}
+		System.out.println();
+		ANNClassificator npc = new ANNClassificator(true);
+		npc.network.saveToXml(destinationFile);
 	}
 
 }
