@@ -5,11 +5,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class LDA extends FeatureExtraction {
 
-	public LDA(ArrayList<Matrix> trainingSet, ArrayList<String> labels, int numOfComponents) throws Exception {
+	public LDA(List<Matrix> trainingSet, List<String> labels, int numOfComponents) throws Exception {
 		int n = trainingSet.size();
 		Set<String> tempSet = new HashSet<String>(labels);
 		int c = tempSet.size();
@@ -21,7 +22,7 @@ public class LDA extends FeatureExtraction {
 		Matrix meanTotal = new Matrix(n - c, 1);
 
 		HashMap<String, ArrayList<Matrix>> map = new HashMap<String, ArrayList<Matrix>>();
-		ArrayList<TrainingMatrix> pcaTrain = pca.getProjectedTrainingSet();
+		List<TrainingMatrix> pcaTrain = pca.getProjectedTrainingSet();
 		for (int i = 0; i < pcaTrain.size(); i++) {
 			String key = pcaTrain.get(i).label;
 			meanTotal.plusEquals(pcaTrain.get(i).matrix);

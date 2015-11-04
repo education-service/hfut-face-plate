@@ -3,12 +3,13 @@ package edu.hfut.fr.driver.run.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class LPP extends FeatureExtraction {
 
 	@SuppressWarnings("unused")
-	public LPP(ArrayList<Matrix> trainingSet, ArrayList<String> labels, int numOfComponents) throws Exception {
+	public LPP(List<Matrix> trainingSet, List<String> labels, int numOfComponents) throws Exception {
 		int n = trainingSet.size();
 		Set<String> tempSet = new HashSet<String>(labels);
 		int c = tempSet.size();
@@ -80,7 +81,7 @@ public class LPP extends FeatureExtraction {
 		return D;
 	}
 
-	private Matrix constructTrainingMatrix(ArrayList<TrainingMatrix> input) {
+	private Matrix constructTrainingMatrix(List<TrainingMatrix> input) {
 		int row = input.get(0).matrix.getRowDimension();
 		int column = input.size();
 		Matrix X = new Matrix(row, column);

@@ -1,11 +1,12 @@
 package edu.hfut.fr.driver.run.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class FeatureExtraction {
 
-	ArrayList<Matrix> trainingSet;
-	ArrayList<String> labels;
+	List<Matrix> trainingSet;
+	List<String> labels;
 	int numOfComponents;
 	Matrix meanMatrix;
 
@@ -14,7 +15,7 @@ public abstract class FeatureExtraction {
 
 	public abstract Matrix getW();
 
-	public abstract ArrayList<TrainingMatrix> getProjectedTrainingSet();
+	public abstract List<TrainingMatrix> getProjectedTrainingSet();
 
 	public abstract Matrix getMeanMatrix();
 

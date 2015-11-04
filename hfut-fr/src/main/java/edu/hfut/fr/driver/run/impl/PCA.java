@@ -2,10 +2,11 @@ package edu.hfut.fr.driver.run.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class PCA extends FeatureExtraction {
 
-	public PCA(ArrayList<Matrix> trainingSet, ArrayList<String> labels, int numOfComponents) throws Exception {
+	public PCA(List<Matrix> trainingSet, List<String> labels, int numOfComponents) throws Exception {
 
 		if (numOfComponents >= trainingSet.size()) {
 			throw new Exception("the expected dimensions could not be achieved!");
@@ -26,7 +27,7 @@ public class PCA extends FeatureExtraction {
 		}
 	}
 
-	private Matrix getFeature(ArrayList<Matrix> input, int K) {
+	private Matrix getFeature(List<Matrix> input, int K) {
 		int i, j;
 
 		int row = input.get(0).getRowDimension();
@@ -102,7 +103,7 @@ public class PCA extends FeatureExtraction {
 		return result;
 	}
 
-	private static Matrix getMean(ArrayList<Matrix> input) {
+	private static Matrix getMean(List<Matrix> input) {
 		int rows = input.get(0).getRowDimension();
 		int length = input.size();
 		Matrix all = new Matrix(rows, 1);
@@ -120,7 +121,7 @@ public class PCA extends FeatureExtraction {
 	}
 
 	@Override
-	public ArrayList<TrainingMatrix> getProjectedTrainingSet() {
+	public List<TrainingMatrix> getProjectedTrainingSet() {
 		return this.projectedTrainingSet;
 	}
 
@@ -129,7 +130,7 @@ public class PCA extends FeatureExtraction {
 		return meanMatrix;
 	}
 
-	public ArrayList<Matrix> getTrainingSet() {
+	public List<Matrix> getTrainingSet() {
 		return this.trainingSet;
 	}
 
