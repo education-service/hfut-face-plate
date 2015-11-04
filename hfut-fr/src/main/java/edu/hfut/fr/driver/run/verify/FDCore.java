@@ -14,13 +14,13 @@ import edu.hfut.fr.image.processing.face.detection.keypoints.FKEFaceDetector;
 import edu.hfut.fr.image.processing.face.detection.keypoints.KEDetectedFace;
 
 /**
- * 生成训练数据
- * 将训练样本图片放入Face_Sample文件下,储存面部图像"
+ * 生成训练数据，也就是测试人脸检测准确度，查看检测后的结果是否和原始图片符合
+ * 将训练样本图片放入Face_Sample文件下,储存面部图像
  *
  * @author wanggang
  *
  */
-public class GenerateCorpus {
+public class FDCore {
 
 	public static void main(String[] args) throws IOException {
 
