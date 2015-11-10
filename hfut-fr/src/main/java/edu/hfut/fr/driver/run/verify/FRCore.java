@@ -150,7 +150,7 @@ public class FRCore {
 		return new VerifyData(testMatrix, testLabels);
 	}
 
-	private static Matrix vectorize(Matrix input) {
+	public static Matrix vectorize(Matrix input) {
 		int m = input.getRowDimension();
 		int n = input.getColumnDimension();
 

@@ -24,6 +24,11 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.openimaj.image.FImage;
 
+import edu.hfut.fr.driver.run.impl.FileManager;
+import edu.hfut.fr.driver.run.impl.FileManagerHD;
+import edu.hfut.fr.driver.run.impl.Matrix;
+import edu.hfut.fr.driver.run.impl.VerifyData;
+import edu.hfut.fr.driver.run.verify.FRCore;
 import edu.hfut.mapred.images.io.GrayImageInputFormat;
 import edu.hfut.mapred.images.writable.GrayImageWritable;
 
@@ -104,6 +109,30 @@ public class FaceRecognitionDistribution extends Configured implements Tool {
 		}
 		System.out.println("读取人脸样本库序列化数据结束......");
 		return faceDB;
+	}
+
+	/**
+	 * 训练集数据和标签
+	 */
+	public VerifyData getTrainData(String faceDir, int faceType, int faceCount) {
+
+		List<Matrix> trainMatrix = new ArrayList<>();
+		List<String> trainLabels = new ArrayList<>();
+		for (int i = 1; i <= faceType; i++) {
+			for (int j = 1; j < faceCount; j++) {
+				try {
+					Matrix temp = faceDir.equalsIgnoreCase("orlfaces") ? FileManager.convertPGMtoMatrix(faceDir + "/s"
+							+ i + "/" + j + ".pgm") : FileManagerHD.convertPNGtoMatrix(faceDir + "/s" + i + "/" + j
+							+ ".png");
+					trainMatrix.add(FRCore.vectorize(temp));
+					trainLabels.add("s" + i);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return new VerifyData(trainMatrix, trainLabels);
 	}
 
 }
