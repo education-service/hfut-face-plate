@@ -20,19 +20,24 @@ public class FaceRecognitionDistributionMapper extends Mapper<NullWritable, Gray
 
 	private static HashMap<String, List<FImage>> faceSamples;
 
+	// 人脸识别核心类
+	private static FrHdfsCore frCore = new FrHdfsCore(0, 100, 0, 3);
+
 	@Override
 	protected void setup(Context context) throws IOException {
 		Configuration conf = context.getConfiguration();
 		// 序列化人脸识别样本库目录
 		Path facesDBSeq = new Path(conf.get("facesdbseq"));
 		faceSamples = FaceRecognitionDistribution.readFaceSamples(conf, facesDBSeq);
+		// 训练样本
+		frCore.train(faceSamples);
 	}
 
 	@Override
 	public void map(NullWritable key, GrayImageWritable value, Context context) throws IOException,
 			InterruptedException {
 
-		String name = recognize(value.getImage());
+		String name = frCore.recognize(value.getImage());
 		context.write(new Text(value.getFileName()), new Text(name));
 
 	}
